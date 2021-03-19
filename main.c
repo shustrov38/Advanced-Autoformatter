@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "parser.h"
 
 #define MAX_STRING_LEN 10
 #define VARIABLES_COUNT 50
@@ -78,11 +79,19 @@ int isBlock(Functions *functions, CodeStructs *codeStructs, char *str) {
 //}
 
 int main() {
-    CodeStructs codeStructs = {6, {"if", "do", "for", "while", "else", "switch"}};
+    // CodeStructs codeStructs = {6, {"if", "do", "for", "while", "else", "switch"}};
 
     // dumpFunctions()
 
     // TODO: "int a;    // hello world!" -> ["int a;", "// hello world!"]
+
+    //{
+    //        "+", "-", "*", "/", "=", "+=", "-=", "*=", "/=", "==", "++", "--", ">", "<", ">=", "<=",
+    //        "!", "?", "&", "|", "^", "~", "&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<", ">>=", "<<=",
+    //        "(", ")", "[", "]", "{", "}", "/*", "*/", "//",
+    //        " ", ".", ",", ";", ":", "\n", "\t", "\0",
+    //        "if", "do", "for", "while", "else", "switch"
+    //};
 
     return EXIT_SUCCESS;
 }
