@@ -1,66 +1,69 @@
 #include "parser.h"
 
-#define MAX_ARRAY_SIZE 10000
-#define MAX_E_SIZE 10000
+#define MAX_ARRAY_SIZE 100
+#define MAX_E_SIZE 1000
 
-void initSyntax(codeSyntax *syntax) {
-    syntax->codeBody = (char **) malloc(MAX_ARRAY_SIZE * sizeof(char *));
-    memset(syntax->codeBody, 0, MAX_ARRAY_SIZE);
-    for (int i = 0; i < MAX_ARRAY_SIZE; ++i) {
-        syntax->codeBody[i] = (char *) malloc(MAX_ARRAY_SIZE * sizeof(char));
-        memset(syntax->codeBody[i], 0, MAX_ARRAY_SIZE);
-    }
-}
+int rsyntax(char *srcFile, char dest[100][100], char *divs[56]) {
 
-codeSyntax *createSyntax() {
-    codeSyntax *syntax = (codeSyntax *) malloc(1 * sizeof(codeSyntax));
-    initSyntax(syntax);
-    return syntax;
-}
-
-int splitSyntax(char *srcFile, char **dest, char **divs) {
     FILE *in = fopen(srcFile, "r");
     if (in == NULL) {
         exit(-2);
     }
-    char buffStr[MAX_E_SIZE];
-    int syntaxIndex = 0;
-    while (fgets(buffStr, MAX_E_SIZE, in)) {
 
-        int i = 0;
-        while (buffStr[i] != '\n') {
+    char *src = malloc(100 * sizeof(char));
+    fgets(src, 100, in);
 
-            while (i < strlen(buffStr) - 2 && (buffStr[i + 1] == ' ' || buffStr[i + 1] == '\t')) i++;
+    int lastValCh = (int) strlen(src) - 1;
+    while (src[lastValCh] == ' ' || src[lastValCh] == '\n' || src[lastValCh] == '\t') src[lastValCh--] = '\0';
 
-            int y = 0;
-            int divisionFlag = 0;
-            int dividerId = 0;
+    char tmpStr[MAX_ARRAY_SIZE][100];
+    for (int i = 0; i < MAX_ARRAY_SIZE; i++) {
+        memset(tmpStr[i], 0, 100);
+    }
+    int i = 0;
+    int k = 0;
+    int z = 0;
+    int Id = -1;
+    int opF = 1; //is op flag for ch
 
-            for (int j = 0; j < 100; j++) {
-                char *charsBuffer;
-                charsBuffer = (char *) malloc(strlen(divs[j]) * sizeof(char));
-                for (int z = 0; z < strlen(divs[j]); z++) {
-                    charsBuffer[z] = buffStr[i + z];
-                }
-                charsBuffer[strlen(divs[j])] = '\0';
-                divisionFlag = !strcmp(charsBuffer, divs[j]);
-                free(charsBuffer);
-                if (divisionFlag) {
-                    dividerId = j;
-                    break;
-                }
+    while (src[i] != '\n' && src[i] != '\0' && src[i] != '\r') {
+        //while (i < strlen(src) - 1 && (src[i] == ' ' || src[i] == '\t')) i++;
+        int dvF = 0;
+        for (int j = 0; j < 35; j++) {
+            char tmptmp[100];
+            memset(tmptmp, 0, 100);
+            for (int zzz = 0; zzz < strlen(divs[j]); zzz++) {
+                tmptmp[zzz] = src[i + zzz];
             }
-
-            if (!divisionFlag) {
-                dest[syntaxIndex][y++] = buffStr[i++];
-            } else {
-                y = 0;
-                syntaxIndex++;
-                strcpy(dest[syntaxIndex++], divs[dividerId]);
-                i += strlen(divs[dividerId]) - 1;
+            tmptmp[strlen(divs[j])] = 0;
+            if (!strcmp(tmptmp, divs[j])) {
+                dvF = 1;
+                Id = j;
+                break;
             }
+        }
+        if (!dvF) {
+            tmpStr[k][z++] = src[i++];
+            opF = 0;
+        } else {
+            z = 0;
+            if (!opF) k++;
 
+            strcpy(tmpStr[k], divs[Id]);
+            //tmpStr[k][0] = src[i];
+
+            ++k;
+            i += (int) strlen(divs[Id]);
+            opF = 1;
         }
     }
-    return syntaxIndex;
+
+    for (i = 0; i < MAX_ARRAY_SIZE; ++i) {
+        strcpy(dest[i], tmpStr[i]);
+        fprintf(stdout,"%s ",dest[i]);
+    }
+
+    //while ((dest[k][0] == ' ' || dest[k][0] == '\t')) k--;
+
+    return k + (dest[k][0] != 0);
 }

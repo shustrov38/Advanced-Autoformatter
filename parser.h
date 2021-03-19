@@ -13,7 +13,7 @@ typedef struct {
 
 codeSyntax *createSyntax();
 
-int splitSyntax(char *srcFile, char **dest, char **divs);
+int rsyntax(char *srcFile, char dest[100][100],char *divs[56]);
 void destroySyntax(codeSyntax *cs);
 
 #endif //ADVANCED_AUTOFORMATTER_PARSER_H

@@ -1,9 +1,9 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "parser.h"
-
-#define MAX_STRING_LEN 10
+#define MAX_STRING_LEN 100
 #define VARIABLES_COUNT 50
 #define FUNCTIONS_COUNT 50
 #define STRUCTS_COUNT 50
@@ -82,16 +82,20 @@ int main() {
     // CodeStructs codeStructs = {6, {"if", "do", "for", "while", "else", "switch"}};
 
     // dumpFunctions()
-
+    int FILENAME_LENGTH = 10;
     // TODO: "int a;    // hello world!" -> ["int a;", "// hello world!"]
+    char *filename = (char *) malloc(FILENAME_LENGTH * sizeof(char));
+    memset(filename, 0, FILENAME_LENGTH);
+    strcpy(filename, "../input.txt");
 
-    //{
-    //        "+", "-", "*", "/", "=", "+=", "-=", "*=", "/=", "==", "++", "--", ">", "<", ">=", "<=",
-    //        "!", "?", "&", "|", "^", "~", "&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<", ">>=", "<<=",
-    //        "(", ")", "[", "]", "{", "}", "/*", "*/", "//",
-    //        " ", ".", ",", ";", ":", "\n", "\t", "\0",
-    //        "if", "do", "for", "while", "else", "switch"
-    //};
+    char *divs[56] = {
+            "+=", "-=", "*=", "/=", "==", "++", "--", ">", "<", ">=", "<=", "+", "-", "*", "/", "=",  "!", "&&", "||", "(", ")", "[", "]", "{", "}", "/*", "*/", "//"," ", ".", ",", ";", ":", "\n", "\t", "\0","if", "do", "for", "while", "else", "switch"
+    };
+
+    char text[100][100];
+
+    int z = rsyntax(filename, text, divs);
+
 
     return EXIT_SUCCESS;
 }
