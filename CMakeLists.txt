@@ -3,4 +3,4 @@ project(Advanced_Autoformatter C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(Advanced_Autoformatter main.c lineMaker.c lineMaker.h)
+add_executable(Advanced_Autoformatter main.c LineMakerAlg/lineMaker.c LineMakerAlg/lineMaker.h optionFuncs/optionFunctions.c optionFuncs/optionFunctions.h)
