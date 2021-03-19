@@ -19,5 +19,6 @@ int main() {
 
     splitStringAlgorithm(body, len, exampleArr);
 
+
     return EXIT_SUCCESS;
 }
