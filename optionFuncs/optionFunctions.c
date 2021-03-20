@@ -36,6 +36,14 @@ int isStruct(char *string){
     } else return 0;
 }
 
+int isDo(char *string){
+    if (!strcmp(string, "do")){
+        return 1;
+    } else return 0;
+}
 
-
-
+int isCycle(char *string){
+    if (!strcmp(string, "while") || !strcmp(string, "for") || !strcmp(string, "do") || !strcmp(string, "if")) {
+        return 1;
+    } else return 0;
+}

@@ -9,11 +9,11 @@ int main() {
         exampleArr[j] = (char*)malloc(ONE_STRING_SIZE*sizeof(char));
     }
 
-    for (int i = 0; i < 57; ++i){
+    int len;
+    scanf("%d", &len);
+    for (int i = 0; i < len; ++i){
         scanf("%s", exampleArr[i]);
     }
-
-    int len = 57;
 
     codeLineStruct *body = init();
 

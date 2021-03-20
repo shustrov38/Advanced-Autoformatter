@@ -9,5 +9,7 @@ int isOpenFigBr(char *string);
 int isCloseFigBr(char *string);
 int isSemicolon(char *string);
 int isStruct(char *string);
+int isCycle(char *string);
+int isDo(char *string);
 
 #endif //ADVANCED_AUTOFORMATTER_OPTIONFUNCTIONS_H
