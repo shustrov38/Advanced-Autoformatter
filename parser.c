@@ -10,55 +10,56 @@ int splitSyntax(char *srcFile, char dest[MAX_ARRAY_SIZE][MAX_ARRAY_SIZE], char *
     }
 
     char *src = malloc(MAX_ARRAY_SIZE * sizeof(char));
-    while(fgets(src, MAX_ARRAY_SIZE, in)){
-        fprintf(stdout,"\n%s\n",src);
+    while (fgets(src, MAX_ARRAY_SIZE, in)) {
+        fprintf(stdout, "\n%s\n", src);
         char tmpStr[MAX_ARRAY_SIZE][MAX_ARRAY_SIZE];
         for (int i = 0; i < MAX_ARRAY_SIZE; i++) {
             memset(tmpStr[i], 0, MAX_ARRAY_SIZE);
         }
-        int i = 0;
-        int k = 0;
-        int z = 0;
-        int Id = -1;
-        int opF = 1; //is op flag for ch
+        int srcCharIndex = 0;
+        int destBlockIndex = 0;
+        int destInBlockCharIndex = 0;
+        int separatorId = -1;
+        int separatorFlag = 1; //is op flag for ch
 
-        while (src[i] != '\n' && src[i] != '\0' && src[i] != '\r') {
-            int dvF = 0;
-            for (int j = 0; j < 56; j++) {
-                char tmptmp[100];
-                memset(tmptmp, 0, 100);
-                for (int zzz = 0; zzz < strlen(divs[j]); zzz++) {
-                    tmptmp[zzz] = src[i + zzz];
+        while (src[srcCharIndex] != '\n' && src[srcCharIndex] != '\0' && src[srcCharIndex] != '\r') {
+            int divisorMeetFlag = 0;
+            for (int separatorListIndex = 0; separatorListIndex < 56; separatorListIndex++) {
+                char stringApplicator[100];
+                memset(stringApplicator, 0, 100);
+                for (int applicatorIndex = 0; applicatorIndex < strlen(divs[separatorListIndex]); applicatorIndex++) {
+                    stringApplicator[applicatorIndex] = src[srcCharIndex + applicatorIndex];
                 }
-                tmptmp[strlen(divs[j])] = 0;
-                if (!strcmp(tmptmp, divs[j])) {
-                    dvF = 1;
-                    Id = j;
+                stringApplicator[strlen(divs[separatorListIndex])] = 0;
+                if (!strcmp(stringApplicator, divs[separatorListIndex])) {
+                    divisorMeetFlag = 1;
+                    separatorId = separatorListIndex;
                     break;
                 }
             }
-            if (!dvF) {
-                tmpStr[k][z++] = src[i++];
-                opF = 0;
+            if (!divisorMeetFlag) {
+                tmpStr[destBlockIndex][destInBlockCharIndex++] = src[srcCharIndex++];
+                separatorFlag = 0;
             } else {
-                z = 0;
-                if (!opF) k++;
+                destInBlockCharIndex = 0;
+                if (!separatorFlag) destBlockIndex++;
 
-                strcpy(tmpStr[k], divs[Id]);
+                strcpy(tmpStr[destBlockIndex], divs[separatorId]);
 
-                ++k;
-                i += (int) strlen(divs[Id]);
-                opF = 1;
+                ++destBlockIndex;
+                srcCharIndex += (int) strlen(divs[separatorId]);
+                separatorFlag = 1;
             }
         }
 
-        int qeq = 0;
-        for (i = 0; i < MAX_ARRAY_SIZE; ++i) {
-            if ((int) strlen(tmpStr[i]) > 0) strcpy(dest[qeq++], tmpStr[i]);
+        int transferingIndex = 0;
+        for (srcCharIndex = 0; srcCharIndex < MAX_ARRAY_SIZE; ++srcCharIndex) {
+            if ((int) strlen(tmpStr[srcCharIndex]) > 0) strcpy(dest[transferingIndex++], tmpStr[srcCharIndex]);
         }
-        for(i = 0; i<qeq; i++) {
-            fprintf(stdout, "%s", dest[i]);
-        }}
+        for (srcCharIndex = 0; srcCharIndex < transferingIndex; srcCharIndex++) {
+            fprintf(stdout, "%s ", dest[srcCharIndex]);
+        }
+    }
 
     return 0;
 }

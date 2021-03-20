@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "parser.h"
+
 #define MAX_STRING_LEN 100
 #define VARIABLES_COUNT 50
 #define FUNCTIONS_COUNT 50
@@ -86,13 +87,13 @@ int main() {
     // TODO: "int a;    // hello world!" -> ["int a;", "// hello world!"]
     char *filename = (char *) malloc(FILENAME_LENGTH * sizeof(char));
     memset(filename, 0, FILENAME_LENGTH);
-    strcpy(filename, "../input.txt");
+    strcpy(filename, "../main.c");
 
     char *divs[56] = {
             ">>=", "<<=",
             "if", "do", "for", "while", "else", "switch",
             "+=", "-=", "*=", "/=", "==", "++", "--", ">=", "<=", ">", "<", "+", "-", "*", "/", "=",
-            "!=","&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<", "!", "?", "&", "|", "^", "~",
+            "!=", "&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<", "!", "?", "&", "|", "^", "~",
             "(", ")", "[", "]", "{", "}", "/*", "*/", "//",
             " ", ".", ",", ";", ":", "\n", "\t"
     };
