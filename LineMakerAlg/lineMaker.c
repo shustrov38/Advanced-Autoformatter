@@ -69,13 +69,27 @@ codeLineStruct *splitStringAlgorithm(codeLineStruct *codeBody, int len, char **o
                 ++i;
             }
 
+            if (doFlag){
+                if (!isCloseFigBr(codeBody->codeLines[codeLineCnt-1][0])){
+                    strcpy(codeBody->codeLines[codeLineCnt][0], "}");
+                    codeLineCnt++;
+                    --figBracketCnt;
+                }
+                codeWordsCnt = 0;
+                while(!isSemicolon(originString[i])){
+                    strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+                    ++i; codeWordsCnt++;
+                }
+                strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+                codeLineCnt++;
+                codeWordsCnt = 0;
+            }
+
             while(figBracketCnt){
                 strcpy(codeBody->codeLines[codeLineCnt][0], "}");
                 codeLineCnt++;
                 --figBracketCnt;
             }
-
-
         }
 
         if (isOpenFigBr(originString[i])){
