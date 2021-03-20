@@ -1,3 +1,4 @@
+//TODO: rework into pointers+no le majique numbers; add debug out;
 #include "parser.h"
 
 #define MAX_ARRAY_SIZE 1000
@@ -11,7 +12,7 @@ int splitSyntax(char *srcFile, char dest[MAX_ARRAY_SIZE][MAX_ARRAY_SIZE], char *
 
     char *src = malloc(MAX_ARRAY_SIZE * sizeof(char));
     while (fgets(src, MAX_ARRAY_SIZE, in)) {
-        fprintf(stdout, "\n%s\n", src);
+        //fprintf(stdout, "\n%s\n", src); add debugger out flag
         char tmpStr[MAX_ARRAY_SIZE][MAX_ARRAY_SIZE];
         for (int i = 0; i < MAX_ARRAY_SIZE; i++) {
             memset(tmpStr[i], 0, MAX_ARRAY_SIZE);
@@ -57,7 +58,7 @@ int splitSyntax(char *srcFile, char dest[MAX_ARRAY_SIZE][MAX_ARRAY_SIZE], char *
             if ((int) strlen(tmpStr[srcCharIndex]) > 0) strcpy(dest[transferingIndex++], tmpStr[srcCharIndex]);
         }
         for (srcCharIndex = 0; srcCharIndex < transferingIndex; srcCharIndex++) {
-            fprintf(stdout, "%s ", dest[srcCharIndex]);
+            //fprintf(stdout, "%s ", dest[srcCharIndex]); add debugger out flag
         }
     }
 
