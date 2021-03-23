@@ -87,18 +87,26 @@ int main() {
     // TODO: "int a;    // hello world!" -> ["int a;", "// hello world!"]
     char *filename = (char *) malloc(FILENAME_LENGTH * sizeof(char));
     memset(filename, 0, FILENAME_LENGTH);
-    strcpy(filename, "../main.c");
+    strcpy(filename, "../parser.c");
 
     char *divs[56] = {
-            ">>=", "<<=",
+            "//", ">>=", "<<=", "/*", "*/",
             "if", "do", "for", "while", "else", "switch",
-            "+=", "-=", "*=", "/=", "==", "++", "--", ">=", "<=", ">", "<", "+", "-", "*", "/", "=",
-            "!=", "&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<", "!", "?", "&", "|", "^", "~",
-            "(", ")", "[", "]", "{", "}", "/*", "*/", "//",
+            "+=", "-=", "*=", "/=", "==", "++", "--", ">=", "<=",
+            "!=", "&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<",
+            ">", "<", "+", "-", "*", "/", "=",
+            "!", "?", "&", "|", "^", "~",
+            "(", ")", "[", "]", "{", "}",
             " ", ".", ",", ";", ":", "\n", "\t"
     };
 
-    char text[1000][1000];
+
+
+
+    char **text = (char **)malloc(10000 * sizeof (char*));
+    for (int i = 0; i < 10000; i++){
+        text[i] = (char *) malloc (25 * sizeof(char));
+    }
 
     int z = splitSyntax(filename, text, divs);
 
