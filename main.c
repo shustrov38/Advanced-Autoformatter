@@ -112,5 +112,9 @@ int main() {
 
     fprintf(stdout,"%d",z);
 
+    for (int i = 0; i < z; i++){
+        fprintf(stdout,"%s.", text[i]);
+    }
+
     return EXIT_SUCCESS;
 }

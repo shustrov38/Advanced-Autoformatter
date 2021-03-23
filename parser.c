@@ -1,3 +1,4 @@
+//q
 //TODO: rework into pointers+no le majique numbers; add debug out;
 #include "parser.h"
 
@@ -40,14 +41,18 @@ int splitSyntax(char *srcFile, char **dest, char *divs[56]) {
                 destInBlockCharIndex = 0;
                 if (!separatorFlag) destBlockIndex++;
 
-                strcpy(dest[destBlockIndex], divs[separatorId]);
+                if (!(!strcmp(divs[separatorId], " ") || !strcmp(divs[separatorId], "\t"))) {
+                    strcpy(dest[destBlockIndex], divs[separatorId]);
 
-                ++destBlockIndex;
+                    ++destBlockIndex;
+                }
                 srcCharIndex += (int) strlen(divs[separatorId]);
                 separatorFlag = 1;
             }
         }
     }
+
+    free(src);
 
     return destBlockIndex; // -> return := block cnt
 }
