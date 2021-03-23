@@ -105,7 +105,8 @@ int main() {
 
     char **text = (char **)malloc(10000 * sizeof (char*));
     for (int i = 0; i < 10000; i++){
-        text[i] = (char *) malloc (25 * sizeof(char));
+        text[i] = (char *) malloc (100 * sizeof(char));
+        memset(text[i],0,100);
     }
 
     int z = splitSyntax(filename, text, divs);

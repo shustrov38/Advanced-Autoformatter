@@ -1,4 +1,4 @@
-//q
+
 //TODO: rework into pointers+no le majique numbers; add debug out;
 #include "parser.h"
 
@@ -13,6 +13,7 @@ int splitSyntax(char *srcFile, char **dest, char *divs[56]) {
 
     int destBlockIndex = 0;
     char *src = malloc(MAX_ARRAY_SIZE * sizeof(char));
+    memset(src,0,MAX_ARRAY_SIZE);
     while (fgets(src, MAX_ARRAY_SIZE, in)) {
         int srcCharIndex = 0;
         int destInBlockCharIndex = 0;
@@ -41,7 +42,7 @@ int splitSyntax(char *srcFile, char **dest, char *divs[56]) {
                 destInBlockCharIndex = 0;
                 if (!separatorFlag) destBlockIndex++;
 
-                if (!(!strcmp(divs[separatorId], " ") || !strcmp(divs[separatorId], "\t"))) {
+                if (!(!strcmp(divs[separatorId], " ") || !strcmp(divs[separatorId], "\t")|| !strcmp(divs[separatorId], "\n"))) { //list of SKIPPABLE DIVISORS
                     strcpy(dest[destBlockIndex], divs[separatorId]);
 
                     ++destBlockIndex;
@@ -54,5 +55,5 @@ int splitSyntax(char *srcFile, char **dest, char *divs[56]) {
 
     free(src);
 
-    return destBlockIndex; // -> return := block cnt
+    return destBlockIndex; /* -> return := block cnt */
 }
