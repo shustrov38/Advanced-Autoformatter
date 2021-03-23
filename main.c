@@ -110,6 +110,7 @@ int main() {
 
     int z = splitSyntax(filename, text, divs);
 
+    fprintf(stdout,"%d",z);
 
     return EXIT_SUCCESS;
 }

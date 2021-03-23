@@ -13,12 +13,6 @@ int splitSyntax(char *srcFile, char **dest, char *divs[56]) {
     int destBlockIndex = 0;
     char *src = malloc(MAX_ARRAY_SIZE * sizeof(char));
     while (fgets(src, MAX_ARRAY_SIZE, in)) {
-        //fprintf(stdout, "\n%s\n", src);
-//        char **tmpStr = (char **) malloc(MAX_ARRAY_SIZE * sizeof(char*));
-//        for (int i = 0; i < MAX_ARRAY_SIZE; i++) {
-//            tmpStr[i] = (char*) malloc(25 * sizeof(char));
-//            memset(tmpStr[i], 0, 25);
-//        }
         int srcCharIndex = 0;
         int destInBlockCharIndex = 0;
         int separatorId = -1;
@@ -52,14 +46,6 @@ int splitSyntax(char *srcFile, char **dest, char *divs[56]) {
                 srcCharIndex += (int) strlen(divs[separatorId]);
                 separatorFlag = 1;
             }
-        }
-
-//        int transferingIndex = 0;
-//        for (srcCharIndex = 0; srcCharIndex < MAX_ARRAY_SIZE; ++srcCharIndex) {
-//            if ((int) strlen(tmpStr[srcCharIndex]) > 0) strcpy(dest[transferingIndex++], tmpStr[srcCharIndex]);
-//        }
-        for (srcCharIndex = 0; srcCharIndex < destBlockIndex; srcCharIndex++) {
-            fprintf(stdout, "%s_", dest[srcCharIndex]);
         }
     }
 
