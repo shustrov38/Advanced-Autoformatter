@@ -1,9 +1,17 @@
 #include "libraries.h"
 #include "parser.h"
+#include "lineMaker.h"
 
 #pragma region FileUtilities
 
+#define MAX_STRING_LEN 20
 #define MAX_FILES 10
+
+typedef struct {
+    char filename[MAX_STRING_LEN];
+    int isHeader;
+    codeLineStruct *code;
+} FileData;
 
 typedef enum {
     Incorrect,
@@ -30,7 +38,6 @@ FileExtension isCorrectFilename(const char *filename) {
 
 #pragma region FunctionUtilities
 
-#define MAX_STRING_LEN 10
 #define FUNCTIONS_COUNT 50
 
 struct functions_t {
@@ -39,14 +46,11 @@ struct functions_t {
     char name[MAX_STRING_LEN][FUNCTIONS_COUNT];
 } Functions;
 
-void collectFunctions(FILE *files[MAX_FILES], unsigned count) {
-    for (int i = 0; i < count; ++i) {
-        fseek(files[i], 0, SEEK_SET);
-
-    }
-}
-
 #pragma endregion FunctionUtilities
+
+//TODO:
+//1) Parser: skip special symbols (\t, space), comment + string, broken CRLF
+//2) LineMaker: includes, enums, defines
 
 int main(const int argc, const char *argv[]) {
     if (argc == 1) {
@@ -54,49 +58,63 @@ int main(const int argc, const char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    FILE *headers[MAX_FILES], *sources[MAX_FILES];
-    unsigned headersCount = 0, sourcesCount = 0;
+    FileData files[MAX_FILES];
+    unsigned filesCount = 0;
 
-    for (int i = 1; i < argc; ++i) {
-        switch (isCorrectFilename(argv[i])) {
-            case Header:
-                headers[headersCount++] = (FILE *) fopen(argv[i], "rw");
-                break;
-            case Source:
-                sources[sourcesCount++] = (FILE *) fopen(argv[i], "rw");
-                break;
-            default:
-                printf("File \"%s\" has incorrect extension.\n", argv[i]);
-                break;
-        }
-        if (headers[headersCount - 1] == NULL || sources[sourcesCount - 1] == NULL) {
-            printf("File \"%s\" doesnt exists\n", argv[i]);
-            return EXIT_FAILURE;
-        }
-    }
-
-    // TODO: format all files
-
-    const char *divs[56] = {
+    const char *divs[51] = {
             "//", ">>=", "<<=", "/*", "*/",
-            "if", "do", "for", "while", "else", "switch",
             "+=", "-=", "*=", "/=", "==", "++", "--", ">=", "<=",
             "!=", "&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<",
             ">", "<", "+", "-", "*", "/", "=",
             "!", "?", "&", "|", "^", "~",
             "(", ")", "[", "]", "{", "}",
-            " ", ".", ",", ";", ":", "\n", "\t"
+            " ", ".", ",", ";", ":", "\n", "\t", "\""
     };
 
-    // TODO: collect all functions from files
-
-    for (int i = 0; i < headersCount; ++i) {
-        fclose(headers[i]);
+    // array to store information from splitter
+    char **code = (char **)malloc(MAX_CODE_LEN * sizeof (char*));
+    for (int j = 0; j < MAX_CODE_LEN; ++j){
+        code[j] = (char *) malloc (MAX_DIVISOR_LEN * sizeof(char));
+        memset(code[j],0,MAX_DIVISOR_LEN);
     }
 
-    for (int i = 0; i < sourcesCount; ++i) {
-        fclose(sources[i]);
-
-        return EXIT_SUCCESS;
+    // loop with file processing (get filename, split by lines)
+    for (int i = 1; i < argc; ++i) {
+        FileExtension ext = isCorrectFilename(argv[i]);
+        if (ext == Incorrect) {
+            printf("File \"%s\" has incorrect extension.\n", argv[i]);
+            return EXIT_FAILURE;
+        }
+        strcpy(files[filesCount].filename, argv[1]);
+        for (int j = 0; j < MAX_CODE_LEN; ++j) {
+            memset(code[j], 0, MAX_DIVISOR_LEN);
+        }
+        int n = splitSyntax(files[filesCount].filename, code, divs);
+        for (int j = 0; j < n; ++j) {
+            printf("%d) [%s]\n", j, code[j]);
+        }
+        printf("\n");
+        files[filesCount].code = createCodeLineStruct();
+        splitLines(files[filesCount].code, n, code);
+        ++filesCount;
     }
+
+    // free unused memory
+    for (int j = 0; j < MAX_CODE_LEN; ++j) {
+        free(code[j]);
+    }
+    free(code);
+
+    // print all files by lines
+    for (int i = 0; i < filesCount; ++i) {
+        printf("%d\n", files[i].code->linesCnt);
+        for (int j = 0; j < files[i].code->linesCnt; ++j) {
+            for (int k = 0; files[i].code->codeLines[j][k]; ++k) {
+                printf("%s ", files[i].code->codeLines[j][k]);
+            }
+            printf("\n");
+        }
+    }
+
+    return EXIT_SUCCESS;
 }
