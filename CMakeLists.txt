@@ -3,4 +3,4 @@ project(Advanced_Autoformatter C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(Advanced_Autoformatter main.c)
+add_executable(Advanced_Autoformatter main.c parser.c parser.h libraries.h)

@@ -1,6 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "libraries.h"
+#include "parser.h"
 
 #pragma region FileUtilities
 
@@ -76,6 +75,19 @@ int main(const int argc, const char *argv[]) {
         }
     }
 
+    // TODO: format all files
+
+    const char *divs[56] = {
+            "//", ">>=", "<<=", "/*", "*/",
+            "if", "do", "for", "while", "else", "switch",
+            "+=", "-=", "*=", "/=", "==", "++", "--", ">=", "<=",
+            "!=", "&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<",
+            ">", "<", "+", "-", "*", "/", "=",
+            "!", "?", "&", "|", "^", "~",
+            "(", ")", "[", "]", "{", "}",
+            " ", ".", ",", ";", ":", "\n", "\t"
+    };
+
     // TODO: collect all functions from files
 
     for (int i = 0; i < headersCount; ++i) {
@@ -84,7 +96,7 @@ int main(const int argc, const char *argv[]) {
 
     for (int i = 0; i < sourcesCount; ++i) {
         fclose(sources[i]);
-    }
 
-    return EXIT_SUCCESS;
+        return EXIT_SUCCESS;
+    }
 }
