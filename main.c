@@ -2,87 +2,89 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_STRING_LEN 10
-#define VARIABLES_COUNT 50
-#define FUNCTIONS_COUNT 50
-#define STRUCTS_COUNT 50
-#define MAX_ARRAY_LEN 50
+#pragma region FileUtilities
+
+#define MAX_FILES 10
 
 typedef enum {
-    Int,
-    Double,
-    Char
-} VarType;
+    Incorrect,
+    Header,
+    Source
+} FileExtension;
 
-typedef struct {
-    int size;
-    char *name[MAX_STRING_LEN];
-} CodeStructs;
+FileExtension isCorrectFilename(const char *filename) {
+    char *rightDotSymbol = strrchr(filename, '.');
+    if (rightDotSymbol == NULL) {
+        return Incorrect;
+    }
+    ++rightDotSymbol;
+    if (!strcmp(rightDotSymbol, "h")) {
+        return Header;
+    }
+    if (!strcmp(rightDotSymbol, "c")) {
+        return Source;
+    }
+    return Incorrect;
+}
 
-typedef struct {
-    int size;
-    int inited[STRUCTS_COUNT];
-    char name[MAX_STRING_LEN][STRUCTS_COUNT];
-    int fieldCnt[STRUCTS_COUNT];
-} Structs;
+#pragma endregion FileUtilities
 
-typedef struct {
+#pragma region FunctionUtilities
+
+#define MAX_STRING_LEN 10
+#define FUNCTIONS_COUNT 50
+
+struct functions_t {
     int size;
     int used[FUNCTIONS_COUNT];
     char name[MAX_STRING_LEN][FUNCTIONS_COUNT];
 } Functions;
 
-typedef struct {
-    int size;
-    int inited[VARIABLES_COUNT];
-    char name[MAX_STRING_LEN][VARIABLES_COUNT];
-    VarType type[VARIABLES_COUNT];
-    int value_int[VARIABLES_COUNT];
-    double value_double[VARIABLES_COUNT];
-    char value_char[VARIABLES_COUNT];
-} Variables;
+void collectFunctions(FILE *files[MAX_FILES], unsigned count) {
+    for (int i = 0; i < count; ++i) {
+        fseek(files[i], 0, SEEK_SET);
 
-typedef struct segment_t {
-    int isCommented;
-    int isBlock;
-    char *name;
-    char code[MAX_STRING_LEN][MAX_ARRAY_LEN];
-    Structs structs;
-    Variables variables;
-    struct segment_t *subBlock;
-} Segment;
-
-int haveFunction(Functions *functions, char *str) {
-    int n = functions->size;
-    for (int i = 0; i < n; ++i) {
-        if (!strcmp(functions->name[i], str)) {
-            return 1;
-        }
     }
-    return 0;
 }
 
-int isBlock(Functions *functions, CodeStructs *codeStructs, char *str) {
-    int n = codeStructs->size;
-    for (int i = 0; i < n; ++i) {
-        if (!strcmp(codeStructs->name[i], str)) {
-            return 1;
+#pragma endregion FunctionUtilities
+
+int main(const int argc, const char *argv[]) {
+    if (argc == 1) {
+        printf("No filenames specified.\n");
+        return EXIT_FAILURE;
+    }
+
+    FILE *headers[MAX_FILES], *sources[MAX_FILES];
+    unsigned headersCount = 0, sourcesCount = 0;
+
+    for (int i = 1; i < argc; ++i) {
+        switch (isCorrectFilename(argv[i])) {
+            case Header:
+                headers[headersCount++] = (FILE *) fopen(argv[i], "rw");
+                break;
+            case Source:
+                sources[sourcesCount++] = (FILE *) fopen(argv[i], "rw");
+                break;
+            default:
+                printf("File \"%s\" has incorrect extension.\n", argv[i]);
+                break;
+        }
+        if (headers[headersCount - 1] == NULL || sources[sourcesCount - 1] == NULL) {
+            printf("File \"%s\" doesnt exists\n", argv[i]);
+            return EXIT_FAILURE;
         }
     }
-    return haveFunction(functions, str);
-}
 
-// TODO: generate tree function based on string array
-//void genCodeTree(Segment *root, ) {
-//
-//}
+    // TODO: collect all functions from files
 
-int main() {
-    CodeStructs codeStructs = {6, {"if", "do", "for", "while", "else", "switch"}};
+    for (int i = 0; i < headersCount; ++i) {
+        fclose(headers[i]);
+    }
 
-    // dumpFunctions()
-
-    // TODO: "int a;    // hello world!" -> ["int a;", "// hello world!"]
+    for (int i = 0; i < sourcesCount; ++i) {
+        fclose(sources[i]);
+    }
 
     return EXIT_SUCCESS;
 }
