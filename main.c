@@ -61,8 +61,8 @@ int main(const int argc, const char *argv[]) {
     FileData files[MAX_FILES];
     unsigned filesCount = 0;
 
-    const char *divs[51] = {
-            "//", ">>=", "<<=", "/*", "*/",
+    const char *divs[52] = {
+            "//", ">>=", "<<=", "/*", "*/","'",
             "+=", "-=", "*=", "/=", "==", "++", "--", ">=", "<=",
             "!=", "&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<",
             ">", "<", "+", "-", "*", "/", "=",
@@ -90,6 +90,7 @@ int main(const int argc, const char *argv[]) {
             memset(code[j], 0, MAX_DIVISOR_LEN);
         }
         int n = splitSyntax(files[filesCount].filename, code, divs);
+        printf("%d",n);
         for (int j = 0; j < n; ++j) {
             printf("%d) [%s]\n", j, code[j]);
         }

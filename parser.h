@@ -12,7 +12,7 @@ typedef struct {
 
 codeSyntax *createSyntax();
 
-int splitSyntax(char *srcFile, char **dest, const char *divs[56]);
+int splitSyntax(char *srcFile, char **dest, const char *divs[52]);
 
 void destroySyntax(codeSyntax *cs);
 
