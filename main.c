@@ -91,7 +91,7 @@ int main(const int argc, const char *argv[]) {
         }
         int n = splitSyntax(files[filesCount].filename, code, divs);
         printf("%d",n);
-        for (int j = 0; j < n; ++j) {
+        for (int j = 0; j <= n; ++j) {
             printf("%d) [%s]\n", j, code[j]);
         }
         printf("\n");

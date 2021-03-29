@@ -154,6 +154,14 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             codeLineCnt++;
             continue;
         }
+
+        if (!strcmp(originString[i], "#define")){
+            strcpy(codeBody->codeLines[codeLineCnt][0], originString[i]); ++i;
+            strcpy(codeBody->codeLines[codeLineCnt][1], originString[i]); ++i;
+            strcpy(codeBody->codeLines[codeLineCnt][2], originString[i]); ++i;
+            codeLineCnt++;
+        }
+
         strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
         codeWordsCnt++;
     }
