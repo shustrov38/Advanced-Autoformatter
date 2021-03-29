@@ -31,7 +31,7 @@ int isSemicolon(char *string){
 }
 
 int isStruct(char *string){
-    if (!strcmp(string, "struct")){
+    if (!strcmp(string, "struct") || !strcmp(string, "enum")){
         return 1;
     } else return 0;
 }

@@ -14,6 +14,7 @@ codeLineStruct *createCodeLineStruct() {
         }
     }
     codeBody->linesCnt = 0;
+
     return codeBody;
 }
 
@@ -75,7 +76,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], "\0");
             codeLineCnt++;
             codeWordsCnt = 0;
-            ++i;
+            continue;
         }
 
         if (isCloseFigBr(originString[i])) {
@@ -93,11 +94,16 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                 codeWordsCnt = 0;
                 strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
                 codeWordsCnt++;
+                if (isSemicolon(originString[i+1])){
+                    strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i+1]);
+                    codeLineCnt++;
+                    codeWordsCnt = 0;
+                }
                 strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], "\0");
                 codeLineCnt++;
                 codeWordsCnt = 0;
             }
-            ++i;
+            continue;
         }
 
         if (isStruct(originString[i])) {
@@ -148,23 +154,20 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             codeLineCnt++;
             continue;
         }
-
         strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
         codeWordsCnt++;
     }
-//    printf("%d\n", codeLineCnt);
+
     codeBody->linesCnt = codeLineCnt;
 
-#ifdef __LINE_MAKER_DEBUG__
-    for (int j = 0; j < codeLineCnt; ++j) {
-        int i = 0;
-        while (strcmp(codeBody->codeLines[j][i], "\0") != 0) {
-            printf("%s ", codeBody->codeLines[j][i]);
-            ++i;
-        }
-        printf("\n");
-    }
-#endif
+//    for (int j = 0; j < codeLineCnt; ++j) {
+//        int i = 0;
+//        while (strcmp(codeBody->codeLines[j][i], "\0") != 0) {
+//            printf("%s ", codeBody->codeLines[j][i]);
+//            ++i;
+//        }
+//        printf("\n");
+//    }
 }
 
 
