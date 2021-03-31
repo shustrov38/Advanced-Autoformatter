@@ -10,6 +10,8 @@ typedef struct {
 
 codeLineStruct *createCodeLineStruct();
 
+void printCode(codeLineStruct *code);
+
 void splitLines(codeLineStruct *codeBody, int len, char **originString);
 
 #endif //ADVANCED_AUTOFORMATTER_LINEMAKER_H

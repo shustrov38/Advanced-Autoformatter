@@ -18,6 +18,15 @@ codeLineStruct *createCodeLineStruct() {
     return codeBody;
 }
 
+void printCode(codeLineStruct *code) {
+    for (int j = 0; j < code->linesCnt; ++j) {
+        for (int k = 0; code->codeLines[j][k]; ++k) {
+            printf("%s ", code->codeLines[j][k]);
+        }
+        printf("\n");
+    }
+}
+
 void splitLines(codeLineStruct *codeBody, int len, char **originString) {
     int codeLineCnt = 0;
     int codeWordsCnt = 0;
@@ -94,8 +103,8 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                 codeWordsCnt = 0;
                 strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
                 codeWordsCnt++;
-                if (isSemicolon(originString[i+1])){
-                    strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i+1]);
+                if (isSemicolon(originString[i + 1])) {
+                    strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i + 1]);
                     codeLineCnt++;
                     codeWordsCnt = 0;
                 }
@@ -155,15 +164,18 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             continue;
         }
 
-        if (!strcmp(originString[i], "#define")){
-            strcpy(codeBody->codeLines[codeLineCnt][0], originString[i]); ++i;
-            strcpy(codeBody->codeLines[codeLineCnt][1], originString[i]); ++i;
-            strcpy(codeBody->codeLines[codeLineCnt][2], originString[i]); ++i;
+        if (!strcmp(originString[i], "#define")) {
+            strcpy(codeBody->codeLines[codeLineCnt][0], originString[i]);
+            ++i;
+            strcpy(codeBody->codeLines[codeLineCnt][1], originString[i]);
+            ++i;
+            strcpy(codeBody->codeLines[codeLineCnt][2], originString[i]);
+            ++i;
             strcpy(codeBody->codeLines[codeLineCnt][3], "\0");
             codeLineCnt++;
         }
 
-        if (!strcmp(originString[i], "#include")){
+        if (!strcmp(originString[i], "#include")) {
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
             codeWordsCnt++;
             ++i;
@@ -189,14 +201,9 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
 
     codeBody->linesCnt = codeLineCnt;
 
-//    for (int j = 0; j < codeLineCnt; ++j) {
-//        int i = 0;
-//        while (strcmp(codeBody->codeLines[j][i], "\0") != 0) {
-//            printf("%s ", codeBody->codeLines[j][i]);
-//            ++i;
-//        }
-//        printf("\n");
-//    }
+#ifdef __LINE_MAKER_DEBUG__
+    printCode(codeBody);
+#endif
 }
 
 

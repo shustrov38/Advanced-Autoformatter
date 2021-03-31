@@ -50,12 +50,14 @@ int splitSyntax(char *srcFile, char **dest, const char *divs[52]) {
         int qF = strQF + chrQF + strCF + blkCF;
         //update quotation logics
         if (separatorId > -1) {
-            if (!strcmp(divs[separatorId], "'")){
-                if(chrQF)chrQF = 0;
-                else if(!chrQF)chrQF = 1;}
-            if (!strcmp(divs[separatorId], "\"")){
-                if(strQF)strQF = 0;
-                else if(!strQF)strQF = 1;}
+            if (!strcmp(divs[separatorId], "'")) {
+                if (chrQF)chrQF = 0;
+                else if (!chrQF)chrQF = 1;
+            }
+            if (!strcmp(divs[separatorId], "\"")) {
+                if (strQF)strQF = 0;
+                else if (!strQF)strQF = 1;
+            }
             if (!strcmp(divs[separatorId], "//")) strCF = 1;
             if (!strcmp(divs[separatorId], "\n")) strCF = 0;
             if (!strcmp(divs[separatorId], "/*")) blkCF = 1;
@@ -69,7 +71,8 @@ int splitSyntax(char *srcFile, char **dest, const char *divs[52]) {
             destInBlockCharIndex = 0;
             if (!separatorFlag) destBlockIndex++;
 
-            if (qF || !(!strcmp(divs[separatorId], " ") || !strcmp(divs[separatorId], "\t"))) { //list of SKIPPABLE DIVISORS
+            if (qF ||
+                !(!strcmp(divs[separatorId], " ") || !strcmp(divs[separatorId], "\t"))) { //list of SKIPPABLE DIVISORS
                 strcpy(dest[destBlockIndex], divs[separatorId]);
 
                 ++destBlockIndex;
@@ -82,6 +85,5 @@ int splitSyntax(char *srcFile, char **dest, const char *divs[52]) {
 
     free(src);
 
-    return
-            destBlockIndex; /* -> return := block cnt */
+    return destBlockIndex + 1; /* -> return := block cnt */
 }
