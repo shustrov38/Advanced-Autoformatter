@@ -190,7 +190,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
             codeWordsCnt++;
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], "\0");
-            codeWordsCnt++;
+            codeWordsCnt = 0;
             codeLineCnt++;
             continue;
         }

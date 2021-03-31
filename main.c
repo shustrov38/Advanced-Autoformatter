@@ -2,6 +2,10 @@
 #include "parser.h"
 #include "lineMaker.h"
 
+#include "calculator/Operations/ops.h"
+#include "calculator/RPN/RPN.h"
+#include "calculator/Stack/stack.h"
+
 #define MAX_STRING_LEN 20
 
 #pragma region Structures
@@ -128,10 +132,10 @@ int main(const int argc, const char *argv[]) {
             memset(code[j], 0, MAX_DIVISOR_LEN);
         }
         int n = splitSyntax(files[filesCount].filename, code, divs);
-        printf("%d\n", n);
-        for (int j = 0; j < n; ++j) {
-            printf("%d) [%s]\n", j, code[j]);
-        }
+//        printf("%d\n", n);
+//        for (int j = 0; j < n; ++j) {
+//            printf("%d) [%s]\n", j, code[j]);
+//        }
         printf("\n");
         files[filesCount].code = createCodeLineStruct();
         splitLines(files[filesCount].code, n, code);
@@ -152,8 +156,15 @@ int main(const int argc, const char *argv[]) {
         printf("------------------------------------------------------\n");
     }
 
-    // load variables, structs and functions
-    
+    // TODO: remake OpTree + create new functional with calculator
+
+    rpnProcessor *outStack = rpnProcInit();
+
+    int size = 0;
+    for (; files[0].code->codeLines[0][size]; ++size);
+
+    Stack *stack = rpnFunc(outStack, files[0].code->codeLines[0], size);
+    stPrint(stack);
 
     return EXIT_SUCCESS;
 }

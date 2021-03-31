@@ -3,7 +3,7 @@
 OpID getOpID(char *op) {
     // extra options
     if (!strcmp(op, "="))
-        return PLS;
+        return EQL;
 
     if (!strcmp(op, "("))
         return OPB;
@@ -18,21 +18,6 @@ OpID getOpID(char *op) {
         return NUM;
 
     // arithmetic operations
-    if (!strcmp(op, "--"))
-        return UMNS;
-
-    if (!strcmp(op, "~"))
-        return FLIP;
-
-    if (!strcmp(op, "!"))
-        return FACT;
-
-    if (!strcmp(op, "+"))
-        return PLS;
-
-    if (!strcmp(op, "-"))
-        return MNS;
-
     if (!strcmp(op, "*"))
         return MUL;
 
@@ -42,17 +27,47 @@ OpID getOpID(char *op) {
     if (!strcmp(op, "%"))
         return MOD;
 
+    if (!strcmp(op, "^^"))
+        return LXOR;
+
+    if (!strcmp(op, "&&"))
+        return LAND;
+
+    if (!strcmp(op, "||"))
+        return LOR;
+
     if (!strcmp(op, "^"))
-        return PWR;
+        return BXOR;
 
     if (!strcmp(op, "&"))
-        return AND;
+        return BAND;
 
     if (!strcmp(op, "|"))
-        return OR;
+        return BOR;
 
-    if (!strcmp(op, "@"))
-        return XOR;
+    if (!strcmp(op, "~"))
+        return FLIP;
+
+    if (!strcmp(op, "<<"))
+        return SHL;
+
+    if (!strcmp(op, ">>"))
+        return SHR;
+
+    if (!strcmp(op, "<"))
+        return CMPL;
+
+    if (!strcmp(op, "<="))
+        return CMPLE;
+
+    if (!strcmp(op, ">"))
+        return CMPG;
+
+    if (!strcmp(op, ">="))
+        return CMPGE;
+
+    if (!strcmp(op, "=="))
+        return EQLS;
 
     // functions
     if (!strcmp(op, "sin"))
@@ -67,9 +82,6 @@ OpID getOpID(char *op) {
     if (!strcmp(op, "ctg"))
         return CTG;
 
-    if (!strcmp(op, "radians"))
-        return RAD;
-
     if (!strcmp(op, "floor"))
         return FLR;
 
@@ -78,9 +90,6 @@ OpID getOpID(char *op) {
 
     if (!strcmp(op, "log"))
         return LOG;
-
-    if (!strcmp(op, "ln"))
-        return LN;
 
     if (!strcmp(op, "sqrt"))
         return SQRT;
@@ -94,81 +103,100 @@ OpID getOpID(char *op) {
     if (!strcmp(op, "exp"))
         return EXP;
 
-    if (!strcmp(op, "real"))
-        return REAL;
-
-    if (!strcmp(op, "imag"))
-        return IMAG;
-
-    if (!strcmp(op, "mag"))
-        return MAG;
-
-    if (!strcmp(op, "phase"))
-        return PHASE;
-
-    if (!strcmp(op, "min"))
-        return MIN;
-
-    if (!strcmp(op, "max"))
-        return MAX;
-
-    if (!strcmp(op, "rand"))
-        return RND;
-
-    // constants
-    if (!strcmp(op, "pi"))
-        return PI;
-
-    if (!strcmp(op, "e"))
-        return EULER;
-
-    if (!strcmp(op, "j"))
-        return J;
-
     // standard variable
     return VAR;
 }
 
+OpID *getLineOfIDs(char **code, int size) {
+    OpID *res = (OpID *) malloc(size * sizeof(OpID));
+
+    for (int i = 0; i < size; ++i) {
+        if (!strcmp(code[i], "-")) {
+            if (i == 0 || res[i - 1] == OPB) {
+                res[i] = UMNS;
+            } else {
+                res[i] = MNS;
+            }
+        }
+
+        else if (!strcmp(code[i], "--")) {
+            if (i + 1 != size && (getOpID(code[i+1]) == VAR || getOpID(code[i+1]) == OPB)) {
+                res[i] = PREF_DEC;
+            } else {
+                res[i] = POST_DEC;
+            }
+        }
+
+        else if (!strcmp(code[i], "+")) {
+            if (i == 0 || res[i - 1] == OPB) {
+                res[i] = UPLS;
+            } else {
+                res[i] = PLS;
+            }
+        }
+
+        else if (!strcmp(code[i], "++")) {
+            if (i + 1 != size && (getOpID(code[i+1]) == VAR || getOpID(code[i+1]) == OPB)) {
+                res[i] = PREF_INC;
+            } else {
+                res[i] = POST_INC;
+            }
+        }
+
+        else {
+            res[i] = getOpID(code[i]);
+        }
+    }
+
+    return res;
+}
+
 Priority getOpPriority(OpID id) {
     switch (id) {
+        case POST_INC:
+        case POST_DEC:
+        case SHR:
+        case SHL:
+        case EQLS:
+            return POSTFIX;
+        case CMPL:
+        case CMPLE:
+        case CMPG:
+        case CMPGE:
+            return COMPARE;
         case PLS:
         case MNS:
-        case OR:
-        case XOR:
+        case BOR:
+        case BXOR:
+        case LOR:
+        case LXOR:
             return SUM;
         case MUL:
         case DIV:
         case MOD:
-        case AND:
+        case BAND:
+        case LAND:
             return PROD;
         case SIN:
         case COS:
         case TG:
         case CTG:
-        case RAD:
         case FLR:
         case CEIL:
         case LOG:
-        case LN:
         case SQRT:
         case POW:
         case ABS:
         case EXP:
-        case REAL:
-        case IMAG:
-        case MAG:
-        case PHASE:
-        case MIN:
-        case MAX:
-        case RND:
             return FUNC;
         case PWR:
             return POWER;
         case UMNS:
+        case UPLS:
         case FLIP:
-            return UNARY;
-        case FACT:
-            return FACTORIAL;
+        case PREF_INC:
+        case PREF_DEC:
+            return PREFIX;
         default:
             return NONE;
     }
