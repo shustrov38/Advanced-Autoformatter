@@ -100,7 +100,7 @@ int main(const int argc, const char *argv[]) {
     unsigned filesCount = 0;
 
     const char *divs[52] = {
-            "//", ">>=", "<<=", "/*", "*/", "'",
+            "//", ">>=", "<<=", "/*", "*/", "\'",
             "+=", "-=", "*=", "/=", "==", "++", "--", ">=", "<=",
             "!=", "&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<",
             ">", "<", "+", "-", "*", "/", "=",
@@ -128,11 +128,11 @@ int main(const int argc, const char *argv[]) {
             memset(code[j], 0, MAX_DIVISOR_LEN);
         }
         int n = splitSyntax(files[filesCount].filename, code, divs);
-//        printf("%d\n", n);
-//        for (int j = 0; j < n; ++j) {
-//            printf("%d) [%s]\n", j, code[j]);
-//        }
-//        printf("\n");
+        printf("%d\n", n);
+        for (int j = 0; j < n; ++j) {
+            printf("%d) [%s]\n", j, code[j]);
+        }
+        printf("\n");
         files[filesCount].code = createCodeLineStruct();
         splitLines(files[filesCount].code, n, code);
         ++filesCount;

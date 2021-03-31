@@ -1,4 +1,3 @@
-//TODO: rework into pointers+no le majique numbers; add debug out;
 #include "parser.h"
 
 int splitSyntax(char *srcFile, char **dest, const char *divs[52]) {
@@ -51,12 +50,10 @@ int splitSyntax(char *srcFile, char **dest, const char *divs[52]) {
         //update quotation logics
         if (separatorId > -1) {
             if (!strcmp(divs[separatorId], "'")) {
-                if (chrQF)chrQF = 0;
-                else if (!chrQF)chrQF = 1;
+                chrQF = (chrQF ^ 1) & 1;
             }
             if (!strcmp(divs[separatorId], "\"")) {
-                if (strQF)strQF = 0;
-                else if (!strQF)strQF = 1;
+                strQF = (strQF ^ 1) & 1;
             }
             if (!strcmp(divs[separatorId], "//")) strCF = 1;
             if (!strcmp(divs[separatorId], "\n")) strCF = 0;
@@ -72,7 +69,10 @@ int splitSyntax(char *srcFile, char **dest, const char *divs[52]) {
             if (!separatorFlag) destBlockIndex++;
 
             if (qF ||
-                !(!strcmp(divs[separatorId], " ") || !strcmp(divs[separatorId], "\t"))) { //list of SKIPPABLE DIVISORS
+                !(!strcmp(divs[separatorId], " ") ||
+                  !strcmp(divs[separatorId], "\t") ||
+                  !strcmp(divs[separatorId], "\n") ||
+                  !strcmp(divs[separatorId], "\0"))) { //list of SKIPPABLE DIVISORS
                 strcpy(dest[destBlockIndex], divs[separatorId]);
 
                 ++destBlockIndex;
