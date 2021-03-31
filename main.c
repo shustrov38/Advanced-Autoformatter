@@ -96,7 +96,7 @@ int main(const int argc, const char *argv[]) {
         }
         printf("\n");
         files[filesCount].code = createCodeLineStruct();
-        splitLines(files[filesCount].code, n, code);
+        splitLines(files[filesCount].code, n+1, code);
         ++filesCount;
     }
 
