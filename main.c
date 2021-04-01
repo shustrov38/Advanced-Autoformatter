@@ -2,9 +2,10 @@
 #include "parser.h"
 #include "lineMaker.h"
 
-#include "calculator/Operations/ops.h"
-#include "calculator/RPN/RPN.h"
-#include "calculator/Stack/stack.h"
+#include "Calculator/Operations/ops.h"
+#include "Calculator/RPN/RPN.h"
+#include "Calculator/Stack/stack.h"
+#include "Calculator/OpTree/tree.h"
 
 #define MAX_STRING_LEN 20
 
@@ -156,15 +157,20 @@ int main(const int argc, const char *argv[]) {
         printf("------------------------------------------------------\n");
     }
 
-    // TODO: remake OpTree + create new functional with calculator
-
     rpnProcessor *outStack = rpnProcInit();
 
     int size = 0;
     for (; files[0].code->codeLines[0][size]; ++size);
 
     Stack *stack = rpnFunc(outStack, files[0].code->codeLines[0], size);
-    stPrint(stack);
+
+    Node *root = nodeInit();
+    opTreeGen(root, stack);
+
+    double complex ans = opTreeCalc(root, NULL, 0, 0);
+    printf("result = ");
+    printNum(ans);
+    printf("\n");
 
     return EXIT_SUCCESS;
 }

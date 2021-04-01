@@ -77,14 +77,24 @@ double complex fixNegativeZero(double complex a) {
     return a;
 }
 
-double complex idToFunction(char *val, Expression *e, int ind, int n, double complex a, double complex b) {
-    switch (getOpID(val)) {
+double complex idToFunction(StData *data, Expression *e, int ind, int n, double complex a, double complex b) {
+    switch (data->data_id) {
+        case POST_DEC:
+            return _post_dec(b, &e[ind]);
+        case POST_INC:
+            return _post_inc(b, &e[ind]);
+        case PREF_DEC:
+            return _pref_dec(b, &e[ind]);
+        case PREF_INC:
+            return _pref_inc(b, &e[ind]);
         case UMNS:
             return _umns(b, &e[ind]);
+        case UPLS:
+            return _upls(b, &e[ind]);
         case FLIP:
             return _flip(b, &e[ind]);
-        case FACT:
-            return _fact(b, &e[ind]);
+        case LNOT:
+            return _lnot(b, &e[ind]);
         case PLS:
             return _sum(a, b, &e[ind]);
         case MNS:
@@ -95,14 +105,30 @@ double complex idToFunction(char *val, Expression *e, int ind, int n, double com
             return _div(a, b, &e[ind]);
         case MOD:
             return _mod(a, b, &e[ind]);
-        case PWR:
-            return _pwr(a, b, &e[ind]);
-        case AND:
-            return _and(a, b, &e[ind]);
-        case OR:
-            return _or(a, b, &e[ind]);
-        case XOR:
-            return _xor(a, b, &e[ind]);
+        case BAND:
+            return _band(a, b, &e[ind]);
+        case BOR:
+            return _bor(a, b, &e[ind]);
+        case BXOR:
+            return _bxor(a, b, &e[ind]);
+        case LAND:
+            return _land(a, b, &e[ind]);
+        case LOR:
+            return _lor(a, b, &e[ind]);
+        case SHL:
+            return _shl(a, b, &e[ind]);
+        case SHR:
+            return _shr(a, b, &e[ind]);
+        case CMPL:
+            return _cmpl(a, b, &e[ind]);
+        case CMPLE:
+            return _cmple(a, b, &e[ind]);
+        case CMPG:
+            return _cmpg(a, b, &e[ind]);
+        case CMPGE:
+            return _cmpge(a, b, &e[ind]);
+        case EQLS:
+            return _eqls(a, b, &e[ind]);
         case SIN:
             return _sin(b, &e[ind]);
         case COS:
@@ -111,14 +137,10 @@ double complex idToFunction(char *val, Expression *e, int ind, int n, double com
             return _tg(b, &e[ind]);
         case CTG:
             return _ctg(b, &e[ind]);
-        case RAD:
-            return _rad(b, &e[ind]);
         case FLR:
             return _floor(b, &e[ind]);
         case CEIL:
             return _ceil(b, &e[ind]);
-        case LN:
-            return _ln(b, &e[ind]);
         case LOG:
             return _log(b, &e[ind]);
         case SQRT:
@@ -127,37 +149,17 @@ double complex idToFunction(char *val, Expression *e, int ind, int n, double com
             return _abs(b, &e[ind]);
         case EXP:
             return _exp(b, &e[ind]);
-        case REAL:
-            return _real(b, &e[ind]);
-        case IMAG:
-            return _imag(b, &e[ind]);
-        case MAG:
-            return _mag(b, &e[ind]);
-        case PHASE:
-            return _phase(b, &e[ind]);
         case POW:
             return _pow(a, b, &e[ind]);
-        case MAX:
-            return _max(a, b, &e[ind]);
-        case MIN:
-            return _min(a, b, &e[ind]);
-        case RND:
-            return _rand(a, b, &e[ind]);
-        case PI:
-            return _pi();
-        case EULER:
-            return _euler();
-        case J:
-            return _j();
         case VAR:
             for (int i = 0; i < n; ++i) {
                 if (!strlen(e[i].varName)) continue;
-                if (!strcmp(val, e[i].varName)) {
+                if (!strcmp(data->data_str, e[i].varName)) {
                     return e[i].value;
                 }
             }
         default:
-            return toComplex(val);
+            return toComplex(data->data_str);
     }
 }
 
@@ -207,8 +209,32 @@ void numberException(double complex a, double complex b, Expression *e, char *sy
     }
 }
 
+double complex _post_dec(double complex a, Expression *e) {
+    numberException(a, 0, e, "--", COMPLEX_AND_DOUBLE, 0, 1);
+    return creal(a) - 1;
+}
+
+double complex _post_inc(double complex a, Expression *e) {
+    numberException(a, 0, e, "++", COMPLEX_AND_DOUBLE, 0, 1);
+    return creal(a) + 1;
+}
+
+double complex _pref_dec(double complex a, Expression *e) {
+    numberException(a, 0, e, "--", COMPLEX_AND_DOUBLE, 0, 1);
+    return creal(a) - 1;
+}
+
+double complex _pref_inc(double complex a, Expression *e) {
+    numberException(a, 0, e, "++", COMPLEX_AND_DOUBLE, 0, 1);
+    return creal(a) + 1;
+}
+
 double complex _umns(double complex a, Expression *e) {
     return -a;
+}
+
+double complex _upls(double complex a, Expression *e) {
+    return a;
 }
 
 double complex _flip(double complex a, Expression *e) {
@@ -222,18 +248,6 @@ double complex _flip(double complex a, Expression *e) {
 
         return (~n) & ((1 << p) - 1);
     }
-}
-
-double complex _fact(double complex a, Expression *e) {
-    numberException(a, 0, e, "!", COMPLEX_AND_DOUBLE, 0, 1);
-    if ((int) a < 0) {
-        throwException("Operation '!' is not defined for negative numbers.", e);
-    }
-    double complex res = 1;
-    for (int i = 2; i <= (int) a; ++i) {
-        res *= i;
-    }
-    return res;
 }
 
 double complex _sum(double complex a, double complex b, Expression *e) {
@@ -260,27 +274,69 @@ double complex _mod(double complex a, double complex b, Expression *e) {
     return (int) a % (int) b;
 }
 
-double complex _pwr(double complex a, double complex b, Expression *e) {
-    numberException(a, b, e, "^", COMPLEX, 0, 2);
-    if (EQR(a, 0) && creal(b) < 0) {
-        throwException("Operation '^' is not defined for negative powers of zero.", e);
-    }
-    return pow(a, b);
-}
-
-double complex _and(double complex a, double complex b, Expression *e) {
+double complex _band(double complex a, double complex b, Expression *e) {
     numberException(a, b, e, "&", COMPLEX_AND_DOUBLE, 0, 2);
     return (int) a & (int) b;
 }
 
-double complex _or(double complex a, double complex b, Expression *e) {
+double complex _bor(double complex a, double complex b, Expression *e) {
     numberException(a, b, e, "|", COMPLEX_AND_DOUBLE, 0, 2);
     return (int) a | (int) b;
 }
 
-double complex _xor(double complex a, double complex b, Expression *e) {
-    numberException(a, b, e, "@", COMPLEX_AND_DOUBLE, 0, 2);
+double complex _bxor(double complex a, double complex b, Expression *e) {
+    numberException(a, b, e, "^", COMPLEX_AND_DOUBLE, 0, 2);
     return (int) a ^ (int) b;
+}
+
+double complex _land(double complex a, double complex b, Expression *e) {
+    numberException(a, b, e, "&&", COMPLEX_AND_DOUBLE, 0, 2);
+    return (int) a && (int) b;
+}
+
+double complex _lor(double complex a, double complex b, Expression *e) {
+    numberException(a, b, e, "||", COMPLEX_AND_DOUBLE, 0, 2);
+    return (int) a || (int) b;
+}
+
+double complex _lnot(double complex a, Expression *e) {
+    numberException(a, 0, e, "!", COMPLEX_AND_DOUBLE, 0, 1);
+    return !(int) a;
+}
+
+double complex _shl(double complex a, double complex b, Expression *e) {
+    numberException(a, b, e, "<<", COMPLEX_AND_DOUBLE, 0, 2);
+    return (int) a << (int) b;
+}
+
+double complex _shr(double complex a, double complex b, Expression *e) {
+    numberException(a, b, e, ">>", COMPLEX_AND_DOUBLE, 0, 2);
+    return (int) a >> (int) b;
+}
+
+double complex _cmpl(double complex a, double complex b, Expression *e) {
+    numberException(a, b, e, "<", COMPLEX, 0, 2);
+    return creal(a) < creal(b);
+}
+
+double complex _cmple(double complex a, double complex b, Expression *e) {
+    numberException(a, b, e, "<=", COMPLEX, 0, 2);
+    return creal(a) >= creal(b);
+}
+
+double complex _cmpg(double complex a, double complex b, Expression *e) {
+    numberException(a, b, e, ">", COMPLEX, 0, 2);
+    return creal(a) > creal(b);
+}
+
+double complex _cmpge(double complex a, double complex b, Expression *e) {
+    numberException(a, b, e, ">=", COMPLEX, 0, 2);
+    return creal(a) >= creal(b);
+}
+
+double complex _eqls(double complex a, double complex b, Expression *e) {
+    numberException(a, b, e, "==", COMPLEX, 0, 2);
+    return creal(a) == creal(b);
 }
 
 double complex _sin(double complex a, Expression *e) {
@@ -305,11 +361,6 @@ double complex _ctg(double complex a, Expression *e) {
     return _cos(a, e) / _sin(a, e);
 }
 
-double complex _rad(double complex a, Expression *e) {
-    numberException(a, 0, e, "rad()", COMPLEX, 1, 1);
-    return a / 180 * _pi();
-}
-
 double complex _floor(double complex a, Expression *e) {
     numberException(a, 0, e, "floor()", COMPLEX, 1, 1);
     return floor(a);
@@ -318,13 +369,6 @@ double complex _floor(double complex a, Expression *e) {
 double complex _ceil(double complex a, Expression *e) {
     numberException(a, 0, e, "ceil()", COMPLEX, 1, 1);
     return ceil(a);
-}
-
-double complex _ln(double complex a, Expression *e) {
-    if (EQI(a, 0) && creal(a) < 0) {
-        throwException("Function 'ln()' for non-complex numbers defined for positive arguments.", e);
-    }
-    return clog(a);
 }
 
 double complex _log(double complex a, Expression *e) {
@@ -350,52 +394,9 @@ double complex _exp(double complex a, Expression *e) {
     return cexp(a);
 }
 
-double complex _real(double complex a, Expression *e) {
-    return creal(a);
-}
-
-double complex _imag(double complex a, Expression *e) {
-    return cimag(a);
-}
-
-double complex _mag(double complex a, Expression *e) {
-    return cabs(a);
-}
-
-double complex _phase(double complex a, Expression *e) {
-    return carg(a);
-}
-
 double complex _pow(double complex a, double complex b, Expression *e) {
     if (EQR(a, 0) && EQI(a, 0) && creal(b) < 0 && EQI(b, 0)) {
         throwException("Function 'pow()' is not defined for negative powers of zero", e);
     }
     return cpow(a, b);
-}
-
-double complex _min(double complex a, double complex b, Expression *e) {
-    numberException(a, b, e, "min()", COMPLEX, 1, 2);
-    return (creal(a) < creal(b) ? a : b);
-}
-
-double complex _max(double complex a, double complex b, Expression *e) {
-    numberException(a, b, e, "max()", COMPLEX, 1, 2);
-    return (creal(a) > creal(b) ? a : b);
-}
-
-double complex _rand(double complex a, double complex b, Expression *e) {
-    numberException(a, b, e, "rand()", COMPLEX_AND_DOUBLE, 1, 2);
-    return (int) a + rand() % ((int) b - (int) a + 1);
-}
-
-double complex _pi() {
-    return M_PI;
-}
-
-double complex _euler() {
-    return M_E;
-}
-
-double complex _j() {
-    return I;
 }

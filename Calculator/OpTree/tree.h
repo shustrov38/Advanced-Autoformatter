@@ -20,14 +20,14 @@ typedef enum {
 } NodeState;
 
 typedef struct node_t {
-    char *value;
+    StData value;
     NodeState state;
     double complex result;
     size_t elementSize;
     struct node_t *left, *right;
 } Node;
 
-Node *nodeInit(int elementSize);
+Node *nodeInit();
 
 void opTreeGen(Node *node, Stack *stack);
 

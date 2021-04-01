@@ -27,8 +27,8 @@ OpID getOpID(char *op) {
     if (!strcmp(op, "%"))
         return MOD;
 
-    if (!strcmp(op, "^^"))
-        return LXOR;
+    if (!strcmp(op, "!"))
+        return LNOT;
 
     if (!strcmp(op, "&&"))
         return LAND;
@@ -169,7 +169,6 @@ Priority getOpPriority(OpID id) {
         case BOR:
         case BXOR:
         case LOR:
-        case LXOR:
             return SUM;
         case MUL:
         case DIV:
@@ -191,6 +190,7 @@ Priority getOpPriority(OpID id) {
             return FUNC;
         case PWR:
             return POWER;
+        case LNOT:
         case UMNS:
         case UPLS:
         case FLIP:

@@ -9,6 +9,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include "../Stack/stack.h"
 #include "../Parser/parser.h"
 #include "ops.h"
 
@@ -18,15 +19,25 @@ void printNum(double complex value);
 
 double complex fixNegativeZero(double complex a);
 
-double complex idToFunction(char *val, Expression *e, int ind, int n, double complex a, double complex b);
+double complex idToFunction(StData *data, Expression *e, int ind, int n, double complex a, double complex b);
 
 #pragma region OPERATIONS
 
+double complex _post_dec(double complex a, Expression *e);
+
+double complex _post_inc(double complex a, Expression *e);
+
+double complex _pref_dec(double complex a, Expression *e);
+
+double complex _pref_inc(double complex a, Expression *e);
+
 double complex _umns(double complex a, Expression *e);
+
+double complex _upls(double complex a, Expression *e);
 
 double complex _flip(double complex a, Expression *e);
 
-double complex _fact(double complex a, Expression *e);
+double complex _lnot(double complex a, Expression *e);
 
 double complex _sum(double complex a, double complex b, Expression *e);
 
@@ -38,13 +49,29 @@ double complex _div(double complex a, double complex b, Expression *e);
 
 double complex _mod(double complex a, double complex b, Expression *e);
 
-double complex _pwr(double complex a, double complex b, Expression *e);
+double complex _band(double complex a, double complex b, Expression *e);
 
-double complex _and(double complex a, double complex b, Expression *e);
+double complex _bor(double complex a, double complex b, Expression *e);
 
-double complex _or(double complex a, double complex b, Expression *e);
+double complex _bxor(double complex a, double complex b, Expression *e);
 
-double complex _xor(double complex a, double complex b, Expression *e);
+double complex _land(double complex a, double complex b, Expression *e);
+
+double complex _lor(double complex a, double complex b, Expression *e);
+
+double complex _shl(double complex a, double complex b, Expression *e);
+
+double complex _shr(double complex a, double complex b, Expression *e);
+
+double complex _cmpl(double complex a, double complex b, Expression *e);
+
+double complex _cmple(double complex a, double complex b, Expression *e);
+
+double complex _cmpg(double complex a, double complex b, Expression *e);
+
+double complex _cmpge(double complex a, double complex b, Expression *e);
+
+double complex _eqls(double complex a, double complex b, Expression *e);
 
 #pragma endregion OPERATIONS
 
@@ -58,13 +85,9 @@ double complex _tg(double complex a, Expression *e);
 
 double complex _ctg(double complex a, Expression *e);
 
-double complex _rad(double complex a, Expression *e);
-
 double complex _floor(double complex a, Expression *e);
 
 double complex _ceil(double complex a, Expression *e);
-
-double complex _ln(double complex a, Expression *e);
 
 double complex _log(double complex a, Expression *e);
 
@@ -74,37 +97,13 @@ double complex _abs(double complex a, Expression *e);
 
 double complex _exp(double complex a, Expression *e);
 
-double complex _real(double complex a, Expression *e);
-
-double complex _imag(double complex a, Expression *e);
-
-double complex _mag(double complex a, Expression *e);
-
-double complex _phase(double complex a, Expression *e);
-
 #pragma endregion FUNCTIONS_1ARG
 
 #pragma region FUNCTIONS_2ARG
 
 double complex _pow(double complex a, double complex b, Expression *e);
 
-double complex _min(double complex a, double complex b, Expression *e);
-
-double complex _max(double complex a, double complex b, Expression *e);
-
-double complex _rand(double complex a, double complex b, Expression *e);
-
 #pragma endregion FUNCTIONS_2ARG
-
-#pragma region CONSTANTS
-
-double complex _pi();
-
-double complex _euler();
-
-double complex _j();
-
-#pragma endregion CONSTANTS
 
 
 #endif //ADVANCED_CALCULATOR_CONSTRUCTIONS_H

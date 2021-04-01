@@ -3,6 +3,7 @@
 int splitSyntax(char *srcFile, char **dest, const char *divs[52]) {
     FILE *in = fopen(srcFile, "r");
     if (in == NULL) {
+        printf("File \"%s\" doesnt exists.\n", srcFile);
         exit(-2);
     }
 

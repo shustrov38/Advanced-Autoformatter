@@ -41,8 +41,8 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                                               IS_OPER(stTop(stack->opStack).data_id) ||
                                               IS_FUNC_1ARG(stTop(stack->opStack).data_id) ||
                                               IS_FUNC_2ARG(stTop(stack->opStack).data_id))) {
+                StData data1 = {string[i], id[i]};
                 if (IS_PWR(id[i])) {
-                    StData data1 = {string[i], id[i]};
                     stPush(stack->opStack, data1);
                     ++i;
                     StData data2 = {string[i], id[i]};
@@ -53,11 +53,9 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                     }
                 } else {
                     if (PRIORITY(id[i]) > PRIORITY(stTop(stack->opStack).data_id)) {
-                        StData data1 = {string[i], id[i]};
                         stPush(stack->opStack, data1);
                     } else {
                         if (IS_FUNC(id[i]) && IS_UOPER(stTop(stack->opStack).data_id)) {
-                            StData data1 = {string[i], id[i]};
                             stPush(stack->opStack, data1);
                         } else {
                             while (stack->opStack->size != 0 &&
@@ -66,13 +64,12 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                                 stPop(stack->opStack);
                             }
                         }
-                        StData data1 = {string[i], id[i]};
                         stPush(stack->opStack, data1);
                     }
                 }
             } else {
+                StData data1 = {string[i], id[i]};
                 if (IS_PWR(id[i])) {
-                    StData data1 = {string[i], id[i]};
                     stPush(stack->opStack, data1);
                     ++i;
                     StData data2 = {string[i], id[i]};
@@ -83,7 +80,6 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                         stPush(stack->opStack, data2);
                     }
                 } else {
-                    StData data1 = {string[i], id[i]};
                     stPush(stack->opStack, data1);
                 }
             }
