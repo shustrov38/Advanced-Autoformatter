@@ -10,7 +10,7 @@ set(CMAKE_C_STANDARD 11)
 #add_compile_definitions(__RPN_DEBUG__   ) # debug info for RPN
 #add_compile_definitions(__EXP_DEBUG__   ) # print stack and builded tree
 
-set(HEADER_FILES Stack/stack.h Operations/ops.h Operations/constructions.h RPN/RPN.h OpTree/tree.h)
-set(SOURCE_FILES Stack/stack.c Operations/ops.c Operations/constructions.c RPN/RPN.c OpTree/tree.c)
+set(HEADER_FILES Stack/stack.h Operations/ops.h Operations/constructions.h RPN/RPN.h OpTree/tree.h Parser/parser.h)
+set(SOURCE_FILES Stack/stack.c Operations/ops.c Operations/constructions.c RPN/RPN.c OpTree/tree.c Parser/parser.c)
 
 add_library(CalculatorStaticLibrary STATIC ${HEADER_FILES} ${SOURCE_FILES})

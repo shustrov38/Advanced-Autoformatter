@@ -6,6 +6,7 @@
 #include "Calculator/RPN/RPN.h"
 #include "Calculator/Stack/stack.h"
 #include "Calculator/OpTree/tree.h"
+#include "Calculator/Parser/parser.h"
 
 #define MAX_STRING_LEN 20
 
@@ -157,20 +158,26 @@ int main(const int argc, const char *argv[]) {
         printf("------------------------------------------------------\n");
     }
 
-    rpnProcessor *outStack = rpnProcInit();
+//    rpnProcessor *outStack = rpnProcInit();
+//
+//    int size = 0;
+//    for (; files[0].code->codeLines[0][size]; ++size);
+//
+//    Stack *stack = rpnFunc(outStack, files[0].code->codeLines[0], size);
+//
+//    Node *root = nodeInit();
+//    opTreeGen(root, stack);
+//
+//    double complex ans = opTreeCalc(root, NULL, 0, 0);
+//    printf("result = ");
+//    printNum(ans);
+//    printf("\n");
 
-    int size = 0;
+    int esize = 0;
+    Expression *e = createExpressions();
+    int size =0;
     for (; files[0].code->codeLines[0][size]; ++size);
-
-    Stack *stack = rpnFunc(outStack, files[0].code->codeLines[0], size);
-
-    Node *root = nodeInit();
-    opTreeGen(root, stack);
-
-    double complex ans = opTreeCalc(root, NULL, 0, 0);
-    printf("result = ");
-    printNum(ans);
-    printf("\n");
-
+    esize = addExpression(e,esize,files[0].code->codeLines[0],size);
+    for (int i = 0; e[0].formula[i][0] != 0;++i) printf("%s ", e[0].formula[i]);
     return EXIT_SUCCESS;
 }
