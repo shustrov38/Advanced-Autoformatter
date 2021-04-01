@@ -12,20 +12,14 @@ void printPseudoStr(char *pStr) {
 void initExpression(Expression *E) {
     assert((E) && "null ptr at expressions array while init");
     for (int i = 0; i < MAX_ARRAY_SIZE; ++i) {
-        E[i].formula = (char **) malloc(MAX_ARRAY_SIZE * sizeof(char *));
+        E[i].formula = (char **) malloc(MAX_E_SIZE * sizeof(char *));
         E[i].rawFormula = (char *) malloc(MAX_E_SIZE * sizeof(char));
         memset(E[i].rawFormula, 0, MAX_E_SIZE);
         for (int j = 0; j < MAX_ARRAY_SIZE; ++j) {
             E[i].formula[j] = (char *) malloc(MAX_V_NAME_SIZE * sizeof(char));
             memset(E[i].formula[j], 0, MAX_V_NAME_SIZE);
-
         }
         E[i].varName = (char *) malloc(MAX_V_NAME_SIZE * sizeof(char));
-
-        for (int j = 0; j < MAX_E_SIZE; ++j) {
-            memset(E[i].formula[j], 0, MAX_V_NAME_SIZE);
-        }
-
     }
 }
 
@@ -37,31 +31,39 @@ Expression *createExpressions() {
 }
 
 int addExpression(Expression *expr, int exprSize, char **src, int srcSize) {
+    // check for ';' at the end of code line
+    for (int j = 0; j < srcSize; ++j) {
+        if (!strcmp(src[j], ";")) {
+            srcSize = j;
+            break;
+        }
+    }
+
+    int addBracket = 0;
     int exprInd = 0;
-    int brF = 0;
     int i = 0;
     if (srcSize > 1 && src[1][strlen(src[1]) - 1] == '=') {
         src[1][strlen(src[1]) - 1] = 0;
-        printf("\n%s\n", src[1]);
         strcpy(expr[exprSize].formula[exprInd++], src[0]);
         strcpy(expr[exprSize].formula[exprInd++], "=");
-        printf("%d",exprInd);
-        if (strlen(src[1])>0){
-            strcpy(expr[exprSize].formula[exprInd+1], src[0]);
-            strcpy(expr[exprSize].formula[exprInd+2], src[1]);
-            strcpy(expr[exprSize].formula[exprInd+3], "(");
-            brF = 1;
+        if (strlen(src[1]) > 0) {
+            strcpy(expr[exprSize].formula[exprInd++], src[0]);
+            strcpy(expr[exprSize].formula[exprInd++], src[1]);
+            strcpy(expr[exprSize].formula[exprInd++], "(");
+            addBracket = 1;
         }
         i = 2;
     }
 
     for (; i < srcSize; ++i) {
         strcat(expr[exprSize].rawFormula, src[i]);
-        strcpy(expr[exprSize].formula[exprInd++],src[i]);
+        strcpy(expr[exprSize].formula[exprInd++], src[i]);
     }
-    //if(brF) strcpy(expr[exprSize].formula[exprInd],")");
+    if (addBracket) {
+        strcpy(expr[exprSize].formula[exprInd++], ")");
+    }
 
-    return exprSize + 1;
+    return exprInd;
 }
 
 void destroyExpressionsArray(Expression *E) {

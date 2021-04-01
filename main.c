@@ -96,6 +96,12 @@ FileExtension isCorrectFilename(const char *filename) {
 
 #pragma endregion FileUtilities
 
+int getLineLength(char **line) {
+    int size = -1;
+    while (line[++size][0]);
+    return size;
+}
+
 int main(const int argc, const char *argv[]) {
     if (argc == 1) {
         printf("No filenames specified.\n");
@@ -173,11 +179,15 @@ int main(const int argc, const char *argv[]) {
 //    printNum(ans);
 //    printf("\n");
 
-    int esize = 0;
+    // TODO: remake OpTree for operations [ x++, (--x)++, etc..]
+
+    int codeLineLength = getLineLength(files[0].code->codeLines[0]);
+
+    int size = 0;
     Expression *e = createExpressions();
-    int size =0;
-    for (; files[0].code->codeLines[0][size]; ++size);
-    esize = addExpression(e,esize,files[0].code->codeLines[0],size);
-    for (int i = 0; e[0].formula[i][0] != 0;++i) printf("%s ", e[0].formula[i]);
+    int lineLen = addExpression(e, size++,files[0].code->codeLines[0], codeLineLength);
+    for (int i = 0; i < lineLen; ++i) {
+        printf("%s ", e[0].formula[i]);
+    }
     return EXIT_SUCCESS;
 }

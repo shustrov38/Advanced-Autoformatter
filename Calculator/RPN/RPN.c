@@ -13,14 +13,6 @@ rpnProcessor *rpnProcInit() {
 Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
     assert(size > 0 && string != NULL);
 
-    // check for ';' at the end of code line
-    for (int i = 0; i < size; ++i) {
-        if (!strcmp(string[i], ";")) {
-            size = i;
-            break;
-        }
-    }
-
     // ['x', '=', '5'] -> [VAR, EQL, NUM]
     OpID *id = getLineOfIDs(string, size);
 
