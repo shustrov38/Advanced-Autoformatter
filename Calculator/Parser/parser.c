@@ -2,6 +2,7 @@
 
 #define MAX_ARRAY_SIZE 100
 #define MAX_E_SIZE 100
+#define MAX_STR_SIZE 100
 
 #define ERROR(...) fprintf(stderr, __VA_ARGS__)
 
@@ -55,10 +56,16 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize) {
         i = 2;
     }
 
+    // store increments for variables
+    char vars[MAX_ARRAY_SIZE][MAX_STR_SIZE];
+    int vals[MAX_ARRAY_SIZE] = {0};
+    int count = 0;
+
     for (; i < srcSize; ++i) {
         strcat(expr[exprSize].rawFormula, src[i]);
         strcpy(expr[exprSize].formula[exprInd++], src[i]);
     }
+
     if (addBracket) {
         strcpy(expr[exprSize].formula[exprInd++], ")");
     }

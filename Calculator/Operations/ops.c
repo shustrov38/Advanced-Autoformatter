@@ -1,6 +1,6 @@
 #include "ops.h"
 
-OpID getOpID(char *op) {
+OpID __getOpID(char *op) {
     // extra options
     if (!strcmp(op, "="))
         return EQL;
@@ -120,7 +120,7 @@ OpID *getLineOfIDs(char **code, int size) {
         }
 
         else if (!strcmp(code[i], "--")) {
-            if (i + 1 != size && (getOpID(code[i+1]) == VAR || getOpID(code[i+1]) == OPB)) {
+            if (i + 1 != size && (__getOpID(code[i+1]) == VAR || __getOpID(code[i+1]) == OPB)) {
                 res[i] = PREF_DEC;
             } else {
                 res[i] = POST_DEC;
@@ -136,7 +136,7 @@ OpID *getLineOfIDs(char **code, int size) {
         }
 
         else if (!strcmp(code[i], "++")) {
-            if (i + 1 != size && (getOpID(code[i+1]) == VAR || getOpID(code[i+1]) == OPB)) {
+            if (i + 1 != size && (__getOpID(code[i+1]) == VAR || __getOpID(code[i+1]) == OPB)) {
                 res[i] = PREF_INC;
             } else {
                 res[i] = POST_INC;
@@ -144,7 +144,7 @@ OpID *getLineOfIDs(char **code, int size) {
         }
 
         else {
-            res[i] = getOpID(code[i]);
+            res[i] = __getOpID(code[i]);
         }
     }
 

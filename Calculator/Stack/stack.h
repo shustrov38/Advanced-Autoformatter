@@ -9,8 +9,10 @@
 #include "../Operations/ops.h"
 
 #define STACK_H_INIT_CAPACITY 4
+#define STDATA_VAR_LEN 100
 
 typedef struct {
+    char *var;
     char *data_str;
     OpID data_id;
 } StData;

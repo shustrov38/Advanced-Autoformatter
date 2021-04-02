@@ -87,6 +87,8 @@ typedef enum {
     PREFIX,
 } Priority;
 
+OpID __getOpID(char *op);
+
 OpID *getLineOfIDs(char **code, int size);
 
 Priority getOpPriority(OpID id);

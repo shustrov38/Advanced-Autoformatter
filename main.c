@@ -10,54 +10,6 @@
 
 #define MAX_STRING_LEN 20
 
-#pragma region Structures
-
-#define VARIABLES_COUNT 50
-#define FUNCTIONS_COUNT 50
-#define STRUCTS_COUNT 50
-
-typedef enum {
-    Int,
-    Double,
-    Char
-} VarType;
-
-typedef struct {
-    int size;
-    int inited[STRUCTS_COUNT];
-    char name[MAX_STRING_LEN][STRUCTS_COUNT];
-    int fieldCnt[STRUCTS_COUNT];
-} Structs;
-
-typedef struct {
-    int size;
-    int used[FUNCTIONS_COUNT];
-    char name[MAX_STRING_LEN][FUNCTIONS_COUNT];
-} Functions;
-
-typedef struct {
-    int size;
-    int inited[VARIABLES_COUNT];
-    char name[MAX_STRING_LEN][VARIABLES_COUNT];
-    int value[VARIABLES_COUNT];
-} VariablesInt;
-
-typedef struct {
-    int size;
-    int inited[VARIABLES_COUNT];
-    char name[MAX_STRING_LEN][VARIABLES_COUNT];
-    double value[VARIABLES_COUNT];
-} VariablesDouble;
-
-typedef struct {
-    int size;
-    int inited[VARIABLES_COUNT];
-    char name[MAX_STRING_LEN][VARIABLES_COUNT];
-    char value[VARIABLES_COUNT];
-} VariablesChar;
-
-#pragma endregion Structures
-
 #pragma region FileUtilities
 
 #define MAX_FILES 10
@@ -66,11 +18,6 @@ typedef struct {
     char filename[MAX_STRING_LEN];
     int isHeader;
     codeLineStruct *code;
-    Functions funcs;
-    Structs structs;
-    VariablesInt vari;
-    VariablesDouble vard;
-    VariablesChar varc;
 } FileData;
 
 typedef enum {
@@ -164,30 +111,34 @@ int main(const int argc, const char *argv[]) {
         printf("------------------------------------------------------\n");
     }
 
-//    rpnProcessor *outStack = rpnProcInit();
-//
-//    int size = 0;
-//    for (; files[0].code->codeLines[0][size]; ++size);
-//
-//    Stack *stack = rpnFunc(outStack, files[0].code->codeLines[0], size);
-//
-//    Node *root = nodeInit();
-//    opTreeGen(root, stack);
-//
-//    double complex ans = opTreeCalc(root, NULL, 0, 0);
-//    printf("result = ");
-//    printNum(ans);
-//    printf("\n");
+    // CALCULATOR ALGO
 
-    // TODO: remake OpTree for operations [ x++, (--x)++, etc..]
+    // init RPN struct
+    rpnProcessor *outStack = rpnProcInit();
 
+    // length of one code line, includes ';'
     int codeLineLength = getLineLength(files[0].code->codeLines[0]);
 
-    int size = 0;
+    int size = 0; // size - size of the Expression array
     Expression *e = createExpressions();
-    int lineLen = addExpression(e, size++,files[0].code->codeLines[0], codeLineLength);
-    for (int i = 0; i < lineLen; ++i) {
-        printf("%s ", e[0].formula[i]);
-    }
+
+    // add and convert expression from code line to calculus expression
+    int lineLen = addExpression(e, size++, files[0].code->codeLines[0],
+                                codeLineLength); // lineLen - length of the formula
+
+    // result stack with RPN
+    Stack *stack = rpnFunc(outStack, e[0].formula, lineLen);
+    stPrint(stack);
+    printf("\n");
+
+    Node *root = nodeInit();
+    opTreeGen(root, stack);
+
+    double complex ans = opTreeCalc(root, NULL, 0, 0);
+    printf("result = ");
+    printNum(ans);
+    printf("\n");
+
+    // TODO: remake OpTree for operations [ x++, (--x)++, etc..]
     return EXIT_SUCCESS;
 }

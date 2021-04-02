@@ -8,5 +8,6 @@
 #include <time.h>
 #include <math.h>
 #include <complex.h>
+#include <assert.h>
 
 #endif //ADVANCED_AUTOFORMATTER_LIBRARIES_H

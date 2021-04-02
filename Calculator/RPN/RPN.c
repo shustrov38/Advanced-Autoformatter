@@ -16,6 +16,18 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
     // ['x', '=', '5'] -> [VAR, EQL, NUM]
     OpID *id = getLineOfIDs(string, size);
 
+    char dependOn[size][STDATA_VAR_LEN];
+    for (int i = 0; i < size; ++i) {
+        if (!strcmp(string[i], "++") || !strcmp(string[i], "--")) {
+            mov
+            if (i - 1 >= 0 && __getOpID(string[i - 1]) == VAR) {
+                strcpy(dependOn[i]
+            } else if (i - 1 < size && __getOpID(string[i + 1]) == VAR) {
+
+            }
+        }
+    }
+
     int openBracket = 0;
     for (int i = 0; i < size; ++i) {
         if (IS_VAR(id[i]) || IS_CONST(id[i]) || id[i] == NUM) {
