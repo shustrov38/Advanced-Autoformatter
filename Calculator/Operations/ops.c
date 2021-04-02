@@ -124,7 +124,11 @@ OpInfo *getLineOfIDs(char **code, int size) {
                 res[i].id = PREF_DEC;
             } else {
                 res[i].id = POST_DEC;
-                // todo: find relative
+                for (int j = i; j > 0; --j){
+                    if(res[j].id == VAR){
+                        strcpy(res[i].relatedTo,code[j]);
+                    }
+                }
             }
         }
 
@@ -141,7 +145,11 @@ OpInfo *getLineOfIDs(char **code, int size) {
                 res[i].id = PREF_INC;
             } else {
                 res[i].id = POST_INC;
-                // todo: find relative
+                for (int j = i; j > 0; --j){
+                    if(res[j].id == VAR){
+                        strcpy(res[i].relatedTo,code[j]);
+                    }
+                }
             }
         }
 
