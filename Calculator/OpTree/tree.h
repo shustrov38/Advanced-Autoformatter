@@ -20,7 +20,7 @@ typedef enum {
 } NodeState;
 
 typedef struct node_t {
-    StData value;
+    stData value;
     NodeState state;
     double complex result;
     size_t elementSize;

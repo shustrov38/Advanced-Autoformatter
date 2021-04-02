@@ -19,7 +19,7 @@ void printNum(double complex value);
 
 double complex fixNegativeZero(double complex a);
 
-double complex idToFunction(StData *data, Expression *e, int ind, int n, double complex a, double complex b);
+double complex idToFunction(stData *data, Expression *e, int ind, int n, double complex a, double complex b);
 
 #pragma region OPERATIONS
 

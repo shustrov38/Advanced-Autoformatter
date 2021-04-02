@@ -77,8 +77,8 @@ double complex fixNegativeZero(double complex a) {
     return a;
 }
 
-double complex idToFunction(StData *data, Expression *e, int ind, int n, double complex a, double complex b) {
-    switch (data->data_id) {
+double complex idToFunction(stData *data, Expression *e, int ind, int n, double complex a, double complex b) {
+    switch (data->info.id) {
         case POST_DEC:
             return _post_dec(b, &e[ind]);
         case POST_INC:
@@ -152,61 +152,21 @@ double complex idToFunction(StData *data, Expression *e, int ind, int n, double 
         case POW:
             return _pow(a, b, &e[ind]);
         case VAR:
-            for (int i = 0; i < n; ++i) {
-                if (!strlen(e[i].varName)) continue;
-                if (!strcmp(data->data_str, e[i].varName)) {
-                    return e[i].value;
-                }
-            }
+            // todo: mem access
+            return 0;
         default:
-            return toComplex(data->data_str);
+            return toComplex(data->str);
     }
 }
 
 void throwException(char *err, Expression *e) {
-    ERROR("%s\n", e->rawFormula);
     ERROR("%s", err);
     exit(-1);
 }
 
 // type 0 - complex, 1 - double, 2 - complex and double;
 void numberException(double complex a, double complex b, Expression *e, char *symbol, int type, int isFunc, int args) {
-    int left, right, st, en;
-    if (type == 2) {
-        st = 0;
-        en = 1;
-    } else {
-        st = en = type;
-    }
-    for (int isComplex = st; isComplex <= en; ++isComplex) {
-        if (isComplex == 0) {
-            left = !EQI(a, 0);
-            right = !EQI(b, 0);
-        } else if (isComplex == 1) {
-            left = !IS_INT(a);
-            right = !IS_INT(b);
-        }
-        if (left || right) {
-            ERROR("%s\n", e->rawFormula);
-            ERROR("%s '%s' is not define for %s %s%s",
-                  (isFunc ? "Function" : "Operation"),
-                  symbol,
-                  (isComplex == 0 ? "complex" : "floating point"),
-                  (isFunc ? "argument" : "operand"),
-                  (args == 2 ? "s. " : ". "));
-            if (args == 2) {
-                if (left && right) {
-                    ERROR("Check both %s.",
-                          (isFunc ? "arguments" : "operands"));
-                } else {
-                    ERROR("Check %s %s.",
-                          (left ? "left" : "right"),
-                          (isFunc ? "argument" : "operand"));
-                }
-            }
-            exit(-1);
-        }
-    }
+    1;
 }
 
 double complex _post_dec(double complex a, Expression *e) {

@@ -14,12 +14,8 @@
 #define MAX_V_NAME_SIZE 20
 
 typedef struct {
-    char *varName; // name of var, null if expression is just a number
-    char **formula; // expression splitted to pseudo string
-    char *rawFormula;
-    double complex value;
-    int segCnt;
-
+    char **code;
+    int size;
 } Expression;
 
 Expression *createExpressions();

@@ -89,7 +89,12 @@ typedef enum {
 
 OpID __getOpID(char *op);
 
-OpID *getLineOfIDs(char **code, int size);
+typedef struct {
+    OpID id;
+    char relatedTo[20];
+} OpInfo;
+
+OpInfo *getLineOfIDs(char **code, int size);
 
 Priority getOpPriority(OpID id);
 

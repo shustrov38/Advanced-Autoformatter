@@ -1,20 +1,15 @@
 #include "libraries.h"
 #include "memory.h"
 
-#define T(TYPE) &memory, TYPE
+// #define T(name, var) &memory, var.type, name, var
 
 int main() {
     INIT_MEMORY(memory);
 
-    Variant a = {.i = 1, .type = Int};
-    memory.new(T(Int), "a", a);
-    memory.printRegister(T(Int));
+    MEMORY_NEW(memory, Int, "a", 12);
+    memory.printRegister(&memory, Int);
 
-    Variant b = {.d = 1.2, .type = Double};
-    memory.new(T(Double), "b", b);
-    memory.printRegister(T(Double));
-
-    Variant c = {.s = "kektor", .type = String};
-    memory.new(T(String), "c", c);
-    memory.printRegister(T(String));
+    Variant *p = memory.getValue(&memory, "a");
+    p->i++;
+    memory.printRegister(&memory, Int);
 }

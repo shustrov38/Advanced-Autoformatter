@@ -10,46 +10,55 @@ void InitRegister(Register *r) {
     }
 }
 
-Register *getRegister(Memory *m, size_t size) {
+#define INIT_REGISTER(REG) Register REG; \
+InitRegister(&REG)
+
+#pragma region FunctionPrototypes
+
+int find(char **arr, int size, char *key) {
+    for (int i = 0; i < size; ++i) {
+        if (!strcmp(arr[i], key)) {
+            return i;
+        }
+    }
+    return size;
+}
+
+Register *getRegister(Memory *m, VarType type) {
     for (int i = 0; i < m->total; ++i) {
-        if (m->size[i] == size) {
+        if (m->type[i] == type) {
             return &m->registers[i];
         }
     }
     return NULL;
 }
 
-int find(char **arr, int *size, char *key) {
-    int n = *size;
-    for (int i = 0; i < n; ++i) {
-        if (!strcmp(arr[i], key)) {
-            return i;
-        }
-    }
-    *size = *size + 1;
-    return n;
-}
-
-void new(Memory *m, size_t size, char *name, Variant item) {
-    Register *r = m->getRegister(m, size);
+void new(Memory *m, VarType type, char *name, Variant item) {
+    Register *r = m->getRegister(m, type);
     if (r == NULL) {
-        m->size[m->total] = size;
+        m->type[m->total] = type;
         r = &m->registers[m->total];
         m->total++;
     }
     assert(r != NULL && "NULL in memory register.");
 
     // now r contains certain register
-    int i = find(r->names, &r->total, name);
+
+    int i = find(r->names, r->total, name);
+
+    // new value will be added into [r->total], so r->total++
+    if (i == r->total) {
+        r->total++;
+    }
 
     strcpy(r->names[i], name);
     r->items[i] = item;
 }
 
-void printRegister(Memory *m, size_t size) {
-    Register *r = getRegister(m, size);
+void printRegister(Memory *m, VarType type) {
+    Register *r = getRegister(m, type);
 
-    switch (size) {
+    switch (type) {
         case Int:
             printf("Register<Int>\n");
             break;
@@ -79,6 +88,21 @@ void printRegister(Memory *m, size_t size) {
     }
 }
 
+Variant *getValue(Memory *m, char *name) {
+    for (int regi = 0; regi < m->total; ++regi) {
+        Register *r = &m->registers[regi];
+        for (int vari = 0; vari < r->total; ++vari) {
+            int i = find(r->names, r->total, name);
+            if (i != r->total) {
+                return &r->items[i];
+            }
+        }
+    }
+    return NULL;
+}
+
+#pragma endregion FunctionPrototypes
+
 void InitMemory(Memory *m) {
     m->total = 0;
     for (int i = 0; i < REGISTERS_COUNT; ++i) {
@@ -87,4 +111,5 @@ void InitMemory(Memory *m) {
     m->getRegister = getRegister;
     m->new = new;
     m->printRegister = printRegister;
+    m->getValue = getValue;
 }

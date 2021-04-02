@@ -13,57 +13,45 @@ rpnProcessor *rpnProcInit() {
 Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
     assert(size > 0 && string != NULL);
 
-    // ['x', '=', '5'] -> [VAR, EQL, NUM]
-    OpID *id = getLineOfIDs(string, size);
-
-    char dependOn[size][STDATA_VAR_LEN];
-    for (int i = 0; i < size; ++i) {
-        if (!strcmp(string[i], "++") || !strcmp(string[i], "--")) {
-            mov
-            if (i - 1 >= 0 && __getOpID(string[i - 1]) == VAR) {
-                strcpy(dependOn[i]
-            } else if (i - 1 < size && __getOpID(string[i + 1]) == VAR) {
-
-            }
-        }
-    }
+    // ['x', '=', '5'] -> [{VAR NULL}, {EQL NULL}, {NUM NULL}]
+    OpInfo *info = getLineOfIDs(string, size);
 
     int openBracket = 0;
     for (int i = 0; i < size; ++i) {
-        if (IS_VAR(id[i]) || IS_CONST(id[i]) || id[i] == NUM) {
-            StData data = {string[i], id[i]};
+        if (IS_VAR(info[i].id) || IS_CONST(info[i].id) || info[i].id == NUM) {
+            stData data = {string[i], info[i].id};
             stPush(stack->finalStack, data);
         }
 
-        if (!strcmp(string[i], ",") && strcmp(stTop(stack->opStack).data_str, "(") != 0) {
+        if (!strcmp(string[i], ",") && strcmp(stTop(stack->opStack).str, "(") != 0) {
             stPush(stack->finalStack, stTop(stack->opStack));
             stPop(stack->opStack);
         }
 
-        if (IS_UOPER(id[i]) || (IS_OPER(id[i]) || IS_FUNC_1ARG(id[i]) || IS_FUNC_2ARG(id[i]))) {
-            if (stack->opStack->size != 0 && (IS_UOPER(stTop(stack->opStack).data_id) ||
-                                              IS_OPER(stTop(stack->opStack).data_id) ||
-                                              IS_FUNC_1ARG(stTop(stack->opStack).data_id) ||
-                                              IS_FUNC_2ARG(stTop(stack->opStack).data_id))) {
-                StData data1 = {string[i], id[i]};
-                if (IS_PWR(id[i])) {
+        if (IS_UOPER(info[i].id) || (IS_OPER(info[i].id) || IS_FUNC_1ARG(info[i].id) || IS_FUNC_2ARG(info[i].id))) {
+            if (stack->opStack->size != 0 && (IS_UOPER(stTop(stack->opStack).info.id) ||
+                                              IS_OPER(stTop(stack->opStack).info.id) ||
+                                              IS_FUNC_1ARG(stTop(stack->opStack).info.id) ||
+                                              IS_FUNC_2ARG(stTop(stack->opStack).info.id))) {
+                stData data1 = {string[i], info[i].id};
+                if (IS_PWR(info[i].id)) {
                     stPush(stack->opStack, data1);
                     ++i;
-                    StData data2 = {string[i], id[i]};
-                    if (IS_VAR(id[i]) || IS_CONST(id[i]) || id[i] == NUM) {
+                    stData data2 = {string[i], info[i].id};
+                    if (IS_VAR(info[i].id) || IS_CONST(info[i].id) || info[i].id == NUM) {
                         stPush(stack->finalStack, data2);
-                    } else if (IS_OPER(id[i]) || IS_FUNC_1ARG(id[i]) || IS_FUNC_2ARG(id[i])) {
+                    } else if (IS_OPER(info[i].id) || IS_FUNC_1ARG(info[i].id) || IS_FUNC_2ARG(info[i].id)) {
                         stPush(stack->opStack, data2);
                     }
                 } else {
-                    if (PRIORITY(id[i]) > PRIORITY(stTop(stack->opStack).data_id)) {
+                    if (PRIORITY(info[i].id) > PRIORITY(stTop(stack->opStack).info.id)) {
                         stPush(stack->opStack, data1);
                     } else {
-                        if (IS_FUNC(id[i]) && IS_UOPER(stTop(stack->opStack).data_id)) {
+                        if (IS_FUNC(info[i].id) && IS_UOPER(stTop(stack->opStack).info.id)) {
                             stPush(stack->opStack, data1);
                         } else {
                             while (stack->opStack->size != 0 &&
-                                   (PRIORITY(id[i]) <= PRIORITY(stTop(stack->opStack).data_id))) {
+                                   (PRIORITY(info[i].id) <= PRIORITY(stTop(stack->opStack).info.id))) {
                                 stPush(stack->finalStack, stTop(stack->opStack));
                                 stPop(stack->opStack);
                             }
@@ -72,15 +60,15 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                     }
                 }
             } else {
-                StData data1 = {string[i], id[i]};
-                if (IS_PWR(id[i])) {
+                stData data1 = {string[i], info[i].id};
+                if (IS_PWR(info[i].id)) {
                     stPush(stack->opStack, data1);
                     ++i;
-                    StData data2 = {string[i], id[i]};
-                    if (IS_VAR(id[i]) || IS_CONST(id[i]) || id[i] == NUM) {
+                    stData data2 = {string[i], info[i].id};
+                    if (IS_VAR(info[i].id) || IS_CONST(info[i].id) || info[i].id == NUM) {
                         stPush(stack->finalStack, data2);
-                    } else if (IS_OPER(id[i]) || IS_FUNC_1ARG(id[i]) ||
-                               IS_FUNC_2ARG(id[i]) || !strcmp(string[i], "^")) {
+                    } else if (IS_OPER(info[i].id) || IS_FUNC_1ARG(info[i].id) ||
+                               IS_FUNC_2ARG(info[i].id) || !strcmp(string[i], "^")) {
                         stPush(stack->opStack, data2);
                     }
                 } else {
@@ -91,19 +79,19 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
 
         if (strcmp(string[i], "(") == 0) {
             openBracket++;
-            StData data = {string[i], id[i]};
+            stData data = {string[i], info[i].id};
             stPush(stack->opStack, data);
         }
 
         if (strcmp(string[i], ")") == 0) {
-            while (strcmp(stTop(stack->opStack).data_str, "(") != 0) {
+            while (strcmp(stTop(stack->opStack).str, "(") != 0) {
                 stPush(stack->finalStack, stTop(stack->opStack));
                 stPop(stack->opStack);
             }
             stPop(stack->opStack);
-            if (stack->opStack->size && (IS_UOPER(stTop(stack->opStack).data_id) ||
-                                         IS_FUNC_1ARG(stTop(stack->opStack).data_id) ||
-                                         IS_FUNC_2ARG(stTop(stack->opStack).data_id))) {
+            if (stack->opStack->size && (IS_UOPER(stTop(stack->opStack).info.id) ||
+                                         IS_FUNC_1ARG(stTop(stack->opStack).info.id) ||
+                                         IS_FUNC_2ARG(stTop(stack->opStack).info.id))) {
                 stPush(stack->finalStack, stTop(stack->opStack));
                 stPop(stack->opStack);
             }
@@ -127,6 +115,6 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
     stPrint(stack->finalStack);
 #endif //__RPN_DEBUG__
 
-    free(id);
+    free(info);
     return stack->finalStack;
 }

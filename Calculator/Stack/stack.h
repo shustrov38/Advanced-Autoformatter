@@ -12,23 +12,22 @@
 #define STDATA_VAR_LEN 100
 
 typedef struct {
-    char *var;
-    char *data_str;
-    OpID data_id;
-} StData;
+    char *str;
+    OpInfo info;
+} stData;
 
 typedef struct {
     size_t elementSize;
     int size, capacity;
-    StData *data;
+    stData *data;
 } Stack;
 
 
 Stack *stCreate();
 
-void stPush(Stack *stack, StData data);
+void stPush(Stack *stack, stData data);
 
-StData stTop(Stack *stack);
+stData stTop(Stack *stack);
 
 void stPop(Stack *stack);
 

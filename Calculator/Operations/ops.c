@@ -107,44 +107,46 @@ OpID __getOpID(char *op) {
     return VAR;
 }
 
-OpID *getLineOfIDs(char **code, int size) {
-    OpID *res = (OpID *) malloc(size * sizeof(OpID));
+OpInfo *getLineOfIDs(char **code, int size) {
+    OpInfo *res = (OpInfo *) malloc(size * sizeof(OpInfo));
 
     for (int i = 0; i < size; ++i) {
         if (!strcmp(code[i], "-")) {
-            if (i == 0 || res[i - 1] == OPB) {
-                res[i] = UMNS;
+            if (i == 0 || res[i - 1].id == OPB) {
+                res[i].id = UMNS;
             } else {
-                res[i] = MNS;
+                res[i].id = MNS;
             }
         }
 
         else if (!strcmp(code[i], "--")) {
             if (i + 1 != size && (__getOpID(code[i+1]) == VAR || __getOpID(code[i+1]) == OPB)) {
-                res[i] = PREF_DEC;
+                res[i].id = PREF_DEC;
             } else {
-                res[i] = POST_DEC;
+                res[i].id = POST_DEC;
+                // todo: find relative
             }
         }
 
         else if (!strcmp(code[i], "+")) {
-            if (i == 0 || res[i - 1] == OPB) {
-                res[i] = UPLS;
+            if (i == 0 || res[i - 1].id == OPB) {
+                res[i].id = UPLS;
             } else {
-                res[i] = PLS;
+                res[i].id = PLS;
             }
         }
 
         else if (!strcmp(code[i], "++")) {
             if (i + 1 != size && (__getOpID(code[i+1]) == VAR || __getOpID(code[i+1]) == OPB)) {
-                res[i] = PREF_INC;
+                res[i].id = PREF_INC;
             } else {
-                res[i] = POST_INC;
+                res[i].id = POST_INC;
+                // todo: find relative
             }
         }
 
         else {
-            res[i] = __getOpID(code[i]);
+            res[i].id = __getOpID(code[i]);
         }
     }
 

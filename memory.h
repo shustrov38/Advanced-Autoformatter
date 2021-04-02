@@ -27,9 +27,6 @@ struct variant_t {
     VarType type;
 };
 
-#define INIT_REGISTER(REG) Register REG; \
-InitRegister(&REG)
-
 typedef struct register_t Register;
 
 struct register_t {
@@ -37,8 +34,6 @@ struct register_t {
     Variant *items;
     char **names;
 };
-
-void InitRegister(Register *r);
 
 #define REGISTERS_COUNT 10
 
@@ -49,22 +44,27 @@ typedef struct memory_t Memory;
 
 struct memory_t {
     Register registers[REGISTERS_COUNT];
-    size_t size[REGISTERS_COUNT];
+    size_t type[REGISTERS_COUNT];
     int total;
 
-    Register *(*getRegister)(Memory *, size_t);
+    // returns pointer to register by variable type
+    Register *(*getRegister)(Memory *, VarType);
 
-    void (*new)(Memory *, size_t, char *, Variant);
+    // adds new variable to register
+    void (*new)(Memory *, VarType, char *, Variant);
 
-    void (*printRegister)(Memory *, size_t);
+    // prints register
+    void (*printRegister)(Memory *, VarType);
+
+    // returns pointer to value of variable by name
+    Variant *(*getValue)(Memory *, char *);
 };
 
+#define MEMORY_NEW(MEMORY, TYPE, NAME, VALUE) { \
+Variant t = {VALUE, TYPE};                      \
+MEMORY.new(&MEMORY, TYPE, NAME, t);             \
+}
+
 void InitMemory(Memory *m);
-
-Register *getRegister(Memory *m, size_t size);
-
-void new(Memory *m, size_t size, char *name, Variant item);
-
-void printRegister(Memory *m, size_t size);
 
 #endif //ADVANCED_AUTOFORMATTER_MEMORY_H
