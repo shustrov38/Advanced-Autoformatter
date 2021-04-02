@@ -2,11 +2,13 @@
 #include "Autoformatter/parser.h"
 #include "Autoformatter/lineMaker.h"
 
-#include "ops.h"
-#include "RPN.h"
-#include "stack.h"
-#include "tree.h"
-#include "parser.h"
+#include "Calculator/ops.h"
+#include "Calculator/RPN.h"
+#include "Calculator/stack.h"
+#include "Calculator/tree.h"
+#include "Calculator/parser.h"
+
+#include "memory.h"
 
 #define MAX_STRING_LEN 20
 
@@ -135,5 +137,11 @@ int main(const int argc, const char *argv[]) {
     opTreeGen(root, stack);
 
     // TODO: remake OpTree for operations [ x++, (--x)++, etc..]
+
+    // Example of memory functions:
+    INIT_MEMORY(m);
+    MEMORY_NEW(m, Int, "a", 2);
+    MemoryFunctions.printRegister(&m, Int);
+
     return EXIT_SUCCESS;
 }

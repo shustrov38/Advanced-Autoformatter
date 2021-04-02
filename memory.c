@@ -109,3 +109,11 @@ void InitMemory(Memory *m) {
         InitRegister(&m->registers[i]);
     }
 }
+
+struct memory_functions_t MemoryFunctions = {
+        InitMemory,
+        getRegister,
+        new,
+        printRegister,
+        getValue
+};

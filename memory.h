@@ -37,9 +37,6 @@ struct register_t {
 
 #define REGISTERS_COUNT 10
 
-#define INIT_MEMORY(MEM) Memory MEM; \
-InitMemory(&MEM)
-
 typedef struct memory_t Memory;
 
 struct memory_t {
@@ -48,19 +45,31 @@ struct memory_t {
     int total;
 };
 
+struct memory_functions_t {
+    // inits memory
+    void (*init)(Memory *);
+
+    // returns pointer to register by variable type
+    Register *(*getRegister)(Memory *, VarType);
+
+    // adds new variable to register
+    void (*new)(Memory *, VarType, char *, Variant);
+
+    // prints register
+    void (*printRegister)(Memory *, VarType);
+
+    // returns pointer to value of variable by name
+    Variant *(*getValue)(Memory *, char *);
+};
+
+extern struct memory_functions_t MemoryFunctions;
+
+#define INIT_MEMORY(MEM) Memory MEM; \
+MemoryFunctions.init(&MEM)
+
 #define MEMORY_NEW(MEMORY, TYPE, NAME, VALUE) { \
 Variant t = {VALUE, TYPE};                      \
-new(&MEMORY, TYPE, NAME, t);                    \
+MemoryFunctions.new(&MEMORY, TYPE, NAME, t);    \
 }
-
-void InitMemory(Memory *m);
-
-Register *getRegister(Memory *m, VarType type);
-
-void new(Memory *m, VarType type, char *name, Variant item);
-
-void printRegister(Memory *m, VarType type);
-
-Variant *getValue(Memory *m, char *name);
 
 #endif //ADVANCED_AUTOFORMATTER_MEMORY_H
