@@ -40,11 +40,11 @@ void opTreeGen(Node *node, Stack *stack) {
     }
 }
 
-double complex opTreeCalc(Node *node, Expression *e, int ind, int n) {
-    if (node == NULL) return 0;
-
-    double complex a = fixNegativeZero(opTreeCalc(node->left, e, ind, n));
-    double complex b = fixNegativeZero(opTreeCalc(node->right, e, ind, n));
-
-    return idToFunction(&node->value, e, ind, n, a, b);
-}
+//double complex opTreeCalc(Node *node, Expression *e, int ind, int n) {
+//    if (node == NULL) return 0;
+//
+//    double complex a = opTreeCalc(node->left, e, ind, n);
+//    double complex b = opTreeCalc(node->right, e, ind, n);
+//
+//    return idToFunction(&node->value, e, ind, n, a, b);
+//}

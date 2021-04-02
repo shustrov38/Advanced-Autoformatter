@@ -1,7 +1,7 @@
 #ifndef ADVANCED_AUTOFORMATTER_LINEMAKER_H
 #define ADVANCED_AUTOFORMATTER_LINEMAKER_H
 
-#include "libraries.h"
+#include "../libraries.h"
 
 typedef struct {
     char ***codeLines;

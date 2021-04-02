@@ -34,7 +34,7 @@ Register *getRegister(Memory *m, VarType type) {
 }
 
 void new(Memory *m, VarType type, char *name, Variant item) {
-    Register *r = m->getRegister(m, type);
+    Register *r = getRegister(m, type);
     if (r == NULL) {
         m->type[m->total] = type;
         r = &m->registers[m->total];
@@ -108,8 +108,4 @@ void InitMemory(Memory *m) {
     for (int i = 0; i < REGISTERS_COUNT; ++i) {
         InitRegister(&m->registers[i]);
     }
-    m->getRegister = getRegister;
-    m->new = new;
-    m->printRegister = printRegister;
-    m->getValue = getValue;
 }

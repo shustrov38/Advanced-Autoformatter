@@ -46,25 +46,21 @@ struct memory_t {
     Register registers[REGISTERS_COUNT];
     size_t type[REGISTERS_COUNT];
     int total;
-
-    // returns pointer to register by variable type
-    Register *(*getRegister)(Memory *, VarType);
-
-    // adds new variable to register
-    void (*new)(Memory *, VarType, char *, Variant);
-
-    // prints register
-    void (*printRegister)(Memory *, VarType);
-
-    // returns pointer to value of variable by name
-    Variant *(*getValue)(Memory *, char *);
 };
 
 #define MEMORY_NEW(MEMORY, TYPE, NAME, VALUE) { \
 Variant t = {VALUE, TYPE};                      \
-MEMORY.new(&MEMORY, TYPE, NAME, t);             \
+new(&MEMORY, TYPE, NAME, t);                    \
 }
 
 void InitMemory(Memory *m);
+
+Register *getRegister(Memory *m, VarType type);
+
+void new(Memory *m, VarType type, char *name, Variant item);
+
+void printRegister(Memory *m, VarType type);
+
+Variant *getValue(Memory *m, char *name);
 
 #endif //ADVANCED_AUTOFORMATTER_MEMORY_H

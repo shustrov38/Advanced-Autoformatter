@@ -2,9 +2,7 @@
 #define ADVANCED_CALCULATOR_OPS_H
 
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "../libraries.h"
 
 // start enum index for operations
 #define OPS_H_OPERATIONS_U 100
@@ -53,7 +51,7 @@ typedef enum {
 
     OPERATIONS_U = OPS_H_OPERATIONS_U,
 
-    UMNS, UPLS, FLIP, FACT, PREF_INC, POST_INC, PREF_DEC, POST_DEC,
+    UMNS, UPLS, FLIP, PREF_INC, POST_INC, PREF_DEC, POST_DEC,
 
     OPERATIONS_B = OPS_H_OPERATIONS_B,
 
@@ -63,15 +61,13 @@ typedef enum {
 
     FUNCTIONS_1ARG = OPS_H_FUNCTIONS_1ARG,
 
-    SIN, COS, TG, CTG, RAD, FLR, CEIL, LN, LOG, SQRT, ABS, EXP, REAL, IMAG, MAG, PHASE,
+    SIN, COS, TG, CTG, FLR, CEIL, LOG, SQRT, ABS, EXP,
 
     FUNCTIONS_2ARG = OPS_H_FUNCTIONS_2ARG,
 
-    POW, MAX, MIN, RND,
+    POW,
 
     CONSTANTS = OPS_H_CONSTANTS,
-
-    PI, EULER, J,
 
     VAR = OPS_H_VARIABLE
 } OpID;

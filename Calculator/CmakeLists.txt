@@ -1,5 +1,3 @@
-# static library of the calculator
-
 cmake_minimum_required(VERSION 3.17)
 project(CalculatorStaticLibrary C)
 
@@ -10,7 +8,7 @@ set(CMAKE_C_STANDARD 11)
 #add_compile_definitions(__RPN_DEBUG__   ) # debug info for RPN
 #add_compile_definitions(__EXP_DEBUG__   ) # print stack and builded tree
 
-set(HEADER_FILES Stack/stack.h Operations/ops.h Operations/constructions.h RPN/RPN.h OpTree/tree.h Parser/parser.h)
-set(SOURCE_FILES Stack/stack.c Operations/ops.c Operations/constructions.c RPN/RPN.c OpTree/tree.c Parser/parser.c)
+set(HEADER_FILES_CALCULATOR stack.h ops.h RPN.h tree.h parser.h)
+set(SOURCE_FILES_CALCULATOR stack.c ops.c RPN.c tree.c parser.c)
 
-add_library(CalculatorStaticLibrary STATIC ${HEADER_FILES} ${SOURCE_FILES})
+add_library(CalculatorStaticLibrary STATIC ${HEADER_FILES_CALCULATOR} ${SOURCE_FILES_CALCULATOR})

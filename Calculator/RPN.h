@@ -1,7 +1,9 @@
 #ifndef ADVANCED_CALCULATOR_RPN_H
 #define ADVANCED_CALCULATOR_RPN_H
-#include "../Stack/stack.h"
-#include "../Operations/ops.h"
+
+#include "../libraries.h"
+#include "stack.h"
+#include "ops.h"
 
 typedef struct {
     Stack *numStack;

@@ -1,7 +1,7 @@
 #ifndef ADVANCED_AUTOFORMATTER_PARSER_H
 #define ADVANCED_AUTOFORMATTER_PARSER_H
 
-#include "libraries.h"
+#include "../libraries.h"
 
 #define MAX_CODE_LEN 10000
 #define MAX_DIVISOR_LEN 100

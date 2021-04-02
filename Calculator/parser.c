@@ -16,6 +16,13 @@ void initExpression(Expression *E) {
     }
 }
 
+Expression *createExpressions() {
+    Expression *tmp = (Expression *) malloc(MAX_ARRAY_SIZE * sizeof(Expression));
+    assert((tmp) && "null ptr at creating expressions array");
+    initExpression(tmp);
+    return tmp;
+}
+
 int addExpression(Expression *expr, int exprSize, char **src, int srcSize) {
     // check for ';' at the end of code line
     for (int j = 0; j < srcSize; ++j) {
@@ -40,7 +47,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize) {
         }
         i = 2;
     }
-    
+
     for (; i < srcSize; ++i) {
         strcpy(expr[exprSize].code[exprInd++], src[i]);
     }

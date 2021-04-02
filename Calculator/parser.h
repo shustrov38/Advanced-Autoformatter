@@ -2,14 +2,8 @@
 #define ADVANCED_CALCULATOR_PARSER_H
 
 
-#include <stdio.h>
-#include <malloc.h>
-#include <string.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <complex.h>
-
-#include "../Operations/ops.h"
+#include "../libraries.h"
+#include "ops.h"
 
 #define MAX_V_NAME_SIZE 20
 

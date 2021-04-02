@@ -1,12 +1,12 @@
 #include "libraries.h"
-#include "parser.h"
-#include "lineMaker.h"
+#include "Autoformatter/parser.h"
+#include "Autoformatter/lineMaker.h"
 
-#include "Calculator/Operations/ops.h"
-#include "Calculator/RPN/RPN.h"
-#include "Calculator/Stack/stack.h"
-#include "Calculator/OpTree/tree.h"
-#include "Calculator/Parser/parser.h"
+#include "ops.h"
+#include "RPN.h"
+#include "stack.h"
+#include "tree.h"
+#include "parser.h"
 
 #define MAX_STRING_LEN 20
 
@@ -127,17 +127,12 @@ int main(const int argc, const char *argv[]) {
                                 codeLineLength); // lineLen - length of the formula
 
     // result stack with RPN
-    Stack *stack = rpnFunc(outStack, e[0].formula, lineLen);
+    Stack *stack = rpnFunc(outStack, e[0].code, lineLen);
     stPrint(stack);
     printf("\n");
 
     Node *root = nodeInit();
     opTreeGen(root, stack);
-
-    double complex ans = opTreeCalc(root, NULL, 0, 0);
-    printf("result = ");
-    printNum(ans);
-    printf("\n");
 
     // TODO: remake OpTree for operations [ x++, (--x)++, etc..]
     return EXIT_SUCCESS;

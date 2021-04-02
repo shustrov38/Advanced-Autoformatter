@@ -1,12 +1,8 @@
 #ifndef ADVANCED_CALCULATOR_STACK_H
 #define ADVANCED_CALCULATOR_STACK_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <malloc.h>
-#include <string.h>
-#include <assert.h>
-#include "../Operations/ops.h"
+#include "../libraries.h"
+#include "ops.h"
 
 #define STACK_H_INIT_CAPACITY 4
 #define STDATA_VAR_LEN 100
