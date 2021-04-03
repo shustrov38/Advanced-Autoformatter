@@ -106,7 +106,7 @@ void inc(Memory *m, char *Varname){
     Variant *tmp = getValue(m,Varname);
     switch(tmp->type){
         case Int:
-            tmp->i +=54;
+            tmp->i +=1;
         case Double:
             tmp->d +=1.0;
         default:

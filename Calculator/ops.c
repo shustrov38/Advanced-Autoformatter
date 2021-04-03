@@ -2,6 +2,14 @@
 
 OpID __getOpID(char *op) {
     // extra options
+    if (!strcmp(op, "++"))
+        return NUM;
+    if (!strcmp(op, "--"))
+        return NUM;
+    if (!strcmp(op, "+"))
+        return NUM;
+    if (!strcmp(op, "-"))
+        return NUM;
     if (!strcmp(op, "="))
         return EQL;
 
@@ -125,6 +133,7 @@ OpInfo *getLineOfIDs(char **code, int size) {
                 for (int j = i; j < size; ++j){
                     if(__getOpID(code[j]) == VAR){
                         strcpy(res[i].relatedTo,code[j]);
+                        break;
                     }
                 }
             } else {
@@ -132,6 +141,7 @@ OpInfo *getLineOfIDs(char **code, int size) {
                 for (int j = i; j >= 0; --j){
                     if(res[j].id == VAR){
                         strcpy(res[i].relatedTo,code[j]);
+                        break;
                     }
                 }
             }
@@ -151,6 +161,7 @@ OpInfo *getLineOfIDs(char **code, int size) {
                 for (int j = i; j < size; ++j){
                     if(__getOpID(code[j]) == VAR){
                         strcpy(res[i].relatedTo,code[j]);
+                        break;
                     }
                 }
             } else {
@@ -158,6 +169,7 @@ OpInfo *getLineOfIDs(char **code, int size) {
                 for (int j = i; j >= 0; --j){
                     if(res[j].id == VAR){
                         strcpy(res[i].relatedTo,code[j]);
+                        break;
                     }
                 }
             }
@@ -173,8 +185,6 @@ OpInfo *getLineOfIDs(char **code, int size) {
 
 Priority getOpPriority(OpID id) {
     switch (id) {
-        case POST_INC:
-        case POST_DEC:
         case SHR:
         case SHL:
         case EQLS:
@@ -184,6 +194,8 @@ Priority getOpPriority(OpID id) {
         case CMPG:
         case CMPGE:
             return COMPARE;
+        case POST_INC:
+        case POST_DEC:
         case PLS:
         case MNS:
         case BOR:

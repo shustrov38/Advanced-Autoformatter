@@ -116,7 +116,6 @@ int main(const int argc, const char *argv[]) {
     MEMORY_NEW(m, Int, "a", 27);
     MEMORY_NEW(m, Int, "b", 54);
     MemoryFunctions.printRegister(&m, Int);
-    MemoryFunctions.inc(&m,"a");
     // CALCULATOR ALGO
 
     // init RPN struct
@@ -148,5 +147,8 @@ int main(const int argc, const char *argv[]) {
 
     MemoryFunctions.printRegister(&m, Int);
 
+
+    int yyy = 54;
+    printf("\n %d \n", yyy++ * yyy++);
     return EXIT_SUCCESS;
 }

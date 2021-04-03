@@ -61,7 +61,6 @@ double opTreeCalc(Memory *m,Node *root){
             MemoryFunctions.inc(m, root->value.info.relatedTo);
             return r + 1;
         case POST_INC:
-            printf("\n{%s %s}\n", root->value.str,(strlen(root->value.info.relatedTo) == 0 ? "NULL" : root->value.info.relatedTo));
             MemoryFunctions.inc(m, root->value.info.relatedTo);
             return r;
         case PREF_DEC:
@@ -71,6 +70,7 @@ double opTreeCalc(Memory *m,Node *root){
             MemoryFunctions.dec(m, root->value.info.relatedTo);
             return r;
         case PLS:
+            printf("%f %f\n", l,r);
             return r + l;
         case MNS:
             return r - l;

@@ -19,11 +19,11 @@ typedef enum {
 typedef struct variant_t Variant;
 
 struct variant_t {
-    union {
+
         int i;
         double d;
         char *s;
-    };
+
     VarType type;
 };
 
