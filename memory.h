@@ -11,19 +11,24 @@
 #define STRUCTS_COUNT 50
 
 typedef enum {
-    Int,
-    Double,
+    Numerical,
     String
 } VarType;
+
+typedef enum {
+    Int,
+    Double,
+    Unsigned
+} NumType;
 
 typedef struct variant_t Variant;
 
 struct variant_t {
-
-    int i;
     double d;
     char *s;
 
+    int isOverflowed;
+    NumType numCap;
     VarType type;
 };
 
@@ -41,7 +46,7 @@ typedef struct memory_t Memory;
 
 struct memory_t {
     Register registers[REGISTERS_COUNT];
-    size_t type[REGISTERS_COUNT];
+    VarType type[REGISTERS_COUNT];
     int total;
 };
 
@@ -53,7 +58,7 @@ struct memory_functions_t {
     Register *(*getRegister)(Memory *, VarType);
 
     // adds new variable to register
-    void (*new)(Memory *, VarType, char *, Variant);
+    void (*newNum)(Memory *, NumType, char *, Variant);
 
     // prints register
     void (*printRegister)(Memory *, VarType);
@@ -66,6 +71,8 @@ struct memory_functions_t {
 
     // decrement
     void (*dec)(Memory *, char *);
+
+    void (*overFlowChecker)(Memory *);
 };
 
 extern struct memory_functions_t MemoryFunctions;
@@ -75,7 +82,7 @@ MemoryFunctions.init(&MEM)
 
 #define MEMORY_NEW(MEMORY, TYPE, NAME, VALUE) { \
 Variant t = {VALUE, TYPE};                      \
-MemoryFunctions.new(&MEMORY, TYPE, NAME, t);    \
+MemoryFunctions.newNum(&MEMORY, TYPE, NAME, t);    \
 }
 
 #endif //ADVANCED_AUTOFORMATTER_MEMORY_H

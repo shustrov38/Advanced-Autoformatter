@@ -42,7 +42,6 @@ void opTreeGen(Node *node, Stack *stack) {
 
 double opTreeCalc(Memory *m, Node *root) {
     if (root == NULL) return 0;
-
     double l = (opTreeCalc(m, root->left));
     double r = (opTreeCalc(m, root->right));
 
@@ -51,9 +50,9 @@ double opTreeCalc(Memory *m, Node *root) {
     switch (root->value.info.id) {
         case EQL:
             var = MemoryFunctions.getValue(m, root->left->value.str);
-            if (var->type == Int) {
+            if (var->numCap == Int) {
                 var->d = r;
-                var->type = Double;
+                var->numCap = Double;
             }
             else if (var->type == String) { var->d = r; }
             return 0;
@@ -138,7 +137,7 @@ double opTreeCalc(Memory *m, Node *root) {
         case VAR:
             var = MemoryFunctions.getValue(m, root->value.str);
             if (var->type == Double) { return var->d; }
-            else if (var->type == Int) { return (double) var->i; }
+            else if (var->type == Int) { return (double) var->d; }
             else if (var->type == String) { return 0; }
         default:
             return 0;

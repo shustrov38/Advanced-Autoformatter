@@ -113,10 +113,15 @@ int main(const int argc, const char *argv[]) {
         printf("------------------------------------------------------\n");
     }
     INIT_MEMORY(m);
-    MEMORY_NEW(m, Int, "a", 27);
-    MEMORY_NEW(m, Int, "b", 54);
-    MEMORY_NEW(m, Int, "res", 0);
-    MemoryFunctions.printRegister(&m, Int);
+
+    Variant a = {.d = 0,.isOverflowed = 0, .numCap = Unsigned, .type = Numerical};
+    MemoryFunctions.newNum(&m, Unsigned, "a", a);
+    Variant b = {.d = 54, .isOverflowed = 0, .numCap = Int, .type = Numerical};
+    MemoryFunctions.newNum(&m, Int, "b", b);
+    Variant res = {.d = 0, .isOverflowed = 0, .numCap = Int, .type = Numerical};
+    MemoryFunctions.newNum(&m, Int, "res", res);
+
+    MemoryFunctions.printRegister(&m, Numerical);
     // CALCULATOR ALGO
 
     // TODO:
@@ -137,15 +142,15 @@ int main(const int argc, const char *argv[]) {
     // result stack with RPN
     Stack *stack = rpnFunc(outStack, e[0].code, lineLen);
 
-//    stPrint(stack);
+    stPrint(stack);
 
     Node *root = nodeInit();
     opTreeGen(root, stack);
 
     opTreeCalc(&m, root);
-
+    MemoryFunctions.overFlowChecker(&m);
     printf("\n");
-    MemoryFunctions.printRegister(&m, Int);
+    MemoryFunctions.printRegister(&m, Numerical);
 
     return EXIT_SUCCESS;
 }

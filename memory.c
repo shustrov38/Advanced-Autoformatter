@@ -33,10 +33,10 @@ Register *getRegister(Memory *m, VarType type) {
     return NULL;
 }
 
-void new(Memory *m, VarType type, char *name, Variant item) {
-    Register *r = getRegister(m, type);
+void newNum(Memory *m, NumType type, char *name, Variant item) {
+    Register *r = getRegister(m, Numerical);
     if (r == NULL) {
-        m->type[m->total] = type;
+        m->type[m->total] = Numerical;
         r = &m->registers[m->total];
         m->total++;
     }
@@ -59,11 +59,8 @@ void printRegister(Memory *m, VarType type) {
     Register *r = getRegister(m, type);
 
     switch (type) {
-        case Int:
-            printf("Register<Int>\n");
-            break;
-        case Double:
-            printf("Register<Double>\n");
+        case Numerical:
+            printf("Register<Num>\n");
             break;
         case String:
             printf("Register<String>\n");
@@ -75,10 +72,7 @@ void printRegister(Memory *m, VarType type) {
 
     for (int i = 0; i < r->total; ++i) {
         switch (r->items[i].type) {
-            case Int:
-                printf("[%2d] %s = %d\n", i, r->names[i], r->items[i].i);
-                break;
-            case Double:
+            case Numerical:
                 printf("[%2d] %s = %f\n", i, r->names[i], r->items[i].d);
                 break;
             case String:
@@ -104,11 +98,16 @@ Variant *getValue(Memory *m, char *name) {
 
 void inc(Memory *m, char *Varname){
     Variant *tmp = getValue(m,Varname);
-    switch(tmp->type){
+    switch(tmp->numCap){
         case Int:
-            tmp->i +=1;
+            tmp->d +=1;
+            break;
         case Double:
             tmp->d +=1.0;
+            break;
+        case Unsigned:
+            tmp->d +=1;
+            break;
         default:
             break;
     }
@@ -116,13 +115,27 @@ void inc(Memory *m, char *Varname){
 
 void dec(Memory *m, char *Varname){
     Variant *tmp = getValue(m,Varname);
-    switch(tmp->type){
+    switch(tmp->numCap){
         case Int:
-            tmp->i -=1;
+            tmp->d -=1;
+            break;
         case Double:
             tmp->d -=1.0;
+            break;
+        case Unsigned:
+            tmp->d -=1;
+            break;
         default:
             break;
+    }
+}
+
+void overFlowChecker(Memory *m){
+    Register *tmp = MemoryFunctions.getRegister(m,Numerical);
+    for (int i = 0; i < tmp->total; ++i) {
+        if(tmp->items[i].numCap == Unsigned && tmp->items[i].d < 0) {
+            tmp->items[i].isOverflowed = 1;
+        }
     }
 }
 
@@ -138,9 +151,10 @@ void InitMemory(Memory *m) {
 struct memory_functions_t MemoryFunctions = {
         InitMemory,
         getRegister,
-        new,
+        newNum,
         printRegister,
         getValue,
         inc,
-        dec
+        dec,
+        overFlowChecker
 };
