@@ -10,6 +10,7 @@ OpID __getOpID(char *op) {
         return NUM;
     if (!strcmp(op, "-"))
         return NUM;
+
     if (!strcmp(op, "="))
         return EQL;
 
@@ -185,6 +186,8 @@ OpInfo *getLineOfIDs(char **code, int size) {
 
 Priority getOpPriority(OpID id) {
     switch (id) {
+        case EQL:
+            return WORST;
         case SHR:
         case SHL:
         case EQLS:

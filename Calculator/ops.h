@@ -47,7 +47,7 @@
 #define IS_CONST(X) (OPS_H_CONSTANTS < X && X < OPS_H_VARIABLE)
 
 typedef enum {
-    EQL, OPB, CLB, COM, NUM,
+    OPB, CLB, COM, NUM,
 
     OPERATIONS_U = OPS_H_OPERATIONS_U,
 
@@ -55,7 +55,7 @@ typedef enum {
 
     OPERATIONS_B = OPS_H_OPERATIONS_B,
 
-    PLS, MNS, MUL, DIV, MOD, PWR,
+    EQL, PLS, MNS, MUL, DIV, MOD, PWR,
     BAND, BOR, BXOR, LAND, LOR, LNOT, SHR, SHL,
     CMPL, CMPLE, CMPG, CMPGE, EQLS,
 
@@ -74,6 +74,7 @@ typedef enum {
 
 typedef enum {
     NONE,
+    WORST,
     POSTFIX,
     COMPARE,
     SUM,

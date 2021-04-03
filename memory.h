@@ -20,9 +20,9 @@ typedef struct variant_t Variant;
 
 struct variant_t {
 
-        int i;
-        double d;
-        char *s;
+    int i;
+    double d;
+    char *s;
 
     VarType type;
 };
@@ -61,7 +61,10 @@ struct memory_functions_t {
     // returns pointer to value of variable by name
     Variant *(*getValue)(Memory *, char *);
 
+    // increment
     void (*inc)(Memory *, char *);
+
+    // decrement
     void (*dec)(Memory *, char *);
 };
 

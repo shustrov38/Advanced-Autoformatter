@@ -15,9 +15,9 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
 
     // ['x', '=', '5'] -> [{VAR NULL}, {EQL NULL}, {NUM NULL}]
     OpInfo *info = getLineOfIDs(string, size);
-    for (int i = 0; i < size; ++i){
-        printf("[%s , %s]\n", string[i], (strlen(info[i].relatedTo) == 0 ? "NULL" : info[i].relatedTo));
-    }
+//    for (int i = 0; i < size; ++i){
+//        printf("[%s , %s]\n", string[i], (strlen(info[i].relatedTo) == 0 ? "NULL" : info[i].relatedTo));
+//    }
 
     int openBracket = 0;
     for (int i = 0; i < size; ++i) {

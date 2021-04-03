@@ -40,7 +40,7 @@ void opTreeGen(Node *node, Stack *stack) {
     }
 }
 
-double opTreeCalc(Memory *m,Node *root){
+double opTreeCalc(Memory *m, Node *root) {
     if (root == NULL) return 0;
 
     double l = (opTreeCalc(m, root->left));
@@ -48,7 +48,15 @@ double opTreeCalc(Memory *m,Node *root){
 
     Variant *var;
 
-    switch(root->value.info.id) {
+    switch (root->value.info.id) {
+        case EQL:
+            var = MemoryFunctions.getValue(m, root->left->value.str);
+            if (var->type == Int) {
+                var->d = r;
+                var->type = Double;
+            }
+            else if (var->type == String) { var->d = r; }
+            return 0;
         case NUM:
             return atof(root->value.str);
         case UMNS:
@@ -56,7 +64,7 @@ double opTreeCalc(Memory *m,Node *root){
         case UPLS:
             return +r;
         case FLIP:
-            return ~(int)r;
+            return ~(int) r;
         case PREF_INC:
             MemoryFunctions.inc(m, root->value.info.relatedTo);
             return r + 1;
@@ -70,7 +78,6 @@ double opTreeCalc(Memory *m,Node *root){
             MemoryFunctions.dec(m, root->value.info.relatedTo);
             return r;
         case PLS:
-            printf("%f %f\n", l,r);
             return r + l;
         case MNS:
             return r - l;
@@ -107,33 +114,32 @@ double opTreeCalc(Memory *m,Node *root){
         case EQLS:
             return r == l;
         case SIN:
-            return sin((double)r);
+            return sin(r);
         case COS:
-            return cos((double)r);
+            return cos(r);
         case TG:
-            return tan((double)r);
+            return tan(r);
         case CTG:
-            return ctan((double)r);
+            return ctan(r);
         case FLR:
-            return floor((double)r);
+            return floor(r);
         case CEIL:
-            return ceil((double)r);
+            return ceil(r);
         case LOG:
-            return log((double)r);
+            return log(r);
         case SQRT:
-            return sqrt((double)r);
+            return sqrt(r);
         case ABS:
-            return fabs((double)r);
+            return fabs(r);
         case EXP:
-            return exp((double)r);
+            return exp(r);
         case POW:
-            return pow((double)r, (double) l);
+            return pow(r, l);
         case VAR:
             var = MemoryFunctions.getValue(m, root->value.str);
-
-            if(var->type == Double) return var->d;
-            else if (var->type == Int) return (double) var->i;
-            else if (var->type == String) return 0;
+            if (var->type == Double) { return var->d; }
+            else if (var->type == Int) { return (double) var->i; }
+            else if (var->type == String) { return 0; }
         default:
             return 0;
     }

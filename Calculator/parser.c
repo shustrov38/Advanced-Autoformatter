@@ -35,7 +35,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize) {
     int addBracket = 0;
     int exprInd = 0;
     int i = 0;
-    if (srcSize > 1 && src[1][strlen(src[1]) - 1] == '=') {
+    if (srcSize > 1 && strcmp(src[1], "==") != 0 && strcmp(src[1], "=") != 0 && src[1][strlen(src[1]) - 1] == '=') {
         src[1][strlen(src[1]) - 1] = 0;
         strcpy(expr[exprSize].code[exprInd++], src[0]);
         strcpy(expr[exprSize].code[exprInd++], "=");

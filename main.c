@@ -115,8 +115,11 @@ int main(const int argc, const char *argv[]) {
     INIT_MEMORY(m);
     MEMORY_NEW(m, Int, "a", 27);
     MEMORY_NEW(m, Int, "b", 54);
+    MEMORY_NEW(m, Int, "res", 0);
     MemoryFunctions.printRegister(&m, Int);
     // CALCULATOR ALGO
+
+    // TODO:
 
     // init RPN struct
     rpnProcessor *outStack = rpnProcInit();
@@ -133,22 +136,16 @@ int main(const int argc, const char *argv[]) {
 
     // result stack with RPN
     Stack *stack = rpnFunc(outStack, e[0].code, lineLen);
-    stPrint(stack);
-    printf("\n");
+
+//    stPrint(stack);
 
     Node *root = nodeInit();
     opTreeGen(root, stack);
 
-    double res = opTreeCalc(&m, root);
-    // TODO: remake OpTree for operations [ x++, (--x)++, etc..]
+    opTreeCalc(&m, root);
 
-    printf("res == %f\n\n", res);
-    // Example of memory functions:
-
+    printf("\n");
     MemoryFunctions.printRegister(&m, Int);
 
-
-    int yyy = 54;
-    printf("\n %d \n", yyy++ * yyy++);
     return EXIT_SUCCESS;
 }
