@@ -60,6 +60,9 @@ struct memory_functions_t {
 
     // returns pointer to value of variable by name
     Variant *(*getValue)(Memory *, char *);
+
+    void (*inc)(Memory *, char *);
+    void (*dec)(Memory *, char *);
 };
 
 extern struct memory_functions_t MemoryFunctions;

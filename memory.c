@@ -88,6 +88,7 @@ void printRegister(Memory *m, VarType type) {
     }
 }
 
+
 Variant *getValue(Memory *m, char *name) {
     for (int regi = 0; regi < m->total; ++regi) {
         Register *r = &m->registers[regi];
@@ -99,6 +100,30 @@ Variant *getValue(Memory *m, char *name) {
         }
     }
     return NULL;
+}
+
+void inc(Memory *m, char *Varname){
+    Variant *tmp = getValue(m,Varname);
+    switch(tmp->type){
+        case Int:
+            tmp->i +=54;
+        case Double:
+            tmp->d +=1.0;
+        default:
+            break;
+    }
+}
+
+void dec(Memory *m, char *Varname){
+    Variant *tmp = getValue(m,Varname);
+    switch(tmp->type){
+        case Int:
+            tmp->i -=1;
+        case Double:
+            tmp->d -=1.0;
+        default:
+            break;
+    }
 }
 
 #pragma endregion FunctionPrototypes
@@ -115,5 +140,7 @@ struct memory_functions_t MemoryFunctions = {
         getRegister,
         new,
         printRegister,
-        getValue
+        getValue,
+        inc,
+        dec
 };

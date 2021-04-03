@@ -20,7 +20,7 @@ codeLineStruct *createCodeLineStruct() {
 
 void printCode(codeLineStruct *code) {
     for (int j = 0; j < code->linesCnt; ++j) {
-        for (int k = 0; code->codeLines[j][k]; ++k) {
+        for (int k = 0; code->codeLines[j][k][0]; ++k) {
             printf("%s ", code->codeLines[j][k]);
         }
         printf("\n");

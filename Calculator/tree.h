@@ -6,6 +6,7 @@
 #include "stack.h"
 #include "ops.h"
 #include "parser.h"
+#include "../memory.h"
 
 typedef enum {
     OPERATION,
@@ -15,9 +16,9 @@ typedef enum {
 } NodeState;
 
 typedef struct node_t {
+    double result;
     stData value;
     NodeState state;
-    double complex result;
     size_t elementSize;
     struct node_t *left, *right;
 } Node;
@@ -26,7 +27,7 @@ Node *nodeInit();
 
 void opTreeGen(Node *node, Stack *stack);
 
-//double complex opTreeCalc(Node *node, Expression *e, int ind, int n);
+double opTreeCalc(Memory *m,Node *root);
 
 void opTreePrint(Node *node, Node *parent);
 

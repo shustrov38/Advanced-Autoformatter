@@ -122,9 +122,14 @@ OpInfo *getLineOfIDs(char **code, int size) {
         else if (!strcmp(code[i], "--")) {
             if (i + 1 != size && (__getOpID(code[i+1]) == VAR || __getOpID(code[i+1]) == OPB)) {
                 res[i].id = PREF_DEC;
+                for (int j = i; j < size; ++j){
+                    if(__getOpID(code[j]) == VAR){
+                        strcpy(res[i].relatedTo,code[j]);
+                    }
+                }
             } else {
                 res[i].id = POST_DEC;
-                for (int j = i; j > 0; --j){
+                for (int j = i; j >= 0; --j){
                     if(res[j].id == VAR){
                         strcpy(res[i].relatedTo,code[j]);
                     }
@@ -143,9 +148,14 @@ OpInfo *getLineOfIDs(char **code, int size) {
         else if (!strcmp(code[i], "++")) {
             if (i + 1 != size && (__getOpID(code[i+1]) == VAR || __getOpID(code[i+1]) == OPB)) {
                 res[i].id = PREF_INC;
+                for (int j = i; j < size; ++j){
+                    if(__getOpID(code[j]) == VAR){
+                        strcpy(res[i].relatedTo,code[j]);
+                    }
+                }
             } else {
                 res[i].id = POST_INC;
-                for (int j = i; j > 0; --j){
+                for (int j = i; j >= 0; --j){
                     if(res[j].id == VAR){
                         strcpy(res[i].relatedTo,code[j]);
                     }

@@ -112,7 +112,11 @@ int main(const int argc, const char *argv[]) {
         printCode(files[i].code);
         printf("------------------------------------------------------\n");
     }
-
+    INIT_MEMORY(m);
+    MEMORY_NEW(m, Int, "a", 27);
+    MEMORY_NEW(m, Int, "b", 54);
+    MemoryFunctions.printRegister(&m, Int);
+    MemoryFunctions.inc(&m,"a");
     // CALCULATOR ALGO
 
     // init RPN struct
@@ -136,11 +140,12 @@ int main(const int argc, const char *argv[]) {
     Node *root = nodeInit();
     opTreeGen(root, stack);
 
+    double res = opTreeCalc(&m, root);
     // TODO: remake OpTree for operations [ x++, (--x)++, etc..]
 
+    printf("res == %f\n\n", res);
     // Example of memory functions:
-    INIT_MEMORY(m);
-    MEMORY_NEW(m, Int, "a", 2);
+
     MemoryFunctions.printRegister(&m, Int);
 
     return EXIT_SUCCESS;
