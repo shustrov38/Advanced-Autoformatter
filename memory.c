@@ -103,8 +103,8 @@ void printRegister(Memory *m, VariableType type) {
                         printf("[%2d] float %s = %f\n", i, r->names[i], r->items[i].d);
                         break;
                     case Unsigned:
-                        if(r->items[i].isOverflowed){
-                            printf("[%2d] unsigned %s is overflowed", i, r->names[i]);
+                        if(r->items[i].d < 0){
+                            printf("[%2d] unsigned %s is overflowed\n", i, r->names[i]);
                             break;
                         } else {
                             printf("[%2d] unsigned %s = %d\n", i, r->names[i], (int)r->items[i].d);

@@ -154,8 +154,8 @@ int main(const int argc, const char *argv[]) {
     INIT_MEMORY(m);
 
     MEMORY_NEW_NUM(m, Int, "X", 1);
-    MEMORY_NEW_NUM(m, Int, "Y", 2);
-    MEMORY_NEW_NUM(m, Int, "Z", 3);
+    MEMORY_NEW_NUM(m, Double, "Y", 2.7);
+    MEMORY_NEW_NUM(m, Unsigned, "Z", -3);
     MEMORY_NEW_STR(m, "S", "H3110_WR1D");
 
     printf("Variables before interpretation:\n");
