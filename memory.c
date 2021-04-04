@@ -55,6 +55,28 @@ void newNum(Memory *m, char *name, Variant item) {
     r->items[i] = item;
 }
 
+void newString(Memory *m, char *name, Variant item) {
+    Register *r = getRegister(m, String);
+    if (r == NULL) {
+        m->type[m->total] = String;
+        r = &m->registers[m->total];
+        m->total++;
+    }
+    assert(r != NULL && "NULL in memory register.");
+
+    // now r contains certain register
+
+    int i = find(r->names, r->total, name);
+
+    // new value will be added into [r->total], so r->total++
+    if (i == r->total) {
+        r->total++;
+    }
+
+    strcpy(r->names[i], name);
+    r->items[i] = item;
+}
+
 void printRegister(Memory *m, VariableType type) {
     Register *r = getRegister(m, type);
 
@@ -154,6 +176,7 @@ struct memory_functions_t MemoryFunctions = {
         InitMemory,
         getRegister,
         newNum,
+        newString,
         printRegister,
         getValue,
         inc,

@@ -55,7 +55,7 @@ struct memory_t {
 };
 
 
-// TODO: add possibility to create new String variables.
+// TODO: add possibility to create new String variables. (check!!!)
 struct memory_functions_t {
     // inits memory
     void (*init)(Memory *);
@@ -65,6 +65,9 @@ struct memory_functions_t {
 
     // adds new variable to register
     void (*newNum)(Memory *, char *, Variant);
+
+    // adds new variable to register
+    void (*newString)(Memory *, char *, Variant);
 
     // prints register
     void (*printRegister)(Memory *, VariableType);
@@ -87,7 +90,13 @@ extern struct memory_functions_t MemoryFunctions;
 #define INIT_MEMORY(MEM) Memory MEM; \
 MemoryFunctions.init(&MEM)
 
-// TODO: add #define for newStr function that you will include.
+// TODO: add #define for newStr function that you will include. (check!!!)
+
+#define MEMORY_NEW_STR(MEMORY, NAME, VALUE) { \
+Variant t = {.d = strlen(VALUE), .s = VALUE,.isOverflowed = 0, .varType = String}; \
+MemoryFunctions.newString(&MEMORY, NAME, t); \
+}
+
 
 #define MEMORY_NEW_NUM(MEMORY, TYPE, NAME, VALUE) { \
 Variant t = {.d = VALUE,.isOverflowed = 0, .numType = TYPE, .varType = Numerical}; \

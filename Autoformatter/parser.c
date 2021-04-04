@@ -1,7 +1,18 @@
 #include "parser.h"
 
-int splitSyntax(char *srcFile, char **dest, const char *divs[52]) {
+const char *divs[DIVISION_DIVERSITY] = {
+        "//", ">>=", "<<=", "/*", "*/", "\'",
+        "+=", "-=", "*=", "/=", "==", "++", "--", ">=", "<=",
+        "!=", "&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<",
+        ">", "<", "+", "-", "*", "/", "=",
+        "!", "?", "&", "|", "^", "~",
+        "(", ")", "[", "]", "{", "}",
+        " ", ".", ",", ";", ":", "\n", "\t", "\""
+};
+
+int splitSyntax(char *srcFile, char **dest) {
     FILE *in = fopen(srcFile, "r");
+
     if (in == NULL) {
         printf("File \"%s\" doesnt exists.\n", srcFile);
         exit(-2);
@@ -33,7 +44,7 @@ int splitSyntax(char *srcFile, char **dest, const char *divs[52]) {
     while (srcCharIndex < fLastChar) {
         int separatorId = -1;
         int divisorMeetFlag = 0;
-        for (int separatorListIndex = 0; separatorListIndex < 52; separatorListIndex++) {
+        for (int separatorListIndex = 0; separatorListIndex < DIVISION_DIVERSITY; separatorListIndex++) {
             char stringApplicator[MAX_DIVISOR_LEN];
             memset(stringApplicator, 0, MAX_DIVISOR_LEN);
             for (int applicatorIndex = 0; applicatorIndex < strlen(divs[separatorListIndex]); applicatorIndex++) {

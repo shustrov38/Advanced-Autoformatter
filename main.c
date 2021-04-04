@@ -44,16 +44,7 @@ FileExtension isCorrectFilename(const char *filename) {
 }
 
 int loadFiles(FileData *files, int argc, const char *argv[]) {
-    // TODO: move divs to parser.c and remove magic number 52, maybe #define.
-    const char *divs[52] = {
-            "//", ">>=", "<<=", "/*", "*/", "\'",
-            "+=", "-=", "*=", "/=", "==", "++", "--", ">=", "<=",
-            "!=", "&&", "||", "^^", "^=", "|=", "&=", "~=", ">>", "<<",
-            ">", "<", "+", "-", "*", "/", "=",
-            "!", "?", "&", "|", "^", "~",
-            "(", ")", "[", "]", "{", "}",
-            " ", ".", ",", ";", ":", "\n", "\t", "\""
-    };
+    // TODO: move divs to parser.c and remove magic number 52, maybe #define. (moved to parcer.c; check!!!)
 
     // array to store information from splitter
     char **code = (char **) malloc(MAX_CODE_LEN * sizeof(char *));
@@ -73,7 +64,7 @@ int loadFiles(FileData *files, int argc, const char *argv[]) {
         for (int j = 0; j < MAX_CODE_LEN; ++j) {
             memset(code[j], 0, MAX_DIVISOR_LEN);
         }
-        int n = splitSyntax(files[i-1].filename, code, divs);
+        int n = splitSyntax(files[i-1].filename, code);
 //        printf("%d\n", n);
 //        for (int j = 0; j < n; ++j) {
 //            printf("%d) [%s]\n", j, code[j]);
@@ -164,18 +155,21 @@ int main(const int argc, const char *argv[]) {
 
     INIT_MEMORY(m);
 
-    MEMORY_NEW_NUM(m, Int, "a", 1);
-    MEMORY_NEW_NUM(m, Int, "b", 2);
-    MEMORY_NEW_NUM(m, Int, "c", 3);
+    MEMORY_NEW_NUM(m, Int, "X", 1);
+    MEMORY_NEW_NUM(m, Int, "Y", 2);
+    MEMORY_NEW_NUM(m, Int, "Z", 3);
+    MEMORY_NEW_STR(m, "S", "H3110_WR1D");
 
     printf("Variables before interpretation:\n");
     MemoryFunctions.printRegister(&m, Numerical);
+    MemoryFunctions.printRegister(&m, String);
     printf("\n");
 
     Expression *e = interpretFile(&m, &files[0]);
 
     printf("Variables after interpretation:\n");
     MemoryFunctions.printRegister(&m, Numerical);
+    MemoryFunctions.printRegister(&m, String);
     printf("\n");
 
     return EXIT_SUCCESS;

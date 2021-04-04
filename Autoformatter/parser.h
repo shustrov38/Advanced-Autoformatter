@@ -5,6 +5,7 @@
 
 #define MAX_CODE_LEN 10000
 #define MAX_DIVISOR_LEN 100
+#define DIVISION_DIVERSITY 52
 
 typedef struct {
     char **codeBody;
@@ -12,7 +13,7 @@ typedef struct {
 
 codeSyntax *createSyntax();
 
-int splitSyntax(char *srcFile, char **dest, const char *divs[52]);
+int splitSyntax(char *srcFile, char **dest);
 
 void destroySyntax(codeSyntax *cs);
 
