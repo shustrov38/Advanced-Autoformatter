@@ -95,13 +95,25 @@ void printRegister(Memory *m, VariableType type) {
     for (int i = 0; i < r->total; ++i) {
         switch (r->items[i].varType) {
             case Numerical:
-                // TODO: create function that prints number depending on its NumericType
-                //  (eg, {Int, 2.000} -> 2, {Double, 2.33400} -> 2.33400, {Unsigned, -5} -> overflowed)
-                //  Can also add division into [Unsigned int] and [Unsigned double], now its int.
-                printf("[%2d] %s = %f\n", i, r->names[i], r->items[i].d);
+                switch (r->items[i].numType){
+                    case Int:
+                        printf("[%2d] integer %s = %d\n", i, r->names[i], (int)r->items[i].d);
+                        break;
+                    case Double:
+                        printf("[%2d] float %s = %f\n", i, r->names[i], r->items[i].d);
+                        break;
+                    case Unsigned:
+                        if(r->items[i].isOverflowed){
+                            printf("[%2d] unsigned %s is overflowed", i, r->names[i]);
+                            break;
+                        } else {
+                            printf("[%2d] unsigned %s = %d\n", i, r->names[i], (int)r->items[i].d);
+                            break;
+                        }
+                }
                 break;
             case String:
-                printf("[%2d] %s = %s\n", i, r->names[i], r->items[i].s);
+                printf("[%2d] string %s = %s\n", i, r->names[i], r->items[i].s);
                 break;
         }
     }

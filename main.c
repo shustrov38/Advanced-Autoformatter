@@ -44,8 +44,6 @@ FileExtension isCorrectFilename(const char *filename) {
 }
 
 int loadFiles(FileData *files, int argc, const char *argv[]) {
-    // TODO: move divs to parser.c and remove magic number 52, maybe #define. (moved to parcer.c; check!!!)
-
     // array to store information from splitter
     char **code = (char **) malloc(MAX_CODE_LEN * sizeof(char *));
     for (int j = 0; j < MAX_CODE_LEN; ++j) {
