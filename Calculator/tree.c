@@ -41,20 +41,18 @@ void opTreeGen(Node *node, Stack *stack) {
 }
 
 double opTreeCalc(Memory *m, Node *root) {
-    if (root == NULL) return 0;
+    if (root == NULL) {
+        return 0;
+    }
+
     double l = (opTreeCalc(m, root->left));
     double r = (opTreeCalc(m, root->right));
 
     Variant *var;
-
     switch (root->value.info.id) {
         case EQL:
             var = MemoryFunctions.getValue(m, root->left->value.str);
-            if (var->numCap == Int) {
-                var->d = r;
-                var->numCap = Double;
-            }
-            else if (var->type == String) { var->d = r; }
+            var->d = r;
             return 0;
         case NUM:
             return atof(root->value.str);
@@ -77,41 +75,41 @@ double opTreeCalc(Memory *m, Node *root) {
             MemoryFunctions.dec(m, root->value.info.relatedTo);
             return r;
         case PLS:
-            return r + l;
+            return l + r;
         case MNS:
-            return r - l;
+            return l - r;
         case MUL:
-            return r * l;
+            return l * r;
         case DIV:
-            return r / l;
+            return l / r;
         case MOD:
-            return (int) r % (int) l;
+            return (int) l % (int) r;
         case BAND:
-            return (int) r & (int) l;
+            return (int) l & (int) r;
         case BOR:
-            return (int) r | (int) l;
+            return (int) l | (int) r;
         case BXOR:
-            return (int) r ^ (int) l;
+            return (int) l ^ (int) r;
         case LAND:
-            return (int) r && (int) l;
+            return (int) l && (int) r;
         case LOR:
-            return (int) r || (int) l;
+            return (int) l || (int) r;
         case LNOT:
             return !(int) r;
         case SHR:
-            return (int) r >> (int) l;
+            return (int) l >> (int) r;
         case SHL:
-            return (int) r << (int) l;
+            return (int) l << (int) r;
         case CMPL:
-            return r < l;
+            return l < r;
         case CMPLE:
-            return r <= l;
+            return l <= r;
         case CMPG:
-            return r > l;
+            return l > r;
         case CMPGE:
-            return r >= l;
+            return l >= r;
         case EQLS:
-            return r == l;
+            return l == r;
         case SIN:
             return sin(r);
         case COS:
@@ -133,12 +131,10 @@ double opTreeCalc(Memory *m, Node *root) {
         case EXP:
             return exp(r);
         case POW:
-            return pow(r, l);
+            return pow(l, r);
         case VAR:
             var = MemoryFunctions.getValue(m, root->value.str);
-            if (var->type == Double) { return var->d; }
-            else if (var->type == Int) { return (double) var->d; }
-            else if (var->type == String) { return 0; }
+            return var->d;
         default:
             return 0;
     }

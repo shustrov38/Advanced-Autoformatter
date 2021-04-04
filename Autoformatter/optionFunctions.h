@@ -11,5 +11,7 @@ int isSemicolon(char *string);
 int isStruct(char *string);
 int isDo(char *string);
 int isBlock(char *string);
+int isSlashAndStar(char *string);
+int isDoubleSlash(char *string);
 
 #endif //ADVANCED_AUTOFORMATTER_OPTIONFUNCTIONS_H

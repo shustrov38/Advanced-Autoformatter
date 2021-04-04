@@ -13,23 +13,27 @@
 typedef enum {
     Numerical,
     String
-} VarType;
+} VariableType;
 
 typedef enum {
     Int,
     Double,
     Unsigned
-} NumType;
+} NumericType;
 
 typedef struct variant_t Variant;
 
 struct variant_t {
+    // parameters for numerical variable
+    int isOverflowed;
+    NumericType numType;
     double d;
+
+    // string variable
     char *s;
 
-    int isOverflowed;
-    NumType numCap;
-    VarType type;
+    // just variable type
+    VariableType varType;
 };
 
 typedef struct register_t Register;
@@ -46,22 +50,24 @@ typedef struct memory_t Memory;
 
 struct memory_t {
     Register registers[REGISTERS_COUNT];
-    VarType type[REGISTERS_COUNT];
+    VariableType type[REGISTERS_COUNT];
     int total;
 };
 
+
+// TODO: add possibility to create new String variables.
 struct memory_functions_t {
     // inits memory
     void (*init)(Memory *);
 
-    // returns pointer to register by variable type
-    Register *(*getRegister)(Memory *, VarType);
+    // returns pointer to register by variable varType
+    Register *(*getRegister)(Memory *, VariableType);
 
     // adds new variable to register
-    void (*newNum)(Memory *, NumType, char *, Variant);
+    void (*newNum)(Memory *, char *, Variant);
 
     // prints register
-    void (*printRegister)(Memory *, VarType);
+    void (*printRegister)(Memory *, VariableType);
 
     // returns pointer to value of variable by name
     Variant *(*getValue)(Memory *, char *);
@@ -72,7 +78,8 @@ struct memory_functions_t {
     // decrement
     void (*dec)(Memory *, char *);
 
-    void (*overFlowChecker)(Memory *);
+    // check if unsigned variables overflowed
+    void (*overflowCheck)(Memory *);
 };
 
 extern struct memory_functions_t MemoryFunctions;
@@ -80,9 +87,11 @@ extern struct memory_functions_t MemoryFunctions;
 #define INIT_MEMORY(MEM) Memory MEM; \
 MemoryFunctions.init(&MEM)
 
-#define MEMORY_NEW(MEMORY, TYPE, NAME, VALUE) { \
-Variant t = {VALUE, TYPE};                      \
-MemoryFunctions.newNum(&MEMORY, TYPE, NAME, t);    \
+// TODO: add #define for newStr function that you will include.
+
+#define MEMORY_NEW_NUM(MEMORY, TYPE, NAME, VALUE) { \
+Variant t = {.d = VALUE,.isOverflowed = 0, .numType = TYPE, .varType = Numerical}; \
+MemoryFunctions.newNum(&MEMORY, NAME, t); \
 }
 
 #endif //ADVANCED_AUTOFORMATTER_MEMORY_H

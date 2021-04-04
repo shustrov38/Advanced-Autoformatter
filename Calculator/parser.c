@@ -56,6 +56,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize) {
         strcpy(expr[exprSize].code[exprInd++], ")");
     }
 
+    expr[exprSize].size = exprInd;
     return exprInd;
 }
 

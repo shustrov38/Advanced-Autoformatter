@@ -43,23 +43,8 @@ FileExtension isCorrectFilename(const char *filename) {
     return Incorrect;
 }
 
-#pragma endregion FileUtilities
-
-int getLineLength(char **line) {
-    int size = -1;
-    while (line[++size][0]);
-    return size;
-}
-
-int main(const int argc, const char *argv[]) {
-    if (argc == 1) {
-        printf("No filenames specified.\n");
-        return EXIT_FAILURE;
-    }
-
-    FileData files[MAX_FILES];
-    unsigned filesCount = 0;
-
+int loadFiles(FileData *files, int argc, const char *argv[]) {
+    // TODO: move divs to parser.c and remove magic number 52, maybe #define.
     const char *divs[52] = {
             "//", ">>=", "<<=", "/*", "*/", "\'",
             "+=", "-=", "*=", "/=", "==", "++", "--", ">=", "<=",
@@ -84,19 +69,18 @@ int main(const int argc, const char *argv[]) {
             printf("File \"%s\" has incorrect extension.\n", argv[i]);
             return EXIT_FAILURE;
         }
-        strcpy(files[filesCount].filename, argv[1]);
+        strcpy(files[i-1].filename, argv[1]);
         for (int j = 0; j < MAX_CODE_LEN; ++j) {
             memset(code[j], 0, MAX_DIVISOR_LEN);
         }
-        int n = splitSyntax(files[filesCount].filename, code, divs);
+        int n = splitSyntax(files[i-1].filename, code, divs);
 //        printf("%d\n", n);
 //        for (int j = 0; j < n; ++j) {
 //            printf("%d) [%s]\n", j, code[j]);
 //        }
         printf("\n");
-        files[filesCount].code = createCodeLineStruct();
-        splitLines(files[filesCount].code, n, code);
-        ++filesCount;
+        files[i-1].code = createCodeLineStruct();
+        splitLines(files[i-1].code, n, code);
     }
 
     // free unused memory
@@ -105,52 +89,94 @@ int main(const int argc, const char *argv[]) {
     }
     free(code);
 
-    // print all files
-    for (int i = 0; i < filesCount; ++i) {
-        printf("\n%s\n", files[i].filename);
+    return argc - 1;
+}
+
+// prints non-formatted code of each file to the console
+void printAllFiles(FileData *files, int size) {
+    for (int i = 0; i < size; ++i) {
+        printf("%s\n", files[i].filename);
         printf("------------------------------------------------------\n");
         printCode(files[i].code);
         printf("------------------------------------------------------\n");
+        printf("\n");
     }
-    INIT_MEMORY(m);
+}
 
-    Variant a = {.d = 0,.isOverflowed = 0, .numCap = Unsigned, .type = Numerical};
-    MemoryFunctions.newNum(&m, Unsigned, "a", a);
-    Variant b = {.d = 54, .isOverflowed = 0, .numCap = Int, .type = Numerical};
-    MemoryFunctions.newNum(&m, Int, "b", b);
-    Variant res = {.d = 0, .isOverflowed = 0, .numCap = Int, .type = Numerical};
-    MemoryFunctions.newNum(&m, Int, "res", res);
+#pragma endregion FileUtilities
 
-    MemoryFunctions.printRegister(&m, Numerical);
-    // CALCULATOR ALGO
+int getLineLength(char **line) {
+    int size = -1;
+    while (line[++size][0]);
+    return size;
+}
 
-    // TODO:
-
-    // init RPN struct
-    rpnProcessor *outStack = rpnProcInit();
-
-    // length of one code line, includes ';'
-    int codeLineLength = getLineLength(files[0].code->codeLines[0]);
-
-    int size = 0; // size - size of the Expression array
+Expression *interpretFile(Memory *m, FileData *file) {
+    // size of the Expression array
+    int size = 0;
     Expression *e = createExpressions();
 
-    // add and convert expression from code line to calculus expression
-    int lineLen = addExpression(e, size++, files[0].code->codeLines[0],
-                                codeLineLength); // lineLen - length of the formula
+    // TODO: it might be better to start the interpretation directly from the main function,
+    //  but all global variables must be stored.
 
-    // result stack with RPN
-    Stack *stack = rpnFunc(outStack, e[0].code, lineLen);
+    // TODO: got bug, if there is no semicolon at the end of the code line, the expression is not applied.
 
-    stPrint(stack);
+    // TODO: change cycle, choose only arithmetic lines of code.
+    for (int i = 0; i < file->code->linesCnt; ++i) {
+//        if (!isArithmeticCodeLine()) continue;
 
-    Node *root = nodeInit();
-    opTreeGen(root, stack);
+        // length of one code line, includes ';'
+        int codeLineLength = getLineLength(file->code->codeLines[i]);
 
-    opTreeCalc(&m, root);
-    MemoryFunctions.overFlowChecker(&m);
-    printf("\n");
+        // add and convert expression from code line to calculus expression
+        addExpression(e, size++, file->code->codeLines[i], codeLineLength);
+    }
+
+    // iterate through Expressions and interpret each of them
+    for (int i = 0; i < size; ++i) {
+        rpnProcessor *outStack = rpnProcInit();
+
+        // result stack with RPN
+        Stack *stack = rpnFunc(outStack, e[i].code, e[i].size);
+
+        Node *root = nodeInit();
+        opTreeGen(root, stack);
+        opTreeCalc(m, root);
+
+        // after each calculation
+        MemoryFunctions.overflowCheck(m);
+    }
+
+    return e;
+}
+
+int main(const int argc, const char *argv[]) {
+    if (argc == 1) {
+        printf("No filenames specified.\n");
+        return EXIT_FAILURE;
+    }
+
+    FileData files[MAX_FILES];
+    int filesCount = loadFiles(files, argc, argv);
+    printAllFiles(files, filesCount);
+
+    // CALCULATOR ALGO
+
+    INIT_MEMORY(m);
+
+    MEMORY_NEW_NUM(m, Int, "a", 1);
+    MEMORY_NEW_NUM(m, Int, "b", 2);
+    MEMORY_NEW_NUM(m, Int, "c", 3);
+
+    printf("Variables before interpretation:\n");
     MemoryFunctions.printRegister(&m, Numerical);
+    printf("\n");
+
+    Expression *e = interpretFile(&m, &files[0]);
+
+    printf("Variables after interpretation:\n");
+    MemoryFunctions.printRegister(&m, Numerical);
+    printf("\n");
 
     return EXIT_SUCCESS;
 }
