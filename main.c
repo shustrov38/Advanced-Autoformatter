@@ -104,6 +104,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     // size of the Expression array
     int size = 0;
     Expression *e = createExpressions();
+    Stack *meta = stCreate();
 
     // TODO: it might be better to start the interpretation directly from the main function,
     //  but all global variables must be stored.
@@ -118,10 +119,11 @@ Expression *interpretFile(Memory *m, FileData *file) {
         int codeLineLength = getLineLength(file->code->codeLines[i]);
 
         // add and convert expression from code line to calculus expression
-        int q = addExpression(e, size++, file->code->codeLines[i], codeLineLength, i);
+        int q = addExpression(e, size++, file->code->codeLines[i], codeLineLength, meta,i);
         for(int qq = 0; qq < q; ++qq){
-            printf("%s ",e->code[qq]);
+            printf("%s ",e[i].code[qq]);
         }
+        printf("\n");
     }
 
     // iterate through Expressions and interpret each of them
