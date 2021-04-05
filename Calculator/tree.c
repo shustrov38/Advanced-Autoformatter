@@ -52,6 +52,7 @@ double opTreeCalc(Memory *m, Node *root) {
     switch (root->value.info.id) {
         case EQL:
             var = MemoryFunctions.getValue(m, root->left->value.str);
+            if (!var) return 0;
             var->d = r;
             return 0;
         case NUM:
@@ -134,6 +135,7 @@ double opTreeCalc(Memory *m, Node *root) {
             return pow(l, r);
         case VAR:
             var = MemoryFunctions.getValue(m, root->value.str);
+            if (!var) return 0;
             return var->d;
         default:
             return 0;
