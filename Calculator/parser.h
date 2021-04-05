@@ -14,7 +14,7 @@ typedef struct {
 
 Expression *createExpressions();
 
-int addExpression(Expression *expr, int exprSize, char **src, int srcSize);
+int addExpression(Expression *expr, int exprSize, char **src, int srcSize, int metaData);
 void destroyExpressionsArray(Expression *E);
 
 #endif //ADVANCED_CALCULATOR_PARSER_H

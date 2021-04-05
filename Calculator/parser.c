@@ -23,7 +23,7 @@ Expression *createExpressions() {
     return tmp;
 }
 
-int addExpression(Expression *expr, int exprSize, char **src, int srcSize) {
+int addExpression(Expression *expr, int exprSize, char **src, int srcSize, int metaData) {
     // check for ';' at the end of code line
     for (int j = 0; j < srcSize; ++j) {
         if (!strcmp(src[j], ";")) {
@@ -46,6 +46,15 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize) {
             addBracket = 1;
         }
         i = 2;
+    }else if (!strcmp(src[0],"_if") || !strcmp(src[0],"_for") || !strcmp(src[0],"_while")){
+        strcpy(expr[exprSize].code[exprInd],src[0]);
+        char *metaStr = (char *) malloc (5*sizeof(char));
+        sprintf(metaStr,"%d",metaData);
+        strcat(expr[exprSize].code[exprInd++],metaStr);
+        strcpy(expr[exprSize].code[exprInd++], "=");
+        strcpy(expr[exprSize].code[exprInd++], "(");
+        addBracket = 1;
+        i = 1;
     }
 
     for (; i < srcSize; ++i) {

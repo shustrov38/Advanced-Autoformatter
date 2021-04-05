@@ -118,7 +118,10 @@ Expression *interpretFile(Memory *m, FileData *file) {
         int codeLineLength = getLineLength(file->code->codeLines[i]);
 
         // add and convert expression from code line to calculus expression
-        addExpression(e, size++, file->code->codeLines[i], codeLineLength);
+        int q = addExpression(e, size++, file->code->codeLines[i], codeLineLength, i);
+        for(int qq = 0; qq < q; ++qq){
+            printf("%s ",e->code[qq]);
+        }
     }
 
     // iterate through Expressions and interpret each of them
@@ -127,7 +130,6 @@ Expression *interpretFile(Memory *m, FileData *file) {
 
         // result stack with RPN
         Stack *stack = rpnFunc(outStack, e[i].code, e[i].size);
-
         Node *root = nodeInit();
         opTreeGen(root, stack);
         opTreeCalc(m, root);
