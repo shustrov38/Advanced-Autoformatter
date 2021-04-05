@@ -74,10 +74,12 @@ int loadFiles(FileData *files, int argc, const char *argv[]) {
             memset(code[j], 0, MAX_DIVISOR_LEN);
         }
         int n = splitSyntax(files[i-1].filename, code, divs);
+        //DEBUG
 //        printf("%d\n", n);
 //        for (int j = 0; j < n; ++j) {
 //            printf("%d) [%s]\n", j, code[j]);
 //        }
+        //DEBUG
         printf("\n");
         files[i-1].code = createCodeLineStruct();
         splitLines(files[i-1].code, n, code);
