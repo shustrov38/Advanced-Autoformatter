@@ -3,13 +3,6 @@
 
 #include "libraries.h"
 
-#define ARRAY_LEN 100
-
-#define MAX_STRING_LEN 20
-#define VARIABLES_COUNT 50
-#define FUNCTIONS_COUNT 50
-#define STRUCTS_COUNT 50
-
 typedef enum {
     Numerical,
     String
@@ -54,8 +47,7 @@ struct memory_t {
     int total;
 };
 
-
-// TODO: add possibility to create new String variables.
+// TODO: create functions for erasing variable (with free) and deep copy of memory (may be used in cycles).
 struct memory_functions_t {
     // inits memory
     void (*init)(Memory *);
@@ -65,6 +57,9 @@ struct memory_functions_t {
 
     // adds new variable to register
     void (*newNum)(Memory *, char *, Variant);
+
+    // adds new variable to register
+    void (*newString)(Memory *, char *, Variant);
 
     // prints register
     void (*printRegister)(Memory *, VariableType);
@@ -87,7 +82,10 @@ extern struct memory_functions_t MemoryFunctions;
 #define INIT_MEMORY(MEM) Memory MEM; \
 MemoryFunctions.init(&MEM)
 
-// TODO: add #define for newStr function that you will include.
+#define MEMORY_NEW_STR(MEMORY, NAME, VALUE) { \
+Variant t = {.d = strlen(VALUE), .s = VALUE,.isOverflowed = 0, .varType = String}; \
+MemoryFunctions.newString(&MEMORY, NAME, t); \
+}
 
 #define MEMORY_NEW_NUM(MEMORY, TYPE, NAME, VALUE) { \
 Variant t = {.d = VALUE,.isOverflowed = 0, .numType = TYPE, .varType = Numerical}; \

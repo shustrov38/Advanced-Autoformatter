@@ -5,15 +5,8 @@
 
 #define MAX_CODE_LEN 10000
 #define MAX_DIVISOR_LEN 100
+#define DIVISION_DIVERSITY 52
 
-typedef struct {
-    char **codeBody;
-} codeSyntax;
-
-codeSyntax *createSyntax();
-
-int splitSyntax(char *srcFile, char **dest, const char *divs[52]);
-
-void destroySyntax(codeSyntax *cs);
+int splitSyntax(const char *srcFile, char **dest);
 
 #endif //ADVANCED_AUTOFORMATTER_PARSER_H

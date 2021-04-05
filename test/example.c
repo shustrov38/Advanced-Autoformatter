@@ -1,5 +1,9 @@
-#include /*siski*/ "zhopa"
-#include "popa"
-#include /*cyka*/ <biba>
-#include <boba>
-int a;
+int main() {
+    int a = 5;
+}
+
+int myfunc() {
+    int z = 3;
+    z++;
+    return z + 5;
+}
