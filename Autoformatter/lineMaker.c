@@ -8,7 +8,7 @@ codeLineStruct *createCodeLineStruct() {
     codeLineStruct *codeBody = malloc(sizeof(codeLineStruct));
     codeBody->codeLines = (char ***) malloc(SIZE * sizeof(char **));
     for (int i = 0; i < SIZE; ++i) {
-        codeBody->codeLines[i] = (char **) malloc(SIZE * sizeof(char *));
+        codeBody->codeLines[i] = (char **) malloc(ONE_STRING_SIZE * sizeof(char *));
         for (int j = 0; j < ONE_STRING_SIZE; ++j) {
             codeBody->codeLines[i][j] = (char *) malloc(ONE_STRING_SIZE * sizeof(char));
         }
@@ -83,7 +83,6 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
         }
 
         if (isOpenFigBr(originString[i])) {
-            codeWordsCnt++;
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
             codeWordsCnt++;
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], "\0");
