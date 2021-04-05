@@ -3,13 +3,6 @@
 
 #include "libraries.h"
 
-#define ARRAY_LEN 100
-
-#define MAX_STRING_LEN 20
-#define VARIABLES_COUNT 50
-#define FUNCTIONS_COUNT 50
-#define STRUCTS_COUNT 50
-
 typedef enum {
     Numerical,
     String
@@ -54,6 +47,7 @@ struct memory_t {
     int total;
 };
 
+// TODO: create functions for erasing variable (with free) and deep copy of memory (may be used in cycles).
 struct memory_functions_t {
     // inits memory
     void (*init)(Memory *);
