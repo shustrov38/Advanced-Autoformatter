@@ -83,7 +83,6 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
         }
 
         if (isOpenFigBr(originString[i])) {
-            codeWordsCnt++;
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
             codeWordsCnt++;
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], "\0");
@@ -344,7 +343,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             int j = 1;
             int closeComment = 1;
             strcpy(commentLine[0], "//");
-            while (strcmp(originString[i - 1], ";")) {
+            while (strcmp(originString[i - 1], ";") && strcmp(originString[i - 1], "{")) {
                 if (!strcmp(originString[i], "*/")) {
                     closeComment = 0;
                     ++i;
@@ -368,6 +367,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             }
             codeWordsCnt = 0;
             codeLineCnt++;
+            --i;
             while (figBracketCnt) {
                 strcpy(codeBody->codeLines[codeLineCnt][0], "}");
                 codeLineCnt++;
