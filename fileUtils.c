@@ -127,9 +127,11 @@ void loadFunctions(FileData *file) {
             // find nested
             if (length > 1) {
                 // TODO: check if line[0] not for, switch, if and etc..
-                strcpy(file->functions[file->funcCount].nestedFunctions[file->functions[file->funcCount].nestedCount++], line[0]);
+                strcpy(file->functions[file->funcCount].nestedFunctions[file->functions[file->funcCount].nestedCount++],
+                       line[0]);
             } else if (length > 2) {
-                strcpy(file->functions[file->funcCount].nestedFunctions[file->functions[file->funcCount].nestedCount++], line[1]);
+                strcpy(file->functions[file->funcCount].nestedFunctions[file->functions[file->funcCount].nestedCount++],
+                       line[1]);
             }
 
             // copy loop
@@ -154,3 +156,74 @@ void printAllFunctions(FileData *file) {
         printf("\n");
     }
 }
+
+int findFunction(vector *names, char *key) {
+    for (int i = 0; i < Vec.size(names); ++i) {
+        if (!strcmp((char *)Vec.get(names, i), key)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void printFunctionsCallTable(FileData *files, int size) {
+    vector names;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < files[i].funcCount; ++j) {
+            Vec.push(&names, files[i].functions[j].name);
+        }
+    }
+
+    int n = Vec.size(&names);
+    int table[n][n];
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            table[i][j] = 0;
+        }
+    }
+
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < files[i].funcCount; ++j) {
+            int fromIndex = findFunction(&names, files[i].functions[j].name);
+            printf("%s: ", files[i].functions[j].name);
+            for (int k = 0; k < files[i].functions[j].nestedCount; ++k) {
+                int toIndex = findFunction(&names, files[i].functions[j].nestedFunctions[k]);
+                table[fromIndex][toIndex] = 1;
+                printf(" %s", files[i].functions[j].nestedFunctions[k]);
+            }
+            printf("\n");
+        }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            printf("%d ", table[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

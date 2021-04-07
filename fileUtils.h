@@ -6,6 +6,8 @@
 #include "Autoformatter/lineMaker.h"
 #include "Autoformatter/parser.h"
 
+#include "vector.h"
+
 typedef struct {
     char filename[MAX_STRING_LEN];
     int isHeader;
@@ -28,5 +30,7 @@ void printAllFiles(FileData *files, int size);
 
 // prints all stored functions
 void printAllFunctions(FileData *file);
+
+void printFunctionsCallTable(FileData *file, int size);
 
 #endif //ADVANCED_AUTOFORMATTER_FILEUTILS_H

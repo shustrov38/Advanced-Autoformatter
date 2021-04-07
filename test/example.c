@@ -1,3 +1,8 @@
+int f() {
+    main();
+    return 1;
+}
+
 int main() {
     int a = 5;
 }
