@@ -1,9 +1,17 @@
-int main() {
-    int a = 5;
+int f() {
+    main();
+    return 1;
 }
 
-int myfunc() {
+int myfunc(int x) {
     int z = 3;
+    if (x < 3)
+        return 0;
     z++;
-    return z + 5;
+    myfunc(z - 2);
+    return f();
+}
+
+int main() {
+    int a = 5;
 }
