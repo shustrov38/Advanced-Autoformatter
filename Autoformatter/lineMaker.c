@@ -1,16 +1,18 @@
 #include "lineMaker.h"
 #include "optionFunctions.h"
 
-#define SIZE 10000
-#define ONE_STRING_SIZE 100
+#define ONE_FILE_SIZE 300
+#define ONE_LINE_SIZE 50
+#define ONE_ELEMENT_SIZE 20
 
 codeLineStruct *createCodeLineStruct() {
     codeLineStruct *codeBody = malloc(sizeof(codeLineStruct));
-    codeBody->codeLines = (char ***) malloc(SIZE * sizeof(char **));
-    for (int i = 0; i < SIZE; ++i) {
-        codeBody->codeLines[i] = (char **) malloc(SIZE * sizeof(char *));
-        for (int j = 0; j < ONE_STRING_SIZE; ++j) {
-            codeBody->codeLines[i][j] = (char *) malloc(ONE_STRING_SIZE * sizeof(char));
+    codeBody->codeLines = (char ***) malloc(ONE_FILE_SIZE * sizeof(char **));
+    for (int i = 0; i < ONE_FILE_SIZE; ++i) {
+        codeBody->codeLines[i] = (char **) malloc(ONE_LINE_SIZE * sizeof(char *));
+        for (int j = 0; j < ONE_LINE_SIZE; ++j) {
+            codeBody->codeLines[i][j] = (char *) malloc(ONE_ELEMENT_SIZE * sizeof(char));
+            memset(codeBody->codeLines[i][j], 0, ONE_ELEMENT_SIZE);
         }
     }
     codeBody->linesCnt = 0;
@@ -20,7 +22,7 @@ codeLineStruct *createCodeLineStruct() {
 
 void printCode(codeLineStruct *code) {
     for (int j = 0; j < code->linesCnt; ++j) {
-        for (int k = 0; code->codeLines[j][k][0]; ++k) {
+        for (int k = 0; code->codeLines[j][k] != NULL && code->codeLines[j][k][0]; ++k) {
             printf("%s ", code->codeLines[j][k]);
         }
         printf("\n");
@@ -83,7 +85,6 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
         }
 
         if (isOpenFigBr(originString[i])) {
-            codeWordsCnt++;
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
             codeWordsCnt++;
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], "\0");
@@ -280,6 +281,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             }
             for (int j = 0; j < k; ++j) {
                 strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], commentLine[j]);
+                strcpy(commentLine[j], "\0");
                 codeWordsCnt++;
             }
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
@@ -291,16 +293,48 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
             codeWordsCnt++;
             ++i;
+            int j = 1;
+            int commentFlag = 0;
+            if (isSlashAndStar(originString[i])) {
+                commentFlag = 1;
+                strcpy(commentLine[0], "//");
+                ++i;
+                while (strcmp(originString[i], "*/")) {
+                    strcpy(commentLine[j], originString[i]);
+                    ++i;
+                    ++j;
+                }
+                ++i;
+            }
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+            if (commentFlag) {
+                strcpy(commentLine[j], originString[i]);
+                ++j;
+            }
             codeWordsCnt++;
             ++i;
             while (strcmp(originString[i], "\"") && strcmp(originString[i], ">")) {
+                if (commentFlag) {
+                    strcpy(commentLine[j], originString[i]);
+                    ++j;
+                }
                 strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
                 codeWordsCnt++;
                 ++i;
             }
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
             codeWordsCnt++;
+            if (commentFlag) {
+                strcpy(commentLine[j], originString[i]);
+                ++j;
+            }
+            if (commentFlag) {
+                for (int m = 0; m < j; ++m) {
+                    strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], commentLine[m]);
+                    strcpy(commentLine[j], "\0");
+                    codeWordsCnt++;
+                }
+            }
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], "\0");
             codeWordsCnt = 0;
             codeLineCnt++;
@@ -344,7 +378,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             int j = 1;
             int closeComment = 1;
             strcpy(commentLine[0], "//");
-            while (strcmp(originString[i - 1], ";")) {
+            while (strcmp(originString[i - 1], ";") && strcmp(originString[i - 1], "{")) {
                 if (!strcmp(originString[i], "*/")) {
                     closeComment = 0;
                     ++i;
@@ -368,6 +402,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             }
             codeWordsCnt = 0;
             codeLineCnt++;
+            --i;
             while (figBracketCnt) {
                 strcpy(codeBody->codeLines[codeLineCnt][0], "}");
                 codeLineCnt++;
