@@ -24,11 +24,21 @@ Expression *createExpressions() {
 }
 
 int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack *metaData, int metaVal) {
+    int sizeDelta = 1;
     // check for ';' at the end of code line
-    for (int j = 0; j < srcSize; ++j) {
-        if (!strcmp(src[j], ";")) {
-            srcSize = j;
-            break;
+    if (strcmp(src[0], "for")!=0) {
+        for (int j = 0; j < srcSize; ++j) {
+            if (!strcmp(src[j], ";")) {
+                srcSize = j;
+                break;
+            }
+        }
+    } else if (!strcmp(src[0], "for")){
+        for (int j = 0; j < srcSize; ++j) {
+            if (!strcmp(src[j], "{")) {
+                srcSize = j;
+                break;
+            }
         }
     }
 
@@ -46,25 +56,62 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
             addBracket = 1;
         }
         i = 2;
-    }else if (!strcmp(src[0],"_if") || !strcmp(src[0],"_for") || !strcmp(src[0],"_while")){
-        strcpy(expr[exprSize].code[exprInd],src[0]);
-        char *metaStr = (char *) malloc (5*sizeof(char));
-        sprintf(metaStr,"%d",metaVal);
-        strcat(expr[exprSize].code[exprInd++],metaStr);
-        stData tmp = {.str = expr[exprSize].code[exprInd-1]};
-        stPush(metaData,tmp);
+    } else if (!strcmp(src[0], "if") || !strcmp(src[0], "while")) {
+        strcpy(expr[exprSize].code[exprInd], src[0]);
+        char *metaStr = (char *) malloc(5 * sizeof(char));
+        sprintf(metaStr, "%d", metaVal);
+        strcat(expr[exprSize].code[exprInd++], metaStr);
+        stData tmp = {.str = expr[exprSize].code[exprInd - 1]};
+        stPush(metaData, tmp);
         strcpy(expr[exprSize].code[exprInd++], "=");
         strcpy(expr[exprSize].code[exprInd++], "(");
         addBracket = 1;
         i = 1;
-    }else if (!strcmp(src[0],"}")){
-        strcpy(expr[exprSize].code[exprInd],"end");
-        strcat(expr[exprSize].code[exprInd++],stTop(metaData).str);
+    }else if (!strcmp(src[0], "for")) {
+        srcSize-=2;
+        i = 2;
+        char **forInit = (char **)malloc(10*sizeof (char*));
+        for (int y = 0; y < 10; y++){
+            forInit[y] = (char*) malloc(10*sizeof (char));
+            memset(forInit[y],0,10);
+        }
+        for(int yy = 0;strcmp(src[i],";");){
+            strcpy(forInit[yy++],src[i++]);
+        }
+        addExpression(expr,exprSize++,forInit,i-2,NULL,0);
+        sizeDelta++;
+        i++;
+
+        char **forCond = (char **)malloc(10*sizeof (char*));
+        for (int y = 0; y < 10; y++){
+            forCond[y] = (char*) malloc(10*sizeof (char));
+            memset(forInit[y],0,10);
+        }
+        int forCondIdx = 0;
+        strcpy(forCond[forCondIdx], src[0]);
+        char *metaStr = (char *) malloc(5 * sizeof(char));
+        sprintf(metaStr, "%d", metaVal);
+        strcat(forCond[forCondIdx++], metaStr);
+        stData tmp = {.str = forCond[forCondIdx-1]};
+        stPush(metaData, tmp);
+        strcpy(forCond[forCondIdx++], "=");
+        strcpy(forCond[forCondIdx++], "(");
+        for(;strcmp(src[i],";");){
+            strcpy(forCond[forCondIdx++],src[i++]);
+        }
+        strcpy(forCond[forCondIdx++],")");
+        addExpression(expr,exprSize++,forCond,forCondIdx,NULL,0);
+        sizeDelta++;
+        i++;
+
+    } else if (!strcmp(src[0], "}")) {
+        sprintf(expr[exprSize].code[exprInd++],"%s end",stTop(metaData).str);
+        //strcpy(expr[exprSize].code[exprInd++], stTop(metaData).str);
         stPop(metaData);
         i = 1;
     }
 
-    for (; i < srcSize; ++i) {
+    for (; i < srcSize ; ++i) {
         strcpy(expr[exprSize].code[exprInd++], src[i]);
     }
 
@@ -72,8 +119,12 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         strcpy(expr[exprSize].code[exprInd++], ")");
     }
 
+//    printf("\n%d", srcSize);
     expr[exprSize].size = exprInd;
-    return exprInd;
+//    for (int u = 0; u < exprInd; u++) {
+//        printf(" %s", expr[exprSize].code[u]);
+//    }
+    return sizeDelta;
 }
 
 void destroyExpressionsArray(Expression *E) {
