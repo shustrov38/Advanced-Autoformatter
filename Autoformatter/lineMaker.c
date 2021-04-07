@@ -142,18 +142,38 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
             codeWordsCnt++;
             ++i;
-            int k = 0;
+            int k = 1;
+            int isInsideComment = 0;
+            int afterForCommentFlag = 0;
             int commentFlag = 0;
             if (isSlashAndStar(originString[i])) {
+                afterForCommentFlag = 1;
+                isInsideComment = 1;
                 strcpy(commentLine[0], "//");
                 ++i;
-                ++k;
+
                 while (strcmp(originString[i], "*/")) {
                     strcpy(commentLine[k], originString[i]);
                     ++k;
                     ++i;
                 }
+                isInsideComment = 0;
                 ++i;
+                while(strcmp(originString[i], "(")) {
+                    if(isSlashAndStar(originString[i])){
+                        ++i;
+                        isInsideComment = 1;
+                        continue;
+                    }
+                    if(!strcmp(originString[i], "*/")) {
+                        ++i;
+                        isInsideComment = 0;
+                        continue;
+                    }
+                    strcpy(commentLine[k], originString[i]);
+                    ++k;
+                    ++i;
+                }
                 commentFlag = i;
                 strcpy(commentLine[k], originString[i]);
                 ++k;
@@ -165,6 +185,17 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                     } else if (isCloseBr(originString[i])) {
                         --brackets;
                     }
+                    if(isSlashAndStar(originString[i])) {
+                        isInsideComment = 1;
+                        ++i;
+                        continue;
+                    }
+                    else if(!strcmp(originString[i], "*/")) {
+                        isInsideComment = 0;
+                        ++i;
+                        continue;
+                    }
+
                     strcpy(commentLine[k], originString[i]);
                     ++k;
                     ++i;
@@ -188,8 +219,8 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
 
                     if (isSlashAndStar(originString[i])) {
                         commentFlag = 1;
-                        strcpy(commentLine[k], "//");
-                        ++k;
+                        strcpy(commentLine[0], "//");
+//                        ++k;
                         ++i;
                         continue;
                     }
@@ -199,12 +230,16 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                         continue;
                     }
                     if (commentFlag == 1) {
-                        strcpy(commentLine[k], originString[i]);
+                        if(!afterForCommentFlag) {
+                            strcpy(commentLine[k], originString[i]);
+                        }
                         ++k;
                         ++i;
                     } else if (commentFlag == 2) {
                         strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
-                        strcpy(commentLine[k], originString[i]);
+                        if(!afterForCommentFlag) {
+                            strcpy(commentLine[k], originString[i]);
+                        }
                         ++k;
                         codeWordsCnt++;
                         i++;
@@ -376,29 +411,53 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
         } else if (isSlashAndStar(originString[i]) && codeWordsCnt != 0) {
             ++i;
             int j = 1;
-            int closeComment = 1;
+            int inComment = 1;
             strcpy(commentLine[0], "//");
-            while (strcmp(originString[i - 1], ";") && strcmp(originString[i - 1], "{")) {
-                if (!strcmp(originString[i], "*/")) {
-                    closeComment = 0;
+            while (!(!strcmp(originString[i], ";") && !inComment)) {
+                if(!strcmp(originString[i], "*/")) {
+                    inComment = 0;
                     ++i;
+                    continue;
                 }
-                if (closeComment) {
+                if(!strcmp(originString[i], "/*")) {
+                    inComment = 1;
+                    ++i;
+                    continue;
+                }
+                if(!strcmp(originString[i], "\n")) {
+                    ++i;
+                    continue;
+                }
+                if(inComment) {
                     strcpy(commentLine[j], originString[i]);
                     ++i;
                     ++j;
-                } else {
+                }
+                else {
                     strcpy(commentLine[j], originString[i]);
                     strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
                     ++i;
-                    codeWordsCnt++;
                     ++j;
+                    codeWordsCnt++;
                 }
             }
+            strcpy(commentLine[j], originString[i]);
+            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+            ++i;
+            ++j;
+            codeWordsCnt++;
+            int spaceCnt = 0;
             for (int k = 0; k < j; ++k) {
+                if(!strcmp(commentLine[k], " ")) {
+                    spaceCnt++;
+                    if(spaceCnt>0) {
+                        continue;
+                    }
+                }
                 strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], commentLine[k]);
                 strcpy(commentLine[k], "\0");
                 codeWordsCnt++;
+                spaceCnt = 0;
             }
             codeWordsCnt = 0;
             codeLineCnt++;

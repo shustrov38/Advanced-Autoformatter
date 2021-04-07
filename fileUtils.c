@@ -54,8 +54,8 @@ int loadFiles(FileData *files, int argc, const char *argv[]) {
         int n = splitSyntax(files[i - 1].filename, code);
 
 #ifdef __PARSER_OUT_DEBUG__
-        for (int j = 0; j < ARRAY_LEN; ++j) {
-            initFunction(&files[i - 1].functions[j]);
+        for(int j = 0;j < n;j++) {
+            printf("[%s]\n", code[j] );
         }
         printf("\n");
 #endif

@@ -69,13 +69,13 @@ int main(const int argc, const char *argv[]) {
 
     FileData files[MAX_FILES];
     int filesCount = loadFiles(files, argc, argv);
-//    printAllFiles(files, filesCount);
+    printAllFiles(files, filesCount);
 
-    for (int i = 0; i < filesCount; ++i) {
-        loadFunctions(&files[i]);
-//        printAllFunctions(&files[0]);
-    }
-    printFunctionsCallTable(files, filesCount);
+//    for (int i = 0; i < filesCount; ++i) {
+//        loadFunctions(&files[i]);
+////        printAllFunctions(&files[0]);
+//    }
+//    printFunctionsCallTable(files, filesCount);
 
 //    // CALCULATOR ALGO
 //
