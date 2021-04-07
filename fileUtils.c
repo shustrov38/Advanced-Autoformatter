@@ -7,8 +7,9 @@ typedef enum {
 } FileExtension;
 
 int getLineLength(char **line) {
-    int size = -1;
-    while (line[++size][0]);
+    if (line == NULL) return 0;
+    int size = 0;
+    while (line[size] != NULL && line[size][0]) ++size;
     return size;
 }
 
@@ -80,6 +81,28 @@ void printAllFiles(FileData *files, int size) {
     }
 }
 
+int isFunctionCall(char **line) {
+    int length = getLineLength(line);
+
+    int i = 0;
+    while (i < length && line[i][0] != '(') ++i;
+
+    if (i == length || i == 0) {
+        return -1;
+    }
+
+    int isBlock = !strcmp(line[i - 1], "for") ||
+                  !strcmp(line[i - 1], "switch") ||
+                  !strcmp(line[i - 1], "while") ||
+                  !strcmp(line[i - 1], "if");
+
+    if (!isBlock) {
+        return i - 1;
+    } else {
+        return -1;
+    }
+}
+
 void loadFunctions(FileData *file) {
     // TODO: find way to find function body by prototype or header file.
     for (int k = 0; k < file->code->linesCnt; ++k) {
@@ -107,40 +130,42 @@ void loadFunctions(FileData *file) {
         }
 
         // check if its function
-        int i = 0;
-        while (strcmp(line[i], "(") != 0 && i < length) ++i;
 
-        if (i == length) {
+        int funcIndex;
+        if ((funcIndex = isFunctionCall(line)) == -1) {
             // its variable definition
             continue;
-        } else if (i) {
-            strcpy(file->functions[file->funcCount].name, line[i - 1]);
+        } else {
+            strcpy(file->functions[file->funcCount].name, line[funcIndex]);
             // TODO: store all inputs for current function
             //  etc names and types.
         }
 
         // store function body
-        while (strcmp(file->code->codeLines[++k][0], "}") != 0) {
-            line = file->code->codeLines[k];
+
+        int balance = 1;
+        while (1) {
+            line = file->code->codeLines[++k];
             length = getLineLength(line);
 
+            for (int i = 0; i < length; ++i) {
+                if (!strcmp(line[i], "{")) balance++;
+                if (!strcmp(line[i], "}")) balance--;
+            }
+
+            if (balance == 0) {
+                break;
+            }
+
             // find nested
-            if (length > 1) {
-                // TODO: check if line[0] not for, switch, if and etc..
+            int nestedIndex;
+            if ((nestedIndex = isFunctionCall(line)) != -1) {
                 strcpy(file->functions[file->funcCount].nestedFunctions[file->functions[file->funcCount].nestedCount++],
-                       line[0]);
-            } else if (length > 2) {
-                strcpy(file->functions[file->funcCount].nestedFunctions[file->functions[file->funcCount].nestedCount++],
-                       line[1]);
+                       line[nestedIndex]);
             }
 
             // copy loop
-            assert(file->functions[file->funcCount].code != NULL);
-            int lastLine = file->functions[file->funcCount].code->linesCnt;
-            for (i = 0; i < length; ++i) {
-                strcpy(file->functions[file->funcCount].code->codeLines[lastLine][i], line[i]);
-            }
-            file->functions[file->funcCount].code->linesCnt++;
+            file->functions[file->funcCount].code->codeLines[file->functions[file->funcCount].code->linesCnt++] = line;
         }
 
         file->funcCount++;
@@ -152,6 +177,10 @@ void printAllFunctions(FileData *file) {
         printf("function: [%s]\n", file->functions[i].name);
         printf("------------------------------------------------------\n");
         printCode(file->functions[i].code);
+        printf("----------------\nnested:\n");
+        for (int j = 0; j < file->functions[i].nestedCount; ++j) {
+            printf("%s\n", file->functions[i].nestedFunctions[j]);
+        }
         printf("------------------------------------------------------\n");
         printf("\n");
     }
@@ -159,7 +188,7 @@ void printAllFunctions(FileData *file) {
 
 int findFunction(vector *names, char *key) {
     for (int i = 0; i < Vec.size(names); ++i) {
-        if (!strcmp((char *)Vec.get(names, i), key)) {
+        if (!strcmp((char *) Vec.get(names, i), key)) {
             return i;
         }
     }
@@ -167,63 +196,68 @@ int findFunction(vector *names, char *key) {
 }
 
 void printFunctionsCallTable(FileData *files, int size) {
-    vector names;
+    INIT_VECTOR(names);
+
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < files[i].funcCount; ++j) {
             Vec.push(&names, files[i].functions[j].name);
         }
     }
 
-    int n = Vec.size(&names);
-    int table[n][n];
+    int table[Vec.size(&names)][Vec.size(&names)];
 
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
+    for (int i = 0; i < Vec.size(&names); ++i) {
+        for (int j = 0; j < Vec.size(&names); ++j) {
             table[i][j] = 0;
         }
     }
 
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < files[i].funcCount; ++j) {
+//            printf("%s: ", files[i].functions[j].name);
             int fromIndex = findFunction(&names, files[i].functions[j].name);
-            printf("%s: ", files[i].functions[j].name);
             for (int k = 0; k < files[i].functions[j].nestedCount; ++k) {
+//                printf(" %s", files[i].functions[j].nestedFunctions[k]);
                 int toIndex = findFunction(&names, files[i].functions[j].nestedFunctions[k]);
                 table[fromIndex][toIndex] = 1;
-                printf(" %s", files[i].functions[j].nestedFunctions[k]);
             }
-            printf("\n");
+//            printf("\n");
         }
     }
 
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            printf("%d ", table[i][j]);
+    int recCounter = 0;
+
+    printf("Call table for functions:\n\n");
+    for (int i = 0; i < Vec.size(&names); ++i) {
+        int k = 0;
+        for (int j = 0; j < Vec.size(&names); ++j) {
+            k += table[i][j];
         }
-        printf("\n");
+        printf("%s() : ", (char *) Vec.get(&names, i));
+        if (k) {
+            printf("{");
+            for (int j = 0; j < Vec.size(&names); ++j) {
+                if (table[i][j]) {
+                    if (i == j) recCounter++;
+                    printf(" %s()", (char *) Vec.get(&names, j));
+                }
+            }
+            printf(" }\n");
+        } else {
+            printf("have no sub calls\n");
+        }
+    }
+
+    printf("\n");
+
+    if (recCounter) {
+        printf("Recursive functions:\n\n");
+        for (int i = 0; i < Vec.size(&names); ++i) {
+            if (table[i][i]) {
+                printf("%s()\n", (char *) Vec.get(&names, i));
+            }
+        }
+    } else {
+        printf("Have no recursive functions.\n");
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

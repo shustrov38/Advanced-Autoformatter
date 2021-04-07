@@ -12,6 +12,7 @@ codeLineStruct *createCodeLineStruct() {
         codeBody->codeLines[i] = (char **) malloc(ONE_LINE_SIZE * sizeof(char *));
         for (int j = 0; j < ONE_LINE_SIZE; ++j) {
             codeBody->codeLines[i][j] = (char *) malloc(ONE_ELEMENT_SIZE * sizeof(char));
+            memset(codeBody->codeLines[i][j], 0, ONE_ELEMENT_SIZE);
         }
     }
     codeBody->linesCnt = 0;
@@ -21,7 +22,7 @@ codeLineStruct *createCodeLineStruct() {
 
 void printCode(codeLineStruct *code) {
     for (int j = 0; j < code->linesCnt; ++j) {
-        for (int k = 0; code->codeLines[j][k][0]; ++k) {
+        for (int k = 0; code->codeLines[j][k] != NULL && code->codeLines[j][k][0]; ++k) {
             printf("%s ", code->codeLines[j][k]);
         }
         printf("\n");
@@ -280,7 +281,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             }
             for (int j = 0; j < k; ++j) {
                 strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], commentLine[j]);
-                strcpy(commentLine[j],"\0");
+                strcpy(commentLine[j], "\0");
                 codeWordsCnt++;
             }
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
@@ -294,11 +295,11 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             ++i;
             int j = 1;
             int commentFlag = 0;
-            if(isSlashAndStar(originString[i])) {
+            if (isSlashAndStar(originString[i])) {
                 commentFlag = 1;
                 strcpy(commentLine[0], "//");
                 ++i;
-                while(strcmp(originString[i], "*/")) {
+                while (strcmp(originString[i], "*/")) {
                     strcpy(commentLine[j], originString[i]);
                     ++i;
                     ++j;
@@ -313,7 +314,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             codeWordsCnt++;
             ++i;
             while (strcmp(originString[i], "\"") && strcmp(originString[i], ">")) {
-                if(commentFlag) {
+                if (commentFlag) {
                     strcpy(commentLine[j], originString[i]);
                     ++j;
                 }
@@ -323,14 +324,14 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             }
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
             codeWordsCnt++;
-            if(commentFlag) {
+            if (commentFlag) {
                 strcpy(commentLine[j], originString[i]);
                 ++j;
             }
-            if(commentFlag) {
+            if (commentFlag) {
                 for (int m = 0; m < j; ++m) {
                     strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], commentLine[m]);
-                    strcpy(commentLine[j],"\0");
+                    strcpy(commentLine[j], "\0");
                     codeWordsCnt++;
                 }
             }
