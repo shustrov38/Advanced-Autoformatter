@@ -3,9 +3,13 @@ project(Advanced_Autoformatter C)
 
 set(CMAKE_C_STANDARD 11)
 
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--stack,10000000")
+
+
 add_subdirectory(Calculator)
 add_subdirectory(Autoformatter)
 
+add_compile_definitions(__PARSER_OUT_DEBUG__)
 #add_compile_definitions(__LINE_MAKER_DEBUG__)     # print all lines after converting
 
 file(GLOB SOURCES *.c *.h)
