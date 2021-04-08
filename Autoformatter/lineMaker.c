@@ -413,7 +413,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             int j = 1;
             int inComment = 1;
             strcpy(commentLine[0], "//");
-            while (!(!strcmp(originString[i], ";") && !inComment)) {
+            while (!((!strcmp(originString[i], ";") || !strcmp(originString[i], "{")) && !inComment)) {
                 if(!strcmp(originString[i], "*/")) {
                     inComment = 0;
                     ++i;
@@ -450,7 +450,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             for (int k = 0; k < j; ++k) {
                 if(!strcmp(commentLine[k], " ")) {
                     spaceCnt++;
-                    if(spaceCnt>0) {
+                    if(spaceCnt > 0) {
                         continue;
                     }
                 }
