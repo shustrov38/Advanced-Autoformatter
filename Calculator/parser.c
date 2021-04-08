@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "../vector.h"
 
 #define MAX_ARRAY_SIZE 100
 #define MAX_E_SIZE 100
@@ -23,19 +24,19 @@ Expression *createExpressions() {
     return tmp;
 }
 
-int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack *metaData, int metaVal) {
+int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack *metaData, int metaVal,vector *exe) {
     int sizeDelta = 1;
     // check for ';' at the end of code line
-    if (strcmp(src[0], "for")!=0) {
+    if (!strcmp(src[0], "for") || !strcmp(src[0], "if") || !strcmp(src[0], "while")) {
         for (int j = 0; j < srcSize; ++j) {
-            if (!strcmp(src[j], ";")) {
+            if (!strcmp(src[j], "{")) {
                 srcSize = j;
                 break;
             }
         }
-    } else if (!strcmp(src[0], "for")){
+    } else {
         for (int j = 0; j < srcSize; ++j) {
-            if (!strcmp(src[j], "{")) {
+            if (!strcmp(src[j], ";")) {
                 srcSize = j;
                 break;
             }
@@ -67,52 +68,76 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         strcpy(expr[exprSize].code[exprInd++], "(");
         addBracket = 1;
         i = 1;
-    }else if (!strcmp(src[0], "for")) {
-        srcSize-=2;
+    } else if (!strcmp(src[0], "for")) {
+        srcSize--;
         i = 2;
-        char **forInit = (char **)malloc(10*sizeof (char*));
-        for (int y = 0; y < 10; y++){
-            forInit[y] = (char*) malloc(10*sizeof (char));
-            memset(forInit[y],0,10);
+        char **forInit = (char **) malloc(10 * sizeof(char *));
+        for (int y = 0; y < 10; y++) {
+            forInit[y] = (char *) malloc(10 * sizeof(char));
+            memset(forInit[y], 0, 10);
         }
-        for(int yy = 0;strcmp(src[i],";");){
-            strcpy(forInit[yy++],src[i++]);
+        for (int yy = 0; strcmp(src[i], ";");) {
+            strcpy(forInit[yy++], src[i++]);
         }
-        addExpression(expr,exprSize++,forInit,i-2,NULL,0);
+        addExpression(expr, exprSize++, forInit, i - 2, NULL, 0, NULL);
         sizeDelta++;
         i++;
 
-        char **forCond = (char **)malloc(10*sizeof (char*));
-        for (int y = 0; y < 10; y++){
-            forCond[y] = (char*) malloc(10*sizeof (char));
-            memset(forInit[y],0,10);
+        char **forCond = (char **) malloc(10 * sizeof(char *));
+        for (int y = 0; y < 10; y++) {
+            forCond[y] = (char *) malloc(10 * sizeof(char));
+            memset(forInit[y], 0, 10);
         }
         int forCondIdx = 0;
         strcpy(forCond[forCondIdx], src[0]);
         char *metaStr = (char *) malloc(5 * sizeof(char));
         sprintf(metaStr, "%d", metaVal);
         strcat(forCond[forCondIdx++], metaStr);
-        stData tmp = {.str = forCond[forCondIdx-1]};
+        stData tmp = {.str = forCond[forCondIdx - 1]};
         stPush(metaData, tmp);
         strcpy(forCond[forCondIdx++], "=");
         strcpy(forCond[forCondIdx++], "(");
-        for(;strcmp(src[i],";");){
-            strcpy(forCond[forCondIdx++],src[i++]);
+        for (; strcmp(src[i], ";");) {
+            strcpy(forCond[forCondIdx++], src[i++]);
         }
-        strcpy(forCond[forCondIdx++],")");
-        addExpression(expr,exprSize++,forCond,forCondIdx,NULL,0);
+        strcpy(forCond[forCondIdx++], ")");
+        addExpression(expr, exprSize++, forCond, forCondIdx, NULL, 0,NULL);
         sizeDelta++;
         i++;
 
     } else if (!strcmp(src[0], "}")) {
-        sprintf(expr[exprSize].code[exprInd++],"%s end",stTop(metaData).str);
-        //strcpy(expr[exprSize].code[exprInd++], stTop(metaData).str);
+        //pop exeSt
+        char **forIt = (char **) malloc(10 * sizeof(char *));
+        for (int y = 0; y < 2; y++) {
+            forIt[y] = (char *) malloc(10 * sizeof(char));
+            memset(forIt[y], 0, 10);
+            strcpy(forIt[y],(char*)Vec.get(exe,exe->total-y-1));
+            Vec.delete(exe, exe->total);
+        }
+        addExpression(expr, exprSize++, forIt, 2, NULL, 0, NULL);
+        sprintf(expr[exprSize].code[exprInd++], "%s end", stTop(metaData).str);
+
         stPop(metaData);
         i = 1;
     }
 
-    for (; i < srcSize ; ++i) {
-        strcpy(expr[exprSize].code[exprInd++], src[i]);
+    if (!strcmp(src[0], "for")) {
+        //push to exeSt
+        char **forIt = (char **) malloc(10 * sizeof(char *));
+        for (int y = 0; y < 10; y++) {
+            forIt[y] = (char *) malloc(10 * sizeof(char));
+            memset(forIt[y], 0, 10);
+        }
+        int y = 0;
+        for (; srcSize-i>0; ++i) {
+            y++;
+            Vec.push(exe,src[srcSize-y]);
+        }
+
+    } else {
+        for (; i < srcSize; ++i) {
+            strcpy(expr[exprSize].code[exprInd++], src[i]);
+        }
     }
 
     if (addBracket) {

@@ -11,7 +11,7 @@ rpnProcessor *rpnProcInit() {
 
 
 Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
-    assert(size > 0 && string != NULL);
+//    assert(size > 0 && string != NULL);
 
     // ['x', '=', '5'] -> [{VAR NULL}, {EQL NULL}, {NUM NULL}]
     OpInfo *info = getLineOfIDs(string, size);

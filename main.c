@@ -16,8 +16,10 @@
 Expression *interpretFile(Memory *m, FileData *file) {
     // size of the Expression array
     int size = 0;
+    int reqNum = 0;
     Expression *e = createExpressions();
     Stack *meta = stCreate();
+    INIT_VECTOR(exeSt);
 
     // TODO: it might be better to start the interpretation directly from the main function,
     //  but all global variables must be stored.
@@ -32,9 +34,10 @@ Expression *interpretFile(Memory *m, FileData *file) {
         int codeLineLength = getLineLength(file->code->codeLines[i]);
 
         // add and convert expression from code line to calculus expression
-        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i);
+        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i, &exeSt);
         size+=q;
     }
+    size++;
     for(int y = 0; y<size;y++){
         printf("\n");
         for(int z = 0; z <e[y].size; z++){
@@ -43,7 +46,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     }
 
     // iterate through Expressions and interpret each of them
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < size && e[i].size > 0; ++i) {
         rpnProcessor *outStack = rpnProcInit();
 
         // result stack with RPN
