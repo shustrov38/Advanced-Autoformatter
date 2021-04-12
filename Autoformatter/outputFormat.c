@@ -13,28 +13,28 @@ void outputFiles(char *fileName, codeLineStruct *code) {
         int nesting = 0;
         int k = 0, j = 0;
 
-        for (j = 0; j < nesting; ++j){
-            strcpy(outputString[j], "\t");
+        for (; k < nesting; ++k){
+            strcpy(outputString[k], "\t");
         }
 
         //0 Symbol
-        strcpy(outputString[j], code->codeLines[i][0]);
+        strcpy(outputString[k], code->codeLines[i][0]);
         k++;
-        strcpy(outputString[j], " ");
+        strcpy(outputString[k], " ");
         k++;
         if (isBlock(code->codeLines[i][0])) {
             cycleFlag++;
         }
-        if (isCloseFigBr(code->codeLines[i][0])){
-            nesting--;
-        }
+//        if (isCloseFigBr(code->codeLines[i][0])){
+//            nesting--;
+//        }
 
         //one string check
 
-        for (int s = j + 1; s < len; ++s){
+        for (int s = k+1; s < len; ++s){
             //printf("%s ", code->codeLines[i][s]);
 
-            if (strcmp(code->codeLines[i][s], " ")){
+            if (!strcmp(code->codeLines[i][s], " ")){
                 continue;
             }
             if (isOpenBr(code->codeLines[i][s])) {
@@ -64,7 +64,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             }
 
             if (isSemicolon(code->codeLines[i][s])){
-                if (strcmp(outputString[k], " ")){
+                if (!strcmp(outputString[k], " ")){
                     strcpy(outputString[k], code->codeLines[i][s]);
                     k++;
                 } else {
@@ -75,6 +75,10 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 }
                 continue;
             }
+            strcpy(outputString[k], code->codeLines[i][s]);
+            k++;
+            strcpy(outputString[k], " ");
+            k++;
         }
         for (int c = 0; c < k; ++c){
             printf("%s", outputString[c]);
