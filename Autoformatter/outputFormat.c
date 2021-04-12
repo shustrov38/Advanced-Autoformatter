@@ -64,12 +64,13 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             }
 
             if (isSemicolon(code->codeLines[i][s])){
-                if (!strcmp(outputString[k], " ")){
-                    strcpy(outputString[k], code->codeLines[i][s]);
+                if (!strcmp(outputString[k-1], " ")){
+                    strcpy(outputString[k-1], code->codeLines[i][s]);
+                    strcpy(outputString[k], " ");
                     k++;
                 } else {
-                    strcpy(outputString[k+1], code->codeLines[i][s]);
-                    k += 2;
+                    strcpy(outputString[k], code->codeLines[i][s]);
+                    k++;
                     strcpy(outputString[k], " ");
                     k++;
                 }
