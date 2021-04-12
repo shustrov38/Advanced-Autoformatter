@@ -1,13 +1,8 @@
-int main() {
-    cout /*penis*/ <</*a;
-    int b;
-    int */ endl;
+int a;
+for (int i = 0; i < 10; ++i){
+a++;
+--a;
+char code[10];
+double code2[100][num];
+function();
 }
-
-int /*penis*/ /*penis2*/  a; /*penis3*/
-
-
-for /*lil chicha*/ (penis /*chicha*/; /*buba*/ biba; xuy)
-suck/*sus*/;
-
-
