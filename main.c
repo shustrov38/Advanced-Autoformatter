@@ -20,6 +20,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     Expression *e = createExpressions();
     Stack *meta = stCreate();
     INIT_VECTOR(exeSt);
+    INIT_VECTOR(exeStCap);
 
     // TODO: it might be better to start the interpretation directly from the main function,
     //  but all global variables must be stored.
@@ -34,7 +35,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
         int codeLineLength = getLineLength(file->code->codeLines[i]);
 
         // add and convert expression from code line to calculus expression
-        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i, &exeSt);
+        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i, &exeSt, &exeStCap);
         size+=q;
     }
     size++;
@@ -59,6 +60,10 @@ Expression *interpretFile(Memory *m, FileData *file) {
         MemoryFunctions.overflowCheck(m);
     }
 
+    for(int zzz = 0; zzz < exeSt.total; zzz++){
+        printf("\n %s", (char *) exeSt.items[zzz]);
+    }
+
     return e;
 }
 
@@ -79,7 +84,7 @@ int main(const int argc, const char *argv[]) {
 //
 //    for (int i = 0; i < filesCount; ++i) {
 //        loadFunctions(&files[i]);
-////        printAllFunctions(&files[0]);
+//        printAllFunctions(&files[0]);
 //    }
 //    printFunctionsCallTable(files, filesCount);
 

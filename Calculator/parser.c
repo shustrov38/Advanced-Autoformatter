@@ -24,7 +24,7 @@ Expression *createExpressions() {
     return tmp;
 }
 
-int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack *metaData, int metaVal,vector *exe) {
+int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack *metaData, int metaVal,vector *exe, vector *exeStCap) {
     int sizeDelta = 1;
     // check for ';' at the end of code line
     if (!strcmp(src[0], "for") || !strcmp(src[0], "if") || !strcmp(src[0], "while")) {
@@ -79,7 +79,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         for (int yy = 0; strcmp(src[i], ";");) {
             strcpy(forInit[yy++], src[i++]);
         }
-        addExpression(expr, exprSize++, forInit, i - 2, NULL, 0, NULL);
+        addExpression(expr, exprSize++, forInit, i - 2, NULL, 0, NULL, NULL);
         sizeDelta++;
         i++;
 
@@ -101,21 +101,52 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
             strcpy(forCond[forCondIdx++], src[i++]);
         }
         strcpy(forCond[forCondIdx++], ")");
-        addExpression(expr, exprSize++, forCond, forCondIdx, NULL, 0,NULL);
+        addExpression(expr, exprSize++, forCond, forCondIdx, NULL, 0,NULL, NULL);
         sizeDelta++;
         i++;
 
+    } else if (!strcmp(src[0], "}") && !strcmp(src[0], "else") && !strcmp(src[0], "if")) {
+        strcpy(expr[exprSize].code[exprInd], "elif");
+        char *metaStr = (char *) malloc(5 * sizeof(char));
+        sprintf(metaStr, "%d", metaVal);
+        strcat(expr[exprSize].code[exprInd++], metaStr);
+        stData tmp = {.str = expr[exprSize].code[exprInd - 1]};
+        stPush(metaData, tmp);
+        strcpy(expr[exprSize].code[exprInd++], "=");
+        strcpy(expr[exprSize].code[exprInd++], "(");
+        addBracket = 1;
+        i = 1;
+    }else if (!strcmp(src[0], "}") && !strcmp(src[0], "else")) {
+        //pop exeSt
+        char **forIt = (char **) malloc(10 * sizeof(char *));
+        int curCap = (int) Vec.get(exeStCap,exeStCap->total-1);
+        for (int y = 0; y < curCap; y++) {
+            forIt[y] = (char *) malloc(10 * sizeof(char));
+            memset(forIt[y], 0, 10);
+            strcpy(forIt[y],(char*)Vec.get(exe,exe->total-1));
+            Vec.delete(exe, exe->total-1);
+        }
+        addExpression(expr, exprSize++, forIt, curCap, NULL, 0, NULL, NULL);
+        sprintf(expr[exprSize].code[exprInd++], "%s else", stTop(metaData).str);
+
+        Vec.delete(exeStCap,exeStCap->total-1);
+
+        stPop(metaData);
+        i = 1;
     } else if (!strcmp(src[0], "}")) {
         //pop exeSt
         char **forIt = (char **) malloc(10 * sizeof(char *));
-        for (int y = 0; y < 2; y++) {
+        int curCap = (int) Vec.get(exeStCap,exeStCap->total-1);
+        for (int y = 0; y < curCap; y++) {
             forIt[y] = (char *) malloc(10 * sizeof(char));
             memset(forIt[y], 0, 10);
-            strcpy(forIt[y],(char*)Vec.get(exe,exe->total-y-1));
-            Vec.delete(exe, exe->total);
+            strcpy(forIt[y],(char*)Vec.get(exe,exe->total-1));
+            Vec.delete(exe, exe->total-1);
         }
-        addExpression(expr, exprSize++, forIt, 2, NULL, 0, NULL);
+        addExpression(expr, exprSize++, forIt, curCap, NULL, 0, NULL, NULL);
         sprintf(expr[exprSize].code[exprInd++], "%s end", stTop(metaData).str);
+
+        Vec.delete(exeStCap,exeStCap->total-1);
 
         stPop(metaData);
         i = 1;
@@ -133,6 +164,8 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
             y++;
             Vec.push(exe,src[srcSize-y]);
         }
+        Vec.push(exeStCap,y);
+        printf(" \n qeq: %d \n", y);
 
     } else {
         for (; i < srcSize; ++i) {
