@@ -60,10 +60,6 @@ Expression *interpretFile(Memory *m, FileData *file) {
         MemoryFunctions.overflowCheck(m);
     }
 
-    for(int zzz = 0; zzz < exeSt.total; zzz++){
-        printf("\n %s", (char *) exeSt.items[zzz]);
-    }
-
     return e;
 }
 

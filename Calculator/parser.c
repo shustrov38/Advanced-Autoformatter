@@ -144,8 +144,16 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
             Vec.delete(exe, exe->total-1);
         }
         addExpression(expr, exprSize++, forIt, curCap, NULL, 0, NULL, NULL);
-        sprintf(expr[exprSize].code[exprInd++], "%s end", stTop(metaData).str);
-
+        char **tmp = malloc(2 * sizeof (char*));
+        for(int anotherIter = 0; anotherIter < 2; anotherIter++){
+            tmp[anotherIter] = (char *) malloc(10 * sizeof (char));
+            memset(tmp[anotherIter], 0 , 10);
+        }
+        strcpy(tmp[1],stTop(metaData).str);
+        strcpy(tmp[0],"end");
+        addExpression(expr, 1+exprSize, tmp, 2, NULL, 0, NULL, NULL);
+        exprSize+=2;
+        sizeDelta+=2;
         Vec.delete(exeStCap,exeStCap->total-1);
 
         stPop(metaData);
@@ -165,7 +173,6 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
             Vec.push(exe,src[srcSize-y]);
         }
         Vec.push(exeStCap,y);
-        printf(" \n qeq: %d \n", y);
 
     } else {
         for (; i < srcSize; ++i) {
