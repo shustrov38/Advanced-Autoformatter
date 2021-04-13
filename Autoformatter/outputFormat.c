@@ -4,6 +4,7 @@
 #include "../functions.h"
 
 void outputFiles(char *fileName, codeLineStruct *code) {
+    //TODO: change do while in lineMaker
 
     int nesting = 0;
     for (int i = 0; i < code->linesCnt; ++i) {
@@ -32,20 +33,22 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
 
         //one string check
-
         for (int s = 1; s < len; ++s){
-            //printf("%s ", code->codeLines[i][s]);
+            //TODO:switch
 
+            //skip space
             if (!strcmp(code->codeLines[i][s], " ")){
                 continue;
             }
+
+            //open br
             if (isOpenBr(code->codeLines[i][s])) {
                 strcpy(outputString[k], code->codeLines[i][s]);
                 k++;
                 continue;
                 //TODO: func & unary
             }
-
+            //close br
             if (isCloseBr(code->codeLines[i][s])){
                 if (isOpenBr(outputString[k-1])){
                     strcpy(outputString[k], code->codeLines[i][s]);
@@ -58,6 +61,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 continue;
             }
 
+            //Open fig br
             if (isOpenFigBr(code->codeLines[i][s])){
                 nesting++;
                 strcpy(outputString[k], code->codeLines[i][s]);
@@ -65,6 +69,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 continue;
             }
 
+            //square brackets
             if (!strcmp(code->codeLines[i][s], "[") || !strcmp(code->codeLines[i][s], "]")){
                 if (!strcmp(outputString[k-1], " ")){
                     strcpy(outputString[k-1], code->codeLines[i][s]);
@@ -75,8 +80,8 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 continue;
             }
 
-
-            if (isSemicolon(code->codeLines[i][s])){
+            //semicolon and two dots symbol
+            if (isSemicolon(code->codeLines[i][s]) || !strcmp(code->codeLines[i][s], ":")){
                 if (!strcmp(outputString[k-1], " ")){
                     strcpy(outputString[k-1], code->codeLines[i][s]);
                     strcpy(outputString[k], " ");
@@ -89,11 +94,15 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 }
                 continue;
             }
+
+            //simple Symbol
             strcpy(outputString[k], code->codeLines[i][s]);
             k++;
             strcpy(outputString[k], " ");
             k++;
         }
+
+        //output
         for (int c = 0; c < k; ++c){
             printf("%s", outputString[c]);
         } printf("\n");
