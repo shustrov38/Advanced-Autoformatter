@@ -18,15 +18,15 @@ void outputFiles(char *fileName, codeLineStruct *code) {
         int k = 0, j = 0;
 
 
-
         if (isCloseFigBr(code->codeLines[i][0])) {
-            if(switchFlag) {
-                nesting-=2;
-                switchFlag=0;
+            if (switchFlag) {
+                nesting -= 2;
+                switchFlag = 0;
             }
-            else
+            else {
                 --nesting;
-            caseFlag=0;
+            }
+            caseFlag = 0;
         }
 
 
@@ -45,28 +45,23 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             switchCnt++;
         }
 
-
         //0 Symbol
         strcpy(outputString[k], code->codeLines[i][0]);
         k++;
         strcpy(outputString[k], " ");
         k++;
+
         if (isBlock(code->codeLines[i][0])) {
             cycleFlag++;
         }
-
-        if(caseFlag) {
+        if (caseFlag) {
             nesting++;
             caseFlag=0;
         }
 
 
-//        printf("iter = %d  k = %d ", i, k);
-
-
         //one string check
         for (int s = 1; s < len; ++s){
-            //TODO:switch close fig bracket
 
             //skip space
             if (!strcmp(code->codeLines[i][s], " ")){
@@ -80,6 +75,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 continue;
                 //TODO: func & unary
             }
+
             //close br
             if (isCloseBr(code->codeLines[i][s])){
                 if (isOpenBr(outputString[k-1])){
@@ -94,7 +90,6 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             }
 
             //Open fig br
-
             if (isOpenFigBr(code->codeLines[i][s])){
                 nesting++;
                 strcpy(outputString[k], code->codeLines[i][s]);
@@ -129,10 +124,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             }
 
             //simple Symbol
-
-
-
-            strcpy(outputString[k], code->codeLines[i][s]);
+           strcpy(outputString[k], code->codeLines[i][s]);
             k++;
             strcpy(outputString[k], " ");
             k++;

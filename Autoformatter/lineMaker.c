@@ -61,12 +61,13 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             }
 
             if (doFlag) {
-                if (!isCloseFigBr(codeBody->codeLines[codeLineCnt - 1][0])) {
+                --codeLineCnt;
+                ++codeWordsCnt;
+                if (!isCloseFigBr(codeBody->codeLines[codeLineCnt][0])) {
                     strcpy(codeBody->codeLines[codeLineCnt][0], "}");
-                    codeLineCnt++;
+                    codeWordsCnt = 1;
                     --figBracketCnt;
                 }
-                codeWordsCnt = 0;
                 while (!isSemicolon(originString[i])) {
                     strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
                     ++i;

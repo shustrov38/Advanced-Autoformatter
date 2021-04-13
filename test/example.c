@@ -8,15 +8,6 @@ switch () {
         }
         break;
 }
-
-switch () {
-    case 1:
-        switch () {
-            case 2:
-                zhopa;
-            case 3:
-                choppa;
-        }
-    case 54:
-        old;
-}
+do{
+    a++;
+} while (a < 10);
