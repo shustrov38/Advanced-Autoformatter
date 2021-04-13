@@ -1,22 +1,22 @@
-int a;
-for (int i = 0; i < 10; ++i){
-a++;
---a;
-char code[10];
-double code2[100][num];
-function();
-}
-
-switch(){
+switch () {
     case 1:
-        a++;
+        cock;
         break;
-
     case 2:
-        a--;
+        for(int) {
+            a++;
+        }
         break;
 }
 
-do{
-    a++;
-} while (a < 10);
+switch () {
+    case 1:
+        switch () {
+            case 2:
+                zhopa;
+            case 3:
+                choppa;
+        }
+    case 54:
+        old;
+}
