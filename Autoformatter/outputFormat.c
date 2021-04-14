@@ -86,7 +86,6 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                     k++;
                     continue;
                 }
-                //TODO: func
             }
 
             //close br
