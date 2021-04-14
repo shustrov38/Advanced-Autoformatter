@@ -1,3 +1,12 @@
+
+a--;
+
+for /*hui*/ (int a; ++a;){
+    b--;
+}
+
+--a;
+
 switch () {
     case 1:
         cock;
@@ -8,6 +17,7 @@ switch () {
         }
         break;
 }
+
 do{
     a++;
 } while (a < 10);

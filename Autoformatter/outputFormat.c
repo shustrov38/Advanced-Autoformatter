@@ -2,6 +2,7 @@
 #include "lineMaker.h"
 #include "../fileUtils.h"
 #include "../functions.h"
+#include "../Calculator/ops.h"
 
 void outputFiles(char *fileName, codeLineStruct *code) {
     //TODO: change do while in lineMaker
@@ -12,6 +13,9 @@ void outputFiles(char *fileName, codeLineStruct *code) {
     int switchCnt=0;
     for (int i = 0; i < code->linesCnt; ++i) {
         int len = getLineLength(code->codeLines[i]);
+
+        OpInfo *info = getLineOfIDs(code->codeLines[i], len);
+
         char outputString[len * 3][60];
         int cycleFlag = 0;
 
@@ -39,6 +43,25 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             strcpy(outputString[k], "    ");
         }
 
+        if (info[0].id == POST_INC){
+            strcpy(outputString[k-1], code->codeLines[i][0]);
+            strcpy(outputString[k], " ");
+            ++k;
+        } else
+        if (info[0].id == POST_DEC){
+            strcpy(outputString[k-1], code->codeLines[i][0]);
+            strcpy(outputString[k], " ");
+            ++k;
+        } else
+        if (info[0].id == PREF_INC){
+            strcpy(outputString[k], code->codeLines[i][0]);
+            ++k;
+        } else
+        if (info[0].id == PREF_DEC){
+            strcpy(outputString[k], code->codeLines[i][0]);
+            ++k;
+        }
+
         if(!strcmp(code->codeLines[i][0], "switch")) {
             nesting++;
             switchFlag=1;
@@ -59,7 +82,6 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             caseFlag=0;
         }
 
-
         //one string check
         for (int s = 1; s < len; ++s){
 
@@ -73,7 +95,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 strcpy(outputString[k], code->codeLines[i][s]);
                 k++;
                 continue;
-                //TODO: func & unary
+                //TODO: func
             }
 
             //close br
@@ -105,6 +127,30 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                     strcpy(outputString[k], code->codeLines[i][s]);
                     k++;
                 }
+                continue;
+            }
+
+            //unary
+            if (info[s].id == POST_INC){
+                strcpy(outputString[k-1], code->codeLines[i][s]);
+                strcpy(outputString[k], " ");
+                ++k;
+                continue;
+            }
+            if (info[s].id == POST_DEC){
+                strcpy(outputString[k-1], code->codeLines[i][s]);
+                strcpy(outputString[k], " ");
+                ++k;
+                continue;
+            }
+            if (info[s].id == PREF_INC){
+                strcpy(outputString[k], code->codeLines[i][s]);
+                ++k;
+                continue;
+            }
+            if (info[s].id == PREF_DEC){
+                strcpy(outputString[k], code->codeLines[i][s]);
+                ++k;
                 continue;
             }
 
