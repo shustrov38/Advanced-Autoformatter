@@ -5,7 +5,6 @@
 #include "../Calculator/ops.h"
 
 void outputFiles(char *fileName, codeLineStruct *code) {
-    //TODO: change do while in lineMaker
 
     int nesting = 0;
     int caseFlag=0;
@@ -33,7 +32,6 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             caseFlag = 0;
         }
 
-
         if(!strcmp(code->codeLines[i][0], "case")) {
             caseFlag=1;
             nesting--;
@@ -43,24 +41,6 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             strcpy(outputString[k], "    ");
         }
 
-        if (info[0].id == POST_INC){
-            strcpy(outputString[k-1], code->codeLines[i][0]);
-            strcpy(outputString[k], " ");
-            ++k;
-        } else
-        if (info[0].id == POST_DEC){
-            strcpy(outputString[k-1], code->codeLines[i][0]);
-            strcpy(outputString[k], " ");
-            ++k;
-        } else
-        if (info[0].id == PREF_INC){
-            strcpy(outputString[k], code->codeLines[i][0]);
-            ++k;
-        } else
-        if (info[0].id == PREF_DEC){
-            strcpy(outputString[k], code->codeLines[i][0]);
-            ++k;
-        }
 
         if(!strcmp(code->codeLines[i][0], "switch")) {
             nesting++;
@@ -69,10 +49,16 @@ void outputFiles(char *fileName, codeLineStruct *code) {
         }
 
         //0 Symbol
-        strcpy(outputString[k], code->codeLines[i][0]);
-        k++;
-        strcpy(outputString[k], " ");
-        k++;
+        if (info[0].id == PREF_INC || info[0].id == PREF_DEC) {
+            strcpy(outputString[0], code->codeLines[i][0]);
+            ++k;
+
+        } else {
+            strcpy(outputString[k], code->codeLines[i][0]);
+            k++;
+            strcpy(outputString[k], " ");
+            k++;
+        }
 
         if (isBlock(code->codeLines[i][0])) {
             cycleFlag++;
@@ -92,9 +78,14 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
             //open br
             if (isOpenBr(code->codeLines[i][s])) {
-                strcpy(outputString[k], code->codeLines[i][s]);
-                k++;
-                continue;
+                if (info[s-1].id == VAR && !isBlock(code->codeLines[i][s-1])){
+                    strcpy(outputString[k-1], code->codeLines[i][s]);
+                    continue;
+                } else {
+                    strcpy(outputString[k], code->codeLines[i][s]);
+                    k++;
+                    continue;
+                }
                 //TODO: func
             }
 
@@ -131,24 +122,12 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             }
 
             //unary
-            if (info[s].id == POST_INC){
+            if (info[s].id == POST_INC || info[s].id == POST_DEC){
                 strcpy(outputString[k-1], code->codeLines[i][s]);
                 strcpy(outputString[k], " ");
                 ++k;
                 continue;
-            }
-            if (info[s].id == POST_DEC){
-                strcpy(outputString[k-1], code->codeLines[i][s]);
-                strcpy(outputString[k], " ");
-                ++k;
-                continue;
-            }
-            if (info[s].id == PREF_INC){
-                strcpy(outputString[k], code->codeLines[i][s]);
-                ++k;
-                continue;
-            }
-            if (info[s].id == PREF_DEC){
+            } else if (info[s].id == PREF_INC || info[s].id == PREF_DEC) {
                 strcpy(outputString[k], code->codeLines[i][s]);
                 ++k;
                 continue;
