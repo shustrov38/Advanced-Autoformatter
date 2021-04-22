@@ -69,7 +69,7 @@ int main(const int argc, const char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    FileData files[MAX_FILES];
+    FileData files[2];
     int filesCount = loadFiles(files, argc, argv);
     printAllFiles(files, filesCount);
 

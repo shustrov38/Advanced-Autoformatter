@@ -1,9 +1,9 @@
 #include "lineMaker.h"
 #include "optionFunctions.h"
 
-#define ONE_FILE_SIZE 300
+#define ONE_FILE_SIZE 200
 #define ONE_LINE_SIZE 50
-#define ONE_ELEMENT_SIZE 20
+#define ONE_ELEMENT_SIZE 30
 
 codeLineStruct *createCodeLineStruct() {
     codeLineStruct *codeBody = malloc(sizeof(codeLineStruct));
@@ -68,7 +68,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                     codeWordsCnt = 1;
                     --figBracketCnt;
                 }
-                while (!isSemicolon(originString[i])) {
+                while (isSemicolon(originString[i]) == 0) { //TODO fix2
                     strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
                     ++i;
                     codeWordsCnt++;
@@ -78,7 +78,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                 codeWordsCnt = 0;
             }
 
-            while (figBracketCnt) {
+            while (figBracketCnt) { //TODO: fix1
                 strcpy(codeBody->codeLines[codeLineCnt][0], "}");
                 codeLineCnt++;
                 --figBracketCnt;

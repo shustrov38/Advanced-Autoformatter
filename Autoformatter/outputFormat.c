@@ -5,6 +5,8 @@
 #include "../Calculator/ops.h"
 
 void outputFiles(char *fileName, codeLineStruct *code) {
+    FILE *file;
+    file = fopen(fileName, "w");
 
     int nesting = 0;
     int caseFlag=0;
@@ -38,7 +40,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
         }
 
         for (k = 0; k < nesting; ++k) {
-            strcpy(outputString[k], "    ");
+            strcpy(outputString[k], "   ");
         }
 
 
@@ -156,8 +158,9 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
         //output
         for (int c = 0; c < k; ++c){
-            printf("%s", outputString[c]);
-        } printf("\n");
+            fprintf(file, "%s", outputString[c]);
+            strcpy(outputString[c], "\0");
+        } fprintf(file, "\n");
 
     }
 }
