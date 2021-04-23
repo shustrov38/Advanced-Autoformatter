@@ -8,6 +8,10 @@ void outputFiles(char *fileName, codeLineStruct *code) {
     FILE *file;
     file = fopen(fileName, "w");
 
+    //TODO "]
+    // include and define
+    // &"
+
     int nesting = 0;
     int caseFlag=0;
     int switchFlag=0;
