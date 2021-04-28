@@ -20,7 +20,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     Expression *e = createExpressions();
     Stack *meta = stCreate();
     INIT_VECTOR(exeSt);
-    INIT_VECTOR(exeStCap);
+    INIT_VECTOR(reqSize);
 
     // TODO: it might be better to start the interpretation directly from the main function,
     //  but all global variables must be stored.
@@ -35,7 +35,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
         int codeLineLength = getLineLength(file->code->codeLines[i]);
 
         // add and convert expression from code line to calculus expression
-        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i, &exeSt);
+        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i, &exeSt, &reqSize);
         size+=q;
     }
     size++;

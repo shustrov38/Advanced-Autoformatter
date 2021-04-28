@@ -24,7 +24,7 @@ Expression *createExpressions() {
     return tmp;
 }
 
-int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack *metaData, int metaVal,vector *exe) {
+int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack *metaData, int metaVal,vector *exe, vector *reqSize) {
     int sizeDelta = 1;
     // check for ';' at the end of code line
     if (!strcmp(src[0], "for") || !strcmp(src[0], "if") || !strcmp(src[0], "while")) {
@@ -70,6 +70,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         strcpy(expr[exprSize].code[exprInd++], "(");
         addBracket = 1;
         i = 1;
+        Vec.push(reqSize,0);
     } else if (!strcmp(src[0], "for")) {
         srcSize--;
         i = 2;
@@ -81,7 +82,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         for (int yy = 0; strcmp(src[i], ";");) {
             strcpy(forInit[yy++], src[i++]);
         }
-        addExpression(expr, exprSize++, forInit, i - 2, NULL, 0, NULL);
+        addExpression(expr, exprSize++, forInit, i - 2, NULL, 0, NULL, reqSize);
         sizeDelta++;
         i++;
 
@@ -103,21 +104,32 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
             strcpy(forCond[forCondIdx++], src[i++]);
         }
         strcpy(forCond[forCondIdx++], ")");
-        addExpression(expr, exprSize++, forCond, forCondIdx, NULL, 0,NULL);
+        addExpression(expr, exprSize++, forCond, forCondIdx, NULL, 0,NULL, reqSize);
         sizeDelta++;
         i++;
 
     } else if (!strcmp(src[0], "}")) {
         //pop exeSt
+        int rs = (int) Vec.get(reqSize,reqSize->total-1);
+        Vec.delete(reqSize,reqSize->total-1);
+
         char **forIt = (char **) malloc(10 * sizeof(char *));
-        for (int y = 0; y < 2; y++) {
+        for (int y = 0; y < rs; y++) {
             forIt[y] = (char *) malloc(10 * sizeof(char));
             memset(forIt[y], 0, 10);
             strcpy(forIt[y],(char*)Vec.get(exe,exe->total-y-1));
-            Vec.delete(exe, exe->total);
         }
-        addExpression(expr, exprSize++, forIt, 2, NULL, 0, NULL);
-        sprintf(expr[exprSize].code[exprInd++], "%s end", stTop(metaData).str);
+
+        for(int y = 0; y <rs; y++){
+            Vec.delete(exe, exe->total-1);
+        }
+        addExpression(expr, exprSize++, forIt, rs, NULL, 0, NULL, reqSize);
+
+        char **tmpEnd = (char **) malloc(1 * sizeof(char *));
+        tmpEnd[0] = (char *) malloc(10 * sizeof(char));
+        sprintf(tmpEnd[0], "%s end", stTop(metaData).str);
+
+        addExpression(expr, exprSize++, tmpEnd, 1, NULL, 0, NULL, reqSize);
 
         stPop(metaData);
         i = 1;
@@ -135,6 +147,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
             y++;
             Vec.push(exe,src[srcSize-y]);
         }
+        Vec.push(reqSize,y);
 
     } else {
         for (; i < srcSize; ++i) {
