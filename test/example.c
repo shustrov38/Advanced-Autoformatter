@@ -1,23 +1,24 @@
-#include < stdio . h > 
-#include < math . h > 
+#include <stdio.h>
+#define max 100
 int main(){
-   int n , k; 
-   scanf(" %d " , & n); 
-   int m[n]; 
-   for (int i = 0; i < n; ++i) {
-      scanf(" %d " , & m[i); 
-   } 
-   k = 0; 
-   for (int i = 1; i < n - 1; ++i) {
-      if (m[i - 1]> m[i]&& m[i + 1]> m[i) {
-         k += 1; 
+   int size; 
+   scanf(" %d " , &size); 
+   char m[size] , sc; 
+   scanf(" %c " , &m[0); 
+   for (int i = 0; size > 0; i++ , --size) {
+      scanf(" %c " , &m[i); 
+      if (m[i - 1] == '(' && m[i] == ') ') {
+         m[i] = 0; 
+         m[i - 1] = 0; 
+         i -= 2; 
       } 
    } 
-   if (m[0]< m[1) {
-      k += 1; 
+   if (m[0] == 0) {
+      printf(" Right "); 
    } 
-   if (m[n - 1]< m[n - 2) {
-      k += 1; 
+   else {
+      printf(" Wrong "); 
    } 
-   printf(" %d " , k); 
+   c = a && b; 
    return 0; 
+} 

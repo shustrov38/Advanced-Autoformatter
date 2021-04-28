@@ -8,14 +8,16 @@ void outputFiles(char *fileName, codeLineStruct *code) {
     FILE *file;
     file = fopen(fileName, "w");
 
-    //TODO "]
-    // include and define
-    // &"
+    //TODO "
+    // ] - lineMaker
+    // define - lineMaker
+    // comments spaces"
 
     int nesting = 0;
-    int caseFlag=0;
-    int switchFlag=0;
-    int switchCnt=0;
+    int caseFlag = 0;
+    int switchFlag = 0;
+    int switchCnt = 0;
+    int includeFlag = 0;
     for (int i = 0; i < code->linesCnt; ++i) {
         int len = getLineLength(code->codeLines[i]);
 
@@ -107,6 +109,30 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 continue;
             }
 
+            //open #include
+            if (!strcmp(code->codeLines[i][s], "<") && !strcmp(code->codeLines[i][s-1], "#include")){
+                strcpy(outputString[k], code->codeLines[i][s]);
+                k++;
+                includeFlag++;
+                continue;
+            }
+            //close #include
+            if (!strcmp(code->codeLines[i][s], ">") && includeFlag > 0){
+                strcpy(outputString[k], code->codeLines[i][s]);
+                includeFlag--;
+                k++;
+                continue;
+            }
+
+            //scanf &
+            if (!strcmp(code->codeLines[i][s], "&")){
+                strcpy(outputString[k], code->codeLines[i][s]);
+                k++;
+                continue;
+            }
+
+
+
             //Open fig br
             if (isOpenFigBr(code->codeLines[i][s])){
                 nesting++;
@@ -116,9 +142,21 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             }
 
             //square brackets
-            if (!strcmp(code->codeLines[i][s], "[") || !strcmp(code->codeLines[i][s], "]")){
+            if (!strcmp(code->codeLines[i][s], "[")){
                 if (!strcmp(outputString[k-1], " ")){
                     strcpy(outputString[k-1], code->codeLines[i][s]);
+                } else {
+                    strcpy(outputString[k], code->codeLines[i][s]);
+                    k++;
+                }
+                continue;
+            }
+
+            if (!strcmp(code->codeLines[i][s], "]")){
+                if (!strcmp(outputString[k-1], " ")){
+                    strcpy(outputString[k-1], code->codeLines[i][s]);
+                    strcpy(outputString[k], " ");
+                    k++;
                 } else {
                     strcpy(outputString[k], code->codeLines[i][s]);
                     k++;
@@ -154,10 +192,12 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             }
 
             //simple Symbol
-           strcpy(outputString[k], code->codeLines[i][s]);
+            strcpy(outputString[k], code->codeLines[i][s]);
             k++;
-            strcpy(outputString[k], " ");
-            k++;
+            if (includeFlag == 0) {  //use spaces if it's not #include
+                strcpy(outputString[k], " ");
+                k++;
+            }
         }
 
         //output
