@@ -39,16 +39,59 @@ Expression *interpretFile(Memory *m, FileData *file) {
         size+=q;
     }
     size++;
-    for(int y = 0; y<20;y++){
-        printf("\n");
-        for(int z = 0; z <e[y].size; z++){
-            printf(" %s",e[y].code[z]);
-        }
-    }
+//    for(int y = 0; y<20;y++){
+//        printf("\n");
+//        for(int z = 0; z <e[y].size; z++){
+//            printf(" %s",e[y].code[z]);
+//        }
+//    }
 
     // iterate through Expressions and interpret each of them
-    for (int i = 0; i < size && e[i].size > 0; ++i) {
+    for (int i = 0; i < 20; ++i) {
         rpnProcessor *outStack = rpnProcInit();
+
+        printf("\n");
+        for(int z = 0; z <e[i].size; z++){
+            printf(" %s",e[i].code[z]);
+        }
+
+        //GOTO & tags logic
+
+        if (!strcmp(e[i].code[0],"end of")){ //TODO: make a NORMAL notIF condition
+//            printf("%s", e[i].code[1]);
+            if(MemoryFunctions.getValue(m, e[i].code[1]) > 0){
+                int executionLineNum = i;
+                while(strcmp(e[executionLineNum].code[0],e[i].code[1])){
+                    executionLineNum--;
+                    printf("!");
+                }
+                i = executionLineNum;
+            }
+
+            else{
+                i++;
+            }
+
+        } else if(e[i].code[0][0] == 'i' && e[i].code[0][1] == 'f'){
+            if (MemoryFunctions.getValue(m, e[i].code[0]) > 0){
+                i++;
+            } else {
+                int executionLineNum = i;
+                while(strcmp(e[executionLineNum].code[1],e[i].code[0]) && strcmp(e[executionLineNum].code[0],"end of")){
+                    executionLineNum++;
+                }
+                i = executionLineNum;
+            }
+        }
+
+        //INIT logics
+        if (!strcmp(e[i].code[0],"int")){
+            MEMORY_NEW_NUM(*m, Int, e[i].code[1], 0);
+        } else if (!strcmp(e[i].code[0],"double")){
+            MEMORY_NEW_NUM(*m, Double, e[i].code[1], 0);
+        } else if (!strcmp(e[i].code[0],"unsigned")){
+            MEMORY_NEW_NUM(*m, Unsigned, e[i].code[1], 0);
+        }
 
         // result stack with RPN
         Stack *stack = rpnFunc(outStack, e[i].code, e[i].size);
@@ -88,22 +131,22 @@ int main(const int argc, const char *argv[]) {
 //
     INIT_MEMORY(m);
 
-    MEMORY_NEW_NUM(m, Int, "X", 1);
+    MEMORY_NEW_NUM(m, Int, "s", 5);
     MEMORY_NEW_NUM(m, Double, "Y", 2.7);
     MEMORY_NEW_NUM(m, Unsigned, "Z", -3);
-    MEMORY_NEW_STR(m, "S", "H3110_WR1D");
+    MEMORY_NEW_STR(m, "St", "H3110_WR1D");
 
-//    printf("Variables before interpretation:\n");
-//    MemoryFunctions.printRegister(&m, Numerical);
-//    MemoryFunctions.printRegister(&m, String);
-//    printf("\n");
+    printf("Variables before interpretation:\n");
+    MemoryFunctions.printRegister(&m, Numerical);
+    MemoryFunctions.printRegister(&m, String);
+    printf("\n");
 
     Expression *e = interpretFile(&m, &files[0]);
 
-//    printf("Variables after interpretation:\n");
-//    MemoryFunctions.printRegister(&m, Numerical);
-//    MemoryFunctions.printRegister(&m, String);
-//    printf("\n");
+    printf("Variables after interpretation:\n");
+    MemoryFunctions.printRegister(&m, Numerical);
+    MemoryFunctions.printRegister(&m, String);
+    printf("\n");
 
     return EXIT_SUCCESS;
 }

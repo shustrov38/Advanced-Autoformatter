@@ -6,6 +6,7 @@
 #include "ops.h"
 #include "stack.h"
 #include "../vector.h"
+#include "../memory.h"
 
 #define MAX_V_NAME_SIZE 20
 
