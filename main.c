@@ -35,7 +35,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
         int codeLineLength = getLineLength(file->code->codeLines[i]);
 
         // add and convert expression from code line to calculus expression
-        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i, &exeSt, &exeStCap);
+        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i, &exeSt);
         size+=q;
     }
     size++;

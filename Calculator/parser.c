@@ -43,7 +43,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
     }
 
-    while (strlen(expr[exprSize].code[0]) > 0) exprSize++;
+    while(strlen(expr[exprSize].code[0])>0) exprSize++;
 
     int addBracket = 0;
     int exprInd = 0;
@@ -114,19 +114,10 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
             forIt[y] = (char *) malloc(10 * sizeof(char));
             memset(forIt[y], 0, 10);
             strcpy(forIt[y],(char*)Vec.get(exe,exe->total-y-1));
-        }
-        for (int y = 0; y < 2; y++) {
-            Vec.delete(exe, exe->total-1);
+            Vec.delete(exe, exe->total);
         }
         addExpression(expr, exprSize++, forIt, 2, NULL, 0, NULL);
-
-        char **endTmp = (char **) malloc(1 * sizeof(char));
-        memset(endTmp, 0, 1);
-        endTmp[0] = (char *) malloc(10 * sizeof(char));
-        memset(endTmp[0], 0, 10);
-        sprintf(endTmp[0], "%s end", stTop(metaData).str);
-
-        addExpression(expr, exprSize++, endTmp, 1, NULL, 0, NULL);
+        sprintf(expr[exprSize].code[exprInd++], "%s end", stTop(metaData).str);
 
         stPop(metaData);
         i = 1;
