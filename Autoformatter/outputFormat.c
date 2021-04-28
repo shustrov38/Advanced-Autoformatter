@@ -8,10 +8,13 @@ void outputFiles(char *fileName, codeLineStruct *code) {
     FILE *file;
     file = fopen(fileName, "w");
 
-    //TODO "
+    //TODO
+    // "
     // ] - lineMaker
-    // define - lineMaker
-    // comments spaces"
+    // 2nd define is broken - lineMaker
+    // comments spaces
+    // ++a
+    // "
 
     int nesting = 0;
     int caseFlag = 0;
@@ -109,6 +112,19 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 continue;
             }
 
+            if (!strcmp(code->codeLines[i][s], ",")){
+                if (!strcmp(outputString[k-1], " ")){
+                    strcpy(outputString[k-1], code->codeLines[i][s]);
+                    strcpy(outputString[k], " ");
+                    k++;
+                } else {
+                    strcpy(outputString[k], code->codeLines[i][s]);
+                    k++;
+                    strcpy(outputString[k], " ");
+                    k++;
+                }
+                continue;
+            }
             //open #include
             if (!strcmp(code->codeLines[i][s], "<") && !strcmp(code->codeLines[i][s-1], "#include")){
                 strcpy(outputString[k], code->codeLines[i][s]);
@@ -130,7 +146,6 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 k++;
                 continue;
             }
-
 
 
             //Open fig br
