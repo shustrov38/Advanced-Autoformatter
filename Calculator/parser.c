@@ -123,7 +123,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         for(int y = 0; y <rs; y++){
             Vec.delete(exe, exe->total-1);
         }
-        addExpression(expr, exprSize++, forIt, rs, NULL, 0, NULL, reqSize);
+        if (rs) addExpression(expr, exprSize++, forIt, rs, NULL, 0, NULL, reqSize);
 
         char **tmpEnd = (char **) malloc(2 * sizeof(char *));
         tmpEnd[0] = (char *) malloc(10 * sizeof(char));
