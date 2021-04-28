@@ -60,12 +60,22 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
         i = 2;
     } else if (!strcmp(src[0], "if") || !strcmp(src[0], "while")) {
+        exprSize++;
         strcpy(expr[exprSize].code[exprInd], src[0]);
         char *metaStr = (char *) malloc(5 * sizeof(char));
         sprintf(metaStr, "%d", metaVal);
         strcat(expr[exprSize].code[exprInd++], metaStr);
         stData tmp = {.str = expr[exprSize].code[exprInd - 1]};
         stPush(metaData, tmp);
+
+        char **tmpEnd = (char **) malloc(2 * sizeof(char *));
+        tmpEnd[0] = (char *) malloc(10 * sizeof(char));
+        tmpEnd[1] = (char *) malloc(10 * sizeof(char));
+        strcpy(tmpEnd[0], "int");
+        strcpy(tmpEnd[1], stTop(metaData).str);
+
+        addExpression(expr, exprSize-1, tmpEnd, 2, NULL, 0, NULL, reqSize);
+
         strcpy(expr[exprSize].code[exprInd++], "=");
         strcpy(expr[exprSize].code[exprInd++], "(");
         addBracket = 1;
@@ -96,8 +106,18 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         char *metaStr = (char *) malloc(5 * sizeof(char));
         sprintf(metaStr, "%d", metaVal);
         strcat(forCond[forCondIdx++], metaStr);
+
         stData tmp = {.str = forCond[forCondIdx - 1]};
         stPush(metaData, tmp);
+
+        char **tmpEnd = (char **) malloc(2 * sizeof(char *));
+        tmpEnd[0] = (char *) malloc(10 * sizeof(char));
+        tmpEnd[1] = (char *) malloc(10 * sizeof(char));
+        strcpy(tmpEnd[0], "int");
+        strcpy(tmpEnd[1], stTop(metaData).str);
+
+        addExpression(expr, exprSize++, tmpEnd, 2, NULL, 0, NULL, reqSize);
+
         strcpy(forCond[forCondIdx++], "=");
         strcpy(forCond[forCondIdx++], "(");
         for (; strcmp(src[i], ";");) {

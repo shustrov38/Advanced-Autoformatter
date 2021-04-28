@@ -58,14 +58,13 @@ Expression *interpretFile(Memory *m, FileData *file) {
         //GOTO & tags logic
 
         if (!strcmp(e[i].code[0],"end of")){ //TODO: make a NORMAL notIF condition
-//            printf("%s", e[i].code[1]);
-            if(MemoryFunctions.getValue(m, e[i].code[1]) > 0){
+            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+            if(MemoryFunctions.getValue(m, e[i].code[1])->d > 0){
                 int executionLineNum = i;
                 while(strcmp(e[executionLineNum].code[0],e[i].code[1])){
                     executionLineNum--;
-                    printf("!");
                 }
-                i = executionLineNum;
+                i = executionLineNum-1;
             }
 
             else{
@@ -73,14 +72,14 @@ Expression *interpretFile(Memory *m, FileData *file) {
             }
 
         } else if(e[i].code[0][0] == 'i' && e[i].code[0][1] == 'f'){
-            if (MemoryFunctions.getValue(m, e[i].code[0]) > 0){
+            if (MemoryFunctions.getValue(m, e[i].code[0])->d > 0){
                 i++;
             } else {
                 int executionLineNum = i;
                 while(strcmp(e[executionLineNum].code[1],e[i].code[0]) && strcmp(e[executionLineNum].code[0],"end of")){
                     executionLineNum++;
                 }
-                i = executionLineNum;
+                i = executionLineNum-1;
             }
         }
 
@@ -98,9 +97,12 @@ Expression *interpretFile(Memory *m, FileData *file) {
         Node *root = nodeInit();
         opTreeGen(root, stack);
         opTreeCalc(m, root);
-
         // after each calculation
         MemoryFunctions.overflowCheck(m);
+
+        printf("\nVariables after interpretation:\n");
+        MemoryFunctions.printRegister(m, Numerical);
+        printf("\n");
     }
 
     return e;
@@ -132,13 +134,10 @@ int main(const int argc, const char *argv[]) {
     INIT_MEMORY(m);
 
     MEMORY_NEW_NUM(m, Int, "s", 5);
-    MEMORY_NEW_NUM(m, Double, "Y", 2.7);
-    MEMORY_NEW_NUM(m, Unsigned, "Z", -3);
     MEMORY_NEW_STR(m, "St", "H3110_WR1D");
 
     printf("Variables before interpretation:\n");
     MemoryFunctions.printRegister(&m, Numerical);
-    MemoryFunctions.printRegister(&m, String);
     printf("\n");
 
     Expression *e = interpretFile(&m, &files[0]);
