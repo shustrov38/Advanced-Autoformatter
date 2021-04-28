@@ -134,7 +134,10 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
 
             //Open fig br
-            if (isOpenFigBr(code->codeLines[i][s])){
+            if(isOpenFigBr(code->codeLines[i][s]) && isCloseFigBr(code->codeLines[i][s+2])) {
+
+            }
+            else if (isOpenFigBr(code->codeLines[i][s])){
                 nesting++;
                 strcpy(outputString[k], code->codeLines[i][s]);
                 k++;

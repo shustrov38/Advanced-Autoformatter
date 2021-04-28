@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define max 100
+#define max 100 int 
 int main(){
    int size; 
    scanf(" %d " , &size); 
