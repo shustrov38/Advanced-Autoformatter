@@ -125,11 +125,13 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
         addExpression(expr, exprSize++, forIt, rs, NULL, 0, NULL, reqSize);
 
-        char **tmpEnd = (char **) malloc(1 * sizeof(char *));
+        char **tmpEnd = (char **) malloc(2 * sizeof(char *));
         tmpEnd[0] = (char *) malloc(10 * sizeof(char));
-        sprintf(tmpEnd[0], "%s end", stTop(metaData).str);
+        tmpEnd[1] = (char *) malloc(10 * sizeof(char));
+        strcpy(tmpEnd[0], "end of");
+        strcpy(tmpEnd[1], stTop(metaData).str);
 
-        addExpression(expr, exprSize++, tmpEnd, 1, NULL, 0, NULL, reqSize);
+        addExpression(expr, exprSize++, tmpEnd, 2, NULL, 0, NULL, reqSize);
 
         stPop(metaData);
         i = 1;
