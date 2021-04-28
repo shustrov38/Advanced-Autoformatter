@@ -10,8 +10,6 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
     //TODO
     // "
-    // ] - lineMaker
-    // 2nd define is broken - lineMaker
     // comments spaces
     // ++a
     // "

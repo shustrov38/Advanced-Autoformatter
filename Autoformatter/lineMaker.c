@@ -330,9 +330,11 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                 strcpy(commentLine[j], "\0");
                 codeWordsCnt++;
             }
-            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], "\0");
             codeWordsCnt = 0;
             codeLineCnt++;
+            i--;
+            continue;
         }
 
         if (!strcmp(originString[i], "#include")) {
