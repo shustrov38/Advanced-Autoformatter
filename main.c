@@ -38,7 +38,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
         size+=q;
     }
     size++;
-    for(int y = 0; y<size;y++){
+    for(int y = 0; y<20;y++){
         printf("\n");
         for(int z = 0; z <e[y].size; z++){
             printf(" %s",e[y].code[z]);
