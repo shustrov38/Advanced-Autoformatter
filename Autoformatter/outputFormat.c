@@ -14,6 +14,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
     // ++a
     // "
 
+    int noSpaceFlag = 0;
     int nesting = 0;
     int caseFlag = 0;
     int switchFlag = 0;
@@ -60,7 +61,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
         //0 Symbol
         if (info[0].id == PREF_INC || info[0].id == PREF_DEC) {
-            strcpy(outputString[0], code->codeLines[i][0]);
+            strcpy(outputString[k], code->codeLines[i][0]);
             ++k;
 
         } else {
@@ -104,7 +105,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 if (isOpenBr(outputString[k-1])){
                     strcpy(outputString[k], code->codeLines[i][s]);
                     k++;
-                } else if(s<len && (!strcmp(code->codeLines[i][s+1], "\'") || !strcmp(code->codeLines[i][s+1], "\""))) {
+                } else if(s<len && (!strcmp(code->codeLines[i][s+1], "\'"))) {
                     strcpy(outputString[k-1], code->codeLines[i][s]);
                     k++;
                 }
@@ -172,7 +173,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             }
 
             //Open fig br
-            if(isOpenFigBr(code->codeLines[i][s]) && isCloseFigBr(code->codeLines[i][s+2])) {
+            if(isOpenFigBr(code->codeLines[i][s]) && !strcmp(code->codeLines[i][s-1], "=")) {
 
             }
             else if (isOpenFigBr(code->codeLines[i][s])){

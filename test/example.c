@@ -11,9 +11,11 @@ int main(){
          m[i] = 0; 
          m[i - 1] = 0; 
          i -= 2; 
---      a; 
+         --a; 
+         b = { 0, 0, 0 }; 
       } 
    } 
+   printf("sfsfsf sfs sf%d", c); 
    if (m[0] == 0) {
       printf(Right); 
    } 
