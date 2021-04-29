@@ -104,7 +104,11 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 if (isOpenBr(outputString[k-1])){
                     strcpy(outputString[k], code->codeLines[i][s]);
                     k++;
-                } else {
+                } else if(s<len && (!strcmp(code->codeLines[i][s+1], "\'") || !strcmp(code->codeLines[i][s+1], "\""))) {
+                    strcpy(outputString[k-1], code->codeLines[i][s]);
+                    k++;
+                }
+                else {
                     strcpy(outputString[k-1], code->codeLines[i][s]);
                     strcpy(outputString[k], " ");
                     k++;
