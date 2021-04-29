@@ -14,6 +14,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
     // ++a
     // "
 
+    int insideQuotFlag = 0;
     int noSpaceFlag = 0;
     int nesting = 0;
     int caseFlag = 0;
@@ -84,7 +85,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
         for (int s = 1; s < len; ++s){
 
             //skip space
-            if (!strcmp(code->codeLines[i][s], " ")){
+            if (!strcmp(code->codeLines[i][s], " ") && insideQuotFlag == 0){
                 continue;
             }
 
@@ -119,6 +120,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
 
             if (!strcmp(code->codeLines[i][s], "\"")) {
+                insideQuotFlag = (insideQuotFlag+1)%2;
                 if (comment == 0) {
                     strcpy(outputString[k], code->codeLines[i][s]);
                     k++;
@@ -129,6 +131,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
                     } else {
                         strcpy(outputString[k], code->codeLines[i][s]);
+                        k++;
                     }
                     comment--;
                 }
@@ -174,7 +177,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
             //Open fig br
             if(isOpenFigBr(code->codeLines[i][s]) && !strcmp(code->codeLines[i][s-1], "=")) {
-
+                noSpaceFlag = 1;
             }
             else if (isOpenFigBr(code->codeLines[i][s])){
                 nesting++;
@@ -220,6 +223,9 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
             //semicolon and two dots symbol
             if (isSemicolon(code->codeLines[i][s]) || !strcmp(code->codeLines[i][s], ":")){
+                if(isCloseFigBr(code->codeLines[i][s-1])) {
+                    noSpaceFlag = 0;
+                }
                 if (!strcmp(outputString[k-1], " ")){
                     strcpy(outputString[k-1], code->codeLines[i][s]);
                     strcpy(outputString[k], " ");
@@ -236,7 +242,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             //simple Symbol
             strcpy(outputString[k], code->codeLines[i][s]);
             k++;
-            if (includeFlag == 0) {  //use spaces if it's not #include
+            if (includeFlag == 0 && noSpaceFlag == 0 && insideQuotFlag == 0) {  //use spaces if it's not #include
                 strcpy(outputString[k], " ");
                 k++;
             }
