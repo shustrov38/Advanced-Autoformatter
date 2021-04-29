@@ -19,6 +19,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
     int switchFlag = 0;
     int switchCnt = 0;
     int includeFlag = 0;
+    int comment = 0;
     for (int i = 0; i < code->linesCnt; ++i) {
         int len = getLineLength(code->codeLines[i]);
 
@@ -69,6 +70,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             k++;
         }
 
+
         if (isBlock(code->codeLines[i][0])) {
             cycleFlag++;
         }
@@ -110,6 +112,24 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 continue;
             }
 
+
+            if (!strcmp(code->codeLines[i][s], "\"")) {
+                if (comment == 0) {
+                    strcpy(outputString[k], code->codeLines[i][s]);
+                    k++;
+                    comment++;
+                } else if (comment == 1){
+                    if (!strcmp(outputString[k-1], " ")){
+                        strcpy(outputString[k-1], code->codeLines[i][s]);
+
+                    } else {
+                        strcpy(outputString[k], code->codeLines[i][s]);
+                    }
+                    comment--;
+                }
+                continue;
+            }
+
             if (!strcmp(code->codeLines[i][s], ",")){
                 if (!strcmp(outputString[k-1], " ")){
                     strcpy(outputString[k-1], code->codeLines[i][s]);
@@ -123,6 +143,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 }
                 continue;
             }
+
             //open #include
             if (!strcmp(code->codeLines[i][s], "<") && !strcmp(code->codeLines[i][s-1], "#include")){
                 strcpy(outputString[k], code->codeLines[i][s]);
@@ -130,6 +151,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 includeFlag++;
                 continue;
             }
+
             //close #include
             if (!strcmp(code->codeLines[i][s], ">") && includeFlag > 0){
                 strcpy(outputString[k], code->codeLines[i][s]);
@@ -144,7 +166,6 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                 k++;
                 continue;
             }
-
 
             //Open fig br
             if(isOpenFigBr(code->codeLines[i][s]) && isCloseFigBr(code->codeLines[i][s+2])) {
