@@ -1,4 +1,5 @@
 #include "fileUtils.h"
+#include "cycleFounder.h"
 
 typedef enum {
     Incorrect,
@@ -144,7 +145,9 @@ void loadFunctions(FileData *file) {
         // store function body
 
         int balance = 1;
+        int linesCnt = 0;
         while (1) {
+            linesCnt++;
             line = file->code->codeLines[++k];
             length = getLineLength(line);
 
@@ -154,6 +157,7 @@ void loadFunctions(FileData *file) {
             }
 
             if (balance == 0) {
+                file->functions[file->funcCount].code->linesCnt = linesCnt - 1;
                 break;
             }
 
@@ -186,7 +190,7 @@ void printAllFunctions(FileData *file) {
     }
 }
 
-int findFunction(vector *names, char *key) {
+int findFunctionInVectorOfNames(vector *names, char *key) {
     for (int i = 0; i < Vec.size(names); ++i) {
         if (!strcmp((char *) Vec.get(names, i), key)) {
             return i;
@@ -194,6 +198,79 @@ int findFunction(vector *names, char *key) {
     }
     return -1;
 }
+
+int findFunction(FileData *files, int size, char *key, int *file_index, int *func_index) {
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < files[i].funcCount; ++j) {
+            if (!strcmp(files[i].functions[j].name, key)) {
+                *file_index = i;
+                *func_index = j;
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+#define func files[file_index].functions[func_index]
+// go through all functions in all the files, calculate summary cycle depth (including functions sub calls)
+void calculateNestedCyclesDepth(FileData *files, int size, int file_index, int func_index, int *depth) {
+    int balance = 0;
+    int cycleCount = 0;
+    INIT_VECTOR(lastCycleBalance);
+
+    int addDepth = 0, locDepth = 0;
+
+    int n = func.code->linesCnt;
+
+    char **line;
+    int length;
+    for (int i = 0; i < n; ++i) {
+        line = func.code->codeLines[i];
+        length = getLineLength(line);
+
+        int funcIndex;
+        if ((funcIndex = isFunctionCall(line)) == -1) {
+            // its variable definition (maybe cycle / if )
+        } else {
+            // its function call
+            int filei = 0, funci = 0;
+            findFunction(files, size, line[funcIndex], &filei, &funci);
+            locDepth = 0;
+            calculateNestedCyclesDepth(files, size, filei, funci, &locDepth);
+            addDepth = __max(cycleCount + locDepth, addDepth);
+        }
+
+        int breakFlag = 0;
+        // go through code line and check cycles
+        for (int j = 0; j < length; ++j) {
+            if (!strcmp(line[j], "for") || !strcmp(line[j], "do") || !strcmp(line[j], "while")) {
+                cycleCount++;
+                balance++;
+                Vec.push(&lastCycleBalance, &balance);
+                breakFlag = 1;
+                break;
+            }
+            if (!strcmp(line[j], "{")) balance++;
+            if (!strcmp(line[j], "}")) balance--;
+        }
+
+        addDepth = __max(cycleCount, addDepth);
+
+        if (breakFlag) {
+            continue;
+        }
+
+        if (balance > 0 && balance == *((int*) Vec.get(&lastCycleBalance, Vec.size(&lastCycleBalance) - 1))) {
+            cycleCount--;
+            Vec.delete(&lastCycleBalance, Vec.size(&lastCycleBalance) - 1);
+        }
+    }
+
+    *depth += addDepth;
+}
+#undef func
 
 void printFunctionsCallTable(FileData *files, int size) {
     INIT_VECTOR(names);
@@ -204,41 +281,44 @@ void printFunctionsCallTable(FileData *files, int size) {
         }
     }
 
-    int table[Vec.size(&names)][Vec.size(&names)];
+    int n = Vec.size(&names);
+    int **table = (int **) malloc(n * sizeof(int *));
+    for (int i = 0; i < n; ++i) {
+        table[i] = (int *) malloc(n * sizeof(int));
+    }
 
-    for (int i = 0; i < Vec.size(&names); ++i) {
-        for (int j = 0; j < Vec.size(&names); ++j) {
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
             table[i][j] = 0;
         }
     }
 
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < files[i].funcCount; ++j) {
-//            printf("%s: ", files[i].functions[j].name);
-            int fromIndex = findFunction(&names, files[i].functions[j].name);
+            int fromIndex = findFunctionInVectorOfNames(&names, files[i].functions[j].name);
             for (int k = 0; k < files[i].functions[j].nestedCount; ++k) {
-//                printf(" %s", files[i].functions[j].nestedFunctions[k]);
-                int toIndex = findFunction(&names, files[i].functions[j].nestedFunctions[k]);
+                int toIndex = findFunctionInVectorOfNames(&names, files[i].functions[j].nestedFunctions[k]);
                 table[fromIndex][toIndex] = 1;
             }
-//            printf("\n");
         }
     }
 
     int recCounter = 0;
 
-    printf("Call table for functions:\n\n");
-    for (int i = 0; i < Vec.size(&names); ++i) {
+    printf("Call table for functions:\n");
+    for (int i = 0; i < n; ++i) {
         int k = 0;
-        for (int j = 0; j < Vec.size(&names); ++j) {
+        for (int j = 0; j < n; ++j) {
             k += table[i][j];
         }
         printf("%s() : ", (char *) Vec.get(&names, i));
         if (k) {
             printf("{");
-            for (int j = 0; j < Vec.size(&names); ++j) {
+            for (int j = 0; j < n; ++j) {
                 if (table[i][j]) {
-                    if (i == j) recCounter++;
+                    if (i == j) {
+                        recCounter++;
+                    }
                     printf(" %s()", (char *) Vec.get(&names, j));
                 }
             }
@@ -250,14 +330,30 @@ void printFunctionsCallTable(FileData *files, int size) {
 
     printf("\n");
 
+    printf("True recursive functions:\n");
     if (recCounter) {
-        printf("Recursive functions:\n\n");
-        for (int i = 0; i < Vec.size(&names); ++i) {
+        for (int i = 0; i < n; ++i) {
             if (table[i][i]) {
                 printf("%s()\n", (char *) Vec.get(&names, i));
             }
         }
     } else {
-        printf("Have no recursive functions.\n");
+        printf("Program has not got any recursive functions.\n");
+    }
+
+    printf("\n");
+
+    printf("Maximum depth of nested cycle:\n");
+    if (findCycle(&names, table, n)) {
+        printf("Program has cycle of nested functions (maybe recursive), so the depth may be infinite.\n");
+    } else {
+        // calc cycle length
+
+        // TODO: check all functions
+        int filei = 0, funci = 0;
+        findFunction(files, size, "main", &filei, &funci);
+        int depth = 0;
+        calculateNestedCyclesDepth(files, size, filei, funci, &depth);
+        printf("Founded nested cycle with depth %d\n", depth);
     }
 }

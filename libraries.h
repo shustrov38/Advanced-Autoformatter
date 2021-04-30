@@ -19,4 +19,6 @@
 #include <complex.h>
 #include <assert.h>
 
+#include "vector.h"
+
 #endif //ADVANCED_AUTOFORMATTER_LIBRARIES_H

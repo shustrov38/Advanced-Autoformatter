@@ -71,7 +71,7 @@ int main(const int argc, const char *argv[]) {
 
     FileData files[2];
     int filesCount = loadFiles(files, argc, argv);
-    printAllFiles(files, filesCount);
+//    printAllFiles(files, filesCount);
 
     //OUTPUT
     for (int i = 0; i < filesCount; ++i) {
