@@ -23,6 +23,9 @@ OpID __getOpID(char *op) {
     if (!strcmp(op, ","))
         return COM;
 
+    if (!strcmp(op, ";"))
+        return COM;
+
     if ('0' <= op[0] && op[0] <= '9')
         return NUM;
 

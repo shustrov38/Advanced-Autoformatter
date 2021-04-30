@@ -1,12 +1,14 @@
 #include "libraries.h"
 #include "Autoformatter/parser.h"
 #include "Autoformatter/lineMaker.h"
+#include "Autoformatter/outputFormat.h"
 
 #include "Calculator/ops.h"
 #include "Calculator/RPN.h"
 #include "Calculator/stack.h"
 #include "Calculator/tree.h"
 #include "Calculator/parser.h"
+
 
 #include "vector.h"
 #include "memory.h"
@@ -67,13 +69,19 @@ int main(const int argc, const char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    FileData files[MAX_FILES];
+    FileData files[2];
     int filesCount = loadFiles(files, argc, argv);
     printAllFiles(files, filesCount);
 
+    //OUTPUT
+    for (int i = 0; i < filesCount; ++i) {
+        outputFiles(files[i].filename, files[i].code);
+    }
+
+
 //    for (int i = 0; i < filesCount; ++i) {
 //        loadFunctions(&files[i]);
-////        printAllFunctions(&files[0]);
+//        printAllFunctions(&files[0]);
 //    }
 //    printFunctionsCallTable(files, filesCount);
 

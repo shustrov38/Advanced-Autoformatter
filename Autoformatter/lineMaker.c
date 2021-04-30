@@ -1,9 +1,9 @@
 #include "lineMaker.h"
 #include "optionFunctions.h"
 
-#define ONE_FILE_SIZE 300
+#define ONE_FILE_SIZE 200
 #define ONE_LINE_SIZE 50
-#define ONE_ELEMENT_SIZE 20
+#define ONE_ELEMENT_SIZE 30
 
 codeLineStruct *createCodeLineStruct() {
     codeLineStruct *codeBody = malloc(sizeof(codeLineStruct));
@@ -58,30 +58,52 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                 strcpy(codeBody->codeLines[codeLineCnt][0], originString[i]);
                 codeLineCnt++;
                 ++i;
+                --figBracketCnt;
             }
 
             if (doFlag) {
-                if (!isCloseFigBr(codeBody->codeLines[codeLineCnt - 1][0])) {
-                    strcpy(codeBody->codeLines[codeLineCnt][0], "}");
-                    codeLineCnt++;
-                    --figBracketCnt;
-                }
-                codeWordsCnt = 0;
-                while (!isSemicolon(originString[i])) {
+                ++codeWordsCnt;
+                --codeLineCnt;
+                while (strcmp(originString[i], ";")) {
                     strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
                     ++i;
                     codeWordsCnt++;
                 }
                 strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+                ++i;
                 codeLineCnt++;
                 codeWordsCnt = 0;
+                doFlag--;
             }
 
-            while (figBracketCnt) {
+            while (figBracketCnt > 0) {
                 strcpy(codeBody->codeLines[codeLineCnt][0], "}");
                 codeLineCnt++;
                 --figBracketCnt;
             }
+        }
+
+//        if(isOpenFigBr(originString[i]) && isCloseFigBr(originString[i+2])) {
+//            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+//            codeWordsCnt++;
+//            i++;
+//            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+//            codeWordsCnt++;
+//            i++;
+//            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+//            codeWordsCnt++;
+//            continue;
+//        }
+
+        if(isOpenFigBr(originString[i]) && (!strcmp(originString[i-1], "="))) {
+            while(!isCloseFigBr(originString[i])) {
+                strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+                codeWordsCnt++;
+                i++;
+            }
+            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+            codeWordsCnt++;
+            continue;
         }
 
         if (isOpenFigBr(originString[i])) {
@@ -319,9 +341,11 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                 strcpy(commentLine[j], "\0");
                 codeWordsCnt++;
             }
-            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], "\0");
             codeWordsCnt = 0;
             codeLineCnt++;
+            i--;
+            continue;
         }
 
         if (!strcmp(originString[i], "#include")) {
