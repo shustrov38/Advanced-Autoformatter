@@ -56,21 +56,35 @@ Expression *interpretFile(Memory *m, FileData *file) {
         }
         //GOTO & tags logic
 
-        if (!strcmp(e[i].code[0], "endof")) { //TODO: make a NORMAL notIF condition + break && continue
+        if (!strcmp(e[i].code[0], "endof") && !(e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')) { //TODO: make a NORMAL notIF condition + break && continue
 //            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0) {
                 int executionLineNum = i;
                 while (strcmp(e[executionLineNum].code[0], e[i].code[1])) {
                     executionLineNum--;
                 }
-                i = executionLineNum-1;
+                i = executionLineNum - 1;
                 continue;
             } else {
                 continue;
             }
 
-        } else if (!strcmp(e[i].code[0],"begin")){
+        } else if (!strcmp(e[i].code[0], "begin") && !(e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')) {
 //            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+            if (MemoryFunctions.getValue(m, e[i].code[1])->d == 0) {
+                int executionLineNum = i;
+                while (!(!strcmp(e[executionLineNum].code[0], "endof") &&
+                         !strcmp(e[executionLineNum].code[1], e[i].code[1]))) {
+                    executionLineNum++;
+                }
+                i = executionLineNum - 1;
+                continue;
+            } else {
+                continue;
+            }
+
+        } else if (!strcmp(e[i].code[0],"begin") && (e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')){
+            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             if(MemoryFunctions.getValue(m, e[i].code[1])->d == 0){
                 int executionLineNum = i;
                 while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
@@ -81,20 +95,9 @@ Expression *interpretFile(Memory *m, FileData *file) {
             }
 
             else{
-                continue;;
+                continue;
             }
-
-        }else if(e[i].code[0][0] == 'i' && e[i].code[0][1] == 'f'){
-            if (MemoryFunctions.getValue(m, e[i].code[0])->d > 0){
-                i++;
-            } else {
-                int executionLineNum = i;
-                while(strcmp(e[executionLineNum].code[1],e[i].code[0]) && strcmp(e[executionLineNum].code[0],"endof")){
-                    executionLineNum++;
-                }
-                i = executionLineNum-1;
-            }
-        }
+    }
 
         //INIT logics
         if (!strcmp(e[i].code[0],"int")){

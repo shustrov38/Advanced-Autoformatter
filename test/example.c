@@ -1,6 +1,6 @@
 int p ;
 int j;
-j = 0;
+j = 4;
 for (int i = 0; i < s; i ++){
 if(j != 4){
 p++;
