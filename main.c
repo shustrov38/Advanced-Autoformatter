@@ -78,12 +78,14 @@ int main(const int argc, const char *argv[]) {
         outputFiles(files[i].filename, files[i].code);
     }
 
-
-//    for (int i = 0; i < filesCount; ++i) {
-//        loadFunctions(&files[i]);
+    for (int i = 0; i < filesCount; ++i) {
+        loadFunctions(&files[i]);
 //        printAllFunctions(&files[0]);
-//    }
-//    printFunctionsCallTable(files, filesCount);
+    }
+    printFunctionsCallTable(files, filesCount);
+
+
+
 
 //    // CALCULATOR ALGO
 //
