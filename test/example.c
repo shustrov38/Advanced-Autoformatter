@@ -1,8 +1,8 @@
-int p;
+int p ;
 int j;
 j = 0;
 for (int i = 0; i < s; i ++){
-while (j < s){
+if(j != 4){
 p++;
 j += 2;
 }

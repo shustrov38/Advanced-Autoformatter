@@ -47,7 +47,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
 //    }
 
     // iterate through Expressions and interpret each of them
-    for (int i = 0; i < 20; ++i) {
+    for (int i = 0; i < 100; ++i) {
         rpnProcessor *outStack = rpnProcInit();
 
         printf("\n");
@@ -64,9 +64,10 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 while (strcmp(e[executionLineNum].code[0], e[i].code[1])) {
                     executionLineNum--;
                 }
-                i = executionLineNum;
+                i = executionLineNum-1;
+                continue;
             } else {
-                i++;
+                continue;
             }
 
         } else if (!strcmp(e[i].code[0],"begin")){
@@ -76,11 +77,12 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
                     executionLineNum++;
                 }
-                i = executionLineNum;
+                i = executionLineNum-1;
+                continue;
             }
 
             else{
-                i++;
+                continue;;
             }
 
         }else if(e[i].code[0][0] == 'i' && e[i].code[0][1] == 'f'){
@@ -88,7 +90,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 i++;
             } else {
                 int executionLineNum = i;
-                while(strcmp(e[executionLineNum].code[1],e[i].code[0]) && strcmp(e[executionLineNum].code[0],"end of")){
+                while(strcmp(e[executionLineNum].code[1],e[i].code[0]) && strcmp(e[executionLineNum].code[0],"endof")){
                     executionLineNum++;
                 }
                 i = executionLineNum-1;
