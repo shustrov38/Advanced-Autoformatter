@@ -50,7 +50,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
         }
 
         for (k = 0; k < nesting; ++k) {
-            strcpy(outputString[k], "   ");
+            strcpy(outputString[k], "    ");
         }
 
 

@@ -2,6 +2,7 @@
 #include "Autoformatter/parser.h"
 #include "Autoformatter/lineMaker.h"
 #include "Autoformatter/outputFormat.h"
+#include "Autoformatter/nameChecking.h"
 
 #include "Calculator/ops.h"
 #include "Calculator/RPN.h"
@@ -76,6 +77,10 @@ int main(const int argc, const char *argv[]) {
     //OUTPUT
     for (int i = 0; i < filesCount; ++i) {
         outputFiles(files[i].filename, files[i].code);
+    }
+
+    for (int i = 0; i < filesCount; ++i) {
+        checkNames(files[i].code);
     }
 
 
