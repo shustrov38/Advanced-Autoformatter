@@ -2,6 +2,7 @@
 #include "Autoformatter/parser.h"
 #include "Autoformatter/lineMaker.h"
 #include "Autoformatter/outputFormat.h"
+#include "Autoformatter/nameChecking.h"
 
 #include "Calculator/ops.h"
 #include "Calculator/RPN.h"
@@ -79,13 +80,15 @@ int main(const int argc, const char *argv[]) {
     }
 
     for (int i = 0; i < filesCount; ++i) {
+        checkNames(files[i].filename, files[i].code);
+    }
+
+
+    for (int i = 0; i < filesCount; ++i) {
         loadFunctions(&files[i]);
 //        printAllFunctions(&files[0]);
     }
     printFunctionsCallTable(files, filesCount);
-
-
-
 
 //    // CALCULATOR ALGO
 //

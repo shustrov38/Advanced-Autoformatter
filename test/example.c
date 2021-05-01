@@ -1,13 +1,13 @@
 #include <stdio.h>
 #define max 100 
-void g(){
+void G(){
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < i; ++j) {
-            f(); 
+            F(); 
         } 
     } 
 } 
-void f(){
+void F(){
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < i; ++j) {
         } 
@@ -30,7 +30,7 @@ int main(){
         for (int i = 0; i < n; ++i) {
             ++i; 
         } 
-        f(); 
+        F(); 
     } 
     printf("sfsfsf    gdsgdsg    sfs          sf%d", c); 
     if (m[0] == 0) {
