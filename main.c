@@ -47,17 +47,16 @@ Expression *interpretFile(Memory *m, FileData *file) {
 //    }
 
     // iterate through Expressions and interpret each of them
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < size; ++i) {
         rpnProcessor *outStack = rpnProcInit();
 
         printf("\n");
         for (int z = 0; z < e[i].size; z++) {
             printf(" %s", e[i].code[z]);
         }
-
         //GOTO & tags logic
 
-        if (!strcmp(e[i].code[0], "endof")) { //TODO: make a NORMAL notIF condition
+        if (!strcmp(e[i].code[0], "endof")) { //TODO: make a NORMAL notIF condition + break && continue
 //            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0) {
                 int executionLineNum = i;
@@ -118,7 +117,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
 //        MemoryFunctions.printRegister(m, Numerical);
 //        printf("\n");
     }
-
+    printf("\n");
     return e;
 }
 
