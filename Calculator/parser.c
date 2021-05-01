@@ -81,6 +81,14 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         addBracket = 1;
         i = 1;
         Vec.push(reqSize,0);
+
+        char **tmpBegTag = (char **) malloc(2 * sizeof(char *));
+        tmpBegTag[0] = (char *) malloc(10 * sizeof(char));
+        tmpBegTag[1] = (char *) malloc(10 * sizeof(char));
+        strcpy(tmpBegTag[0], "begin");
+        strcpy(tmpBegTag[1], stTop(metaData).str);
+
+        addExpression(expr, exprSize+1, tmpBegTag, 2, NULL, 0, NULL, reqSize);
     } else if (!strcmp(src[0], "for")) {
         srcSize--;
         i = 2;
@@ -125,6 +133,15 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
         strcpy(forCond[forCondIdx++], ")");
         addExpression(expr, exprSize++, forCond, forCondIdx, NULL, 0,NULL, reqSize);
+
+        char **tmpBegTag = (char **) malloc(2 * sizeof(char *));
+        tmpBegTag[0] = (char *) malloc(10 * sizeof(char));
+        tmpBegTag[1] = (char *) malloc(10 * sizeof(char));
+        strcpy(tmpBegTag[0], "begin");
+        strcpy(tmpBegTag[1], stTop(metaData).str);
+
+        addExpression(expr, exprSize++, tmpBegTag, 2, NULL, 0, NULL, reqSize);
+
         sizeDelta++;
         i++;
 
@@ -148,7 +165,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         char **tmpEnd = (char **) malloc(2 * sizeof(char *));
         tmpEnd[0] = (char *) malloc(10 * sizeof(char));
         tmpEnd[1] = (char *) malloc(10 * sizeof(char));
-        strcpy(tmpEnd[0], "end of");
+        strcpy(tmpEnd[0], "endof");
         strcpy(tmpEnd[1], stTop(metaData).str);
 
         addExpression(expr, exprSize++, tmpEnd, 2, NULL, 0, NULL, reqSize);

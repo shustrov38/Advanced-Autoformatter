@@ -51,27 +51,39 @@ Expression *interpretFile(Memory *m, FileData *file) {
         rpnProcessor *outStack = rpnProcInit();
 
         printf("\n");
-        for(int z = 0; z <e[i].size; z++){
-            printf(" %s",e[i].code[z]);
+        for (int z = 0; z < e[i].size; z++) {
+            printf(" %s", e[i].code[z]);
         }
 
         //GOTO & tags logic
 
-        if (!strcmp(e[i].code[0],"end of")){ //TODO: make a NORMAL notIF condition
-            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
-            if(MemoryFunctions.getValue(m, e[i].code[1])->d > 0){
+        if (!strcmp(e[i].code[0], "endof")) { //TODO: make a NORMAL notIF condition
+//            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+            if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0) {
                 int executionLineNum = i;
-                while(strcmp(e[executionLineNum].code[0],e[i].code[1])){
+                while (strcmp(e[executionLineNum].code[0], e[i].code[1])) {
                     executionLineNum--;
                 }
-                i = executionLineNum-1;
+                i = executionLineNum;
+            } else {
+                i++;
+            }
+
+        } else if (!strcmp(e[i].code[0],"begin")){
+//            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+            if(MemoryFunctions.getValue(m, e[i].code[1])->d == 0){
+                int executionLineNum = i;
+                while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
+                    executionLineNum++;
+                }
+                i = executionLineNum;
             }
 
             else{
                 i++;
             }
 
-        } else if(e[i].code[0][0] == 'i' && e[i].code[0][1] == 'f'){
+        }else if(e[i].code[0][0] == 'i' && e[i].code[0][1] == 'f'){
             if (MemoryFunctions.getValue(m, e[i].code[0])->d > 0){
                 i++;
             } else {
@@ -100,9 +112,9 @@ Expression *interpretFile(Memory *m, FileData *file) {
         // after each calculation
         MemoryFunctions.overflowCheck(m);
 
-        printf("\nVariables after interpretation:\n");
-        MemoryFunctions.printRegister(m, Numerical);
-        printf("\n");
+//        printf("\nVariables after interpretation:\n");
+//        MemoryFunctions.printRegister(m, Numerical);
+//        printf("\n");
     }
 
     return e;
