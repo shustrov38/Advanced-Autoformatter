@@ -57,6 +57,10 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
 
             if (isCloseFigBr(originString[i])) {
                 strcpy(codeBody->codeLines[codeLineCnt][0], originString[i]);
+                if(isSemicolon(originString[i+1])) {
+                    i++;
+                    strcpy(codeBody->codeLines[codeLineCnt][1], originString[i]);
+                }
                 codeLineCnt++;
                 ++i;
                 --figBracketCnt;

@@ -111,7 +111,8 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                     k++;
                 }
                 else {
-                    strcpy(outputString[k-1], code->codeLines[i][s]);
+                    strcpy(outputString[k], code->codeLines[i][s]);
+                    k++;
                     strcpy(outputString[k], " ");
                     k++;
                 }
@@ -242,7 +243,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             //simple Symbol
             strcpy(outputString[k], code->codeLines[i][s]);
             k++;
-            if (includeFlag == 0 && noSpaceFlag == 0 && insideQuotFlag == 0) {  //use spaces if it's not #include
+            if (includeFlag == 0 && noSpaceFlag == 0 && insideQuotFlag == 0 && !isCloseBr(code->codeLines[i][s+1])) {  //use spaces if it's not #include
                 strcpy(outputString[k], " ");
                 k++;
             }
