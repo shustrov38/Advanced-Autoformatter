@@ -4,7 +4,7 @@
 #include "lineMaker.h"
 #include "optionFunctions.h"
 
-
 void checkNames(char *fileName, codeLineStruct *code);
+
 
 #endif //ADVANCED_AUTOFORMATTER_NAMECHECKING_H

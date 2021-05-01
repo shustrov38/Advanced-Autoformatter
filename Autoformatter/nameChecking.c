@@ -1,8 +1,30 @@
 #include "nameChecking.h"
 #include "../fileUtils.h"
 
+#define VARSIZE 50
+#define FUNCSIZE 30
+#define TYPESIZE 20
+#define ELSIZE 30
+
 //Для объявления переменных должен использоваться camelStyle,
 //для объявления собственных типов (псевдонимов) и функций - PascalStyle.
+
+//Неспользуемые переменные и функции
+
+void outputUnused(int *numbers, char **names, int cnt, int flag){
+    int k = 0;
+    for (int i = 0; i < cnt; ++i){
+        if (!numbers[i]){
+            printf("{ %s } ", names[i]);
+            k++;
+        }
+    }
+    if (!k){
+        if (flag == 1) printf("No unused vars");
+        if (flag == 2) printf("No unused funcs");
+    }
+    printf("\n");
+}
 
 int cmpUserTypes(char *name, char **newTypes, int typesCnt) {
     for (int i = 0; i < typesCnt; ++i) {
@@ -16,10 +38,10 @@ int cmpUserTypes(char *name, char **newTypes, int typesCnt) {
 int checkUnique(char **namesArray, char *name, int cnt) {
     for (int i = 0; i < cnt; ++i) {
         if (!strcmp(name, namesArray[i])) {
-            return 0;
+            return i;
         }
     }
-    return 1;
+    return -1;
 }
 
 int checkCamelCase(char *name, int pos) {
@@ -56,25 +78,42 @@ int checkPascalCase(char *name, int pos) {
 void checkNames(char *fileName, codeLineStruct *code) {
     printf("File \"%s\":\n", fileName);
     int total = 0;
+
     //varNames
-    char **varNames = (char **) malloc(50 * sizeof(char *));
-    for (int i = 0; i < 50; ++i) {
-        varNames[i] = (char *) malloc(30 * sizeof(char));
+    char **varNames = (char **) malloc(VARSIZE * sizeof(char *));
+    for (int i = 0; i < VARSIZE; ++i) {
+        varNames[i] = (char *) malloc(ELSIZE * sizeof(char));
     }
     int varNamesCnt = 0;
 
-    char **funcNames = (char **) malloc(30 * sizeof(char *));
-    for (int i = 0; i < 30; ++i) {
-        funcNames[i] = (char *) malloc(30 * sizeof(char));
+
+    //funcNames
+    char **funcNames = (char **) malloc(FUNCSIZE * sizeof(char *));
+    for (int i = 0; i < FUNCSIZE; ++i) {
+        funcNames[i] = (char *) malloc(ELSIZE * sizeof(char));
     }
     int funcNamesCnt = 0;
 
+
     //newTypeData
-    char **newTypes = (char **) malloc(20 * sizeof(char *));
-    for (int i = 0; i < 20; ++i) {
-        newTypes[i] = (char *) malloc(30 * sizeof(char));
+    char **newTypes = (char **) malloc(TYPESIZE * sizeof(char *));
+    for (int i = 0; i < TYPESIZE; ++i) {
+        newTypes[i] = (char *) malloc(ELSIZE * sizeof(char));
     }
     int newTypesCnt = 0;
+
+
+    //varNumbers
+    int *varNumbers = (int *) malloc(VARSIZE * sizeof(int));
+    for (int i = 0; i < VARSIZE; ++i){
+        varNumbers[i] = 0;
+    }
+
+    //funcNumbers
+    int *funcNumbers = (int *) malloc(FUNCSIZE * sizeof(int));
+    for (int i = 0; i < FUNCSIZE; ++i){
+        funcNumbers[i] = 0;
+    }
 
 
     for (int i = 0; i < code->linesCnt; ++i) {
@@ -92,7 +131,7 @@ void checkNames(char *fileName, codeLineStruct *code) {
                 //variable
                 if (!strcmp(code->codeLines[i][s + 2], ";") || !strcmp(code->codeLines[i][s + 2], "=")
                     || !strcmp(code->codeLines[i][s + 2], "[")) {
-                    if (checkUnique(varNames, code->codeLines[i][s + 1], varNamesCnt)) {
+                    if (checkUnique(varNames, code->codeLines[i][s + 1], varNamesCnt) == -1) {
                         strcpy(varNames[varNamesCnt], code->codeLines[i][s + 1]);
                         varNamesCnt++;
                         total += checkCamelCase(code->codeLines[i][s + 1], i);
@@ -103,7 +142,7 @@ void checkNames(char *fileName, codeLineStruct *code) {
 
                 //func
                 if (!strcmp(code->codeLines[i][s + 2], "(")) {
-                    if (checkUnique(funcNames, code->codeLines[i][s + 1], funcNamesCnt)) {
+                    if (checkUnique(funcNames, code->codeLines[i][s + 1], funcNamesCnt) == -1) {
                         strcpy(funcNames[funcNamesCnt], code->codeLines[i][s + 1]);
                         funcNamesCnt++;
                         total += checkPascalCase(code->codeLines[i][s + 1], i);
@@ -115,7 +154,7 @@ void checkNames(char *fileName, codeLineStruct *code) {
 
             //struct
             if (!strcmp(code->codeLines[i][s], "struct")) {
-                if (checkUnique(newTypes, code->codeLines[i][s + 1], newTypesCnt)) {
+                if (checkUnique(newTypes, code->codeLines[i][s + 1], newTypesCnt) == -1) {
                     strcpy(newTypes[newTypesCnt], code->codeLines[i][s + 1]);
                     newTypesCnt++;
                     total += checkPascalCase(code->codeLines[i][s + 1], i);
@@ -126,7 +165,7 @@ void checkNames(char *fileName, codeLineStruct *code) {
 
             if (cmpUserTypes(code->codeLines[i][s], newTypes, newTypesCnt)) {
                 if (!strcmp(code->codeLines[i][s + 2], "(")) {
-                    if (checkUnique(newTypes, code->codeLines[i][s + 1], newTypesCnt)) {
+                    if (checkUnique(newTypes, code->codeLines[i][s + 1], newTypesCnt) == -1) {
                         strcpy(newTypes[newTypesCnt], code->codeLines[i][s + 1]);
                         newTypesCnt++;
                         total += checkPascalCase(code->codeLines[i][s + 1], i);
@@ -137,7 +176,7 @@ void checkNames(char *fileName, codeLineStruct *code) {
 
                 if (!strcmp(code->codeLines[i][s + 2], ";") || !strcmp(code->codeLines[i][s + 2], "=")
                     || !strcmp(code->codeLines[i][s + 2], "[")) {
-                    if (checkUnique(newTypes, code->codeLines[i][s + 1], newTypesCnt)) {
+                    if (checkUnique(newTypes, code->codeLines[i][s + 1], newTypesCnt) == -1) {
                         strcpy(newTypes[newTypesCnt], code->codeLines[i][s + 1]);
                         newTypesCnt++;
                         total += checkCamelCase(code->codeLines[i][s + 1], i);
@@ -146,8 +185,26 @@ void checkNames(char *fileName, codeLineStruct *code) {
                     continue;
                 }
             }
+
+            if (checkUnique(varNames, code->codeLines[i][s], varNamesCnt) != -1){
+                varNumbers[checkUnique(varNames, code->codeLines[i][s], varNamesCnt)]++;
+                continue;
+            }
+
+            if (checkUnique(funcNames, code->codeLines[i][s], funcNamesCnt) != -1){
+                funcNumbers[checkUnique(funcNames, code->codeLines[i][s], funcNamesCnt)]++;
+                continue;
+            }
         }
     }
+
+    printf("\n");
+    printf("Unused variables: ");
+    outputUnused(varNumbers, varNames, varNamesCnt, 1);
+    printf("Unused functions: ");
+    outputUnused(funcNumbers, funcNames, funcNamesCnt, 2);
+
+
     if (total == 0) {
         printf("This file has not got any problems with variable/function names.\n");
     }
