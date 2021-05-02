@@ -1,88 +1,175 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "libraries.h"
+#include "Autoformatter/parser.h"
+#include "Autoformatter/lineMaker.h"
+#include "Autoformatter/outputFormat.h"
+#include "Autoformatter/nameChecking.h"
 
-#define MAX_STRING_LEN 10
-#define VARIABLES_COUNT 50
-#define FUNCTIONS_COUNT 50
-#define STRUCTS_COUNT 50
-#define MAX_ARRAY_LEN 50
+#include "Calculator/ops.h"
+#include "Calculator/RPN.h"
+#include "Calculator/stack.h"
+#include "Calculator/tree.h"
+#include "Calculator/parser.h"
 
-typedef enum {
-    Int,
-    Double,
-    Char
-} VarType;
+#include "vector.h"
+#include "memory.h"
 
-typedef struct {
-    int size;
-    char *name[MAX_STRING_LEN];
-} CodeStructs;
+#include "fileUtils.h"
 
-typedef struct {
-    int size;
-    int inited[STRUCTS_COUNT];
-    char name[MAX_STRING_LEN][STRUCTS_COUNT];
-    int fieldCnt[STRUCTS_COUNT];
-} Structs;
+//#define WORK_WITH_MEMORY
 
-typedef struct {
-    int size;
-    int used[FUNCTIONS_COUNT];
-    char name[MAX_STRING_LEN][FUNCTIONS_COUNT];
-} Functions;
+Expression *interpretFile(Memory *m, FileData *file) {
+    // size of the Expression array
+    int size = 0;
+    int reqNum = 0;
+    Expression *e = createExpressions();
+    Stack *meta = stCreate();
+    INIT_VECTOR(exeSt);
+    INIT_VECTOR(reqSize);
 
-typedef struct {
-    int size;
-    int inited[VARIABLES_COUNT];
-    char name[MAX_STRING_LEN][VARIABLES_COUNT];
-    VarType type[VARIABLES_COUNT];
-    int value_int[VARIABLES_COUNT];
-    double value_double[VARIABLES_COUNT];
-    char value_char[VARIABLES_COUNT];
-} Variables;
+    // TODO: it might be better to start the interpretation directly from the main function,
+    //  but all global variables must be stored.
 
-typedef struct segment_t {
-    int isCommented;
-    int isBlock;
-    char *name;
-    char code[MAX_STRING_LEN][MAX_ARRAY_LEN];
-    Structs structs;
-    Variables variables;
-    struct segment_t *subBlock;
-} Segment;
+    // TODO: got bug, if there is no semicolon at the end of the code line, the expression is not applied.
 
-int haveFunction(Functions *functions, char *str) {
-    int n = functions->size;
-    for (int i = 0; i < n; ++i) {
-        if (!strcmp(functions->name[i], str)) {
-            return 1;
-        }
+    // TODO: change cycle, choose only arithmetic lines of code.
+    for (int i = 0; i < file->code->linesCnt; ++i) {
+//        if (!isArithmeticCodeLine()) continue;
+
+        // length of one code line, includes ';'
+        int codeLineLength = getLineLength(file->code->codeLines[i]);
+
+        // add and convert expression from code line to calculus expression
+        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i, &exeSt, &reqSize);
+        size+=q;
     }
-    return 0;
+    size++;
+//    for(int y = 0; y<20;y++){
+//        printf("\n");
+//        for(int z = 0; z <e[y].size; z++){
+//            printf(" %s",e[y].code[z]);
+//        }
+//    }
+
+    // iterate through Expressions and interpret each of them
+    for (int i = 0; i < size; ++i) {
+        rpnProcessor *outStack = rpnProcInit();
+
+        printf("\n");
+        for (int z = 0; z < e[i].size; z++) {
+            printf(" %s", e[i].code[z]);
+        }
+        //GOTO & tags logic
+
+        if (!strcmp(e[i].code[0], "endof") && !(e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')) { //TODO: make a NORMAL notIF condition + break && continue
+//            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+            if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0) {
+                int executionLineNum = i;
+                while (strcmp(e[executionLineNum].code[0], e[i].code[1])) {
+                    executionLineNum--;
+                }
+                i = executionLineNum - 1;
+                continue;
+            } else {
+                continue;
+            }
+
+        } else if (!strcmp(e[i].code[0], "begin") && !(e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')) {
+//            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+            if (MemoryFunctions.getValue(m, e[i].code[1])->d == 0) {
+                int executionLineNum = i;
+                while (!(!strcmp(e[executionLineNum].code[0], "endof") &&
+                         !strcmp(e[executionLineNum].code[1], e[i].code[1]))) {
+                    executionLineNum++;
+                }
+                i = executionLineNum - 1;
+                continue;
+            } else {
+                continue;
+            }
+
+        } else if (!strcmp(e[i].code[0],"begin") && (e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')){
+            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+            if(MemoryFunctions.getValue(m, e[i].code[1])->d == 0){
+                int executionLineNum = i;
+                while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
+                    executionLineNum++;
+                }
+                i = executionLineNum-1;
+                continue;
+            }
+
+            else{
+                continue;
+            }
+    }
+
+        //INIT logics
+        if (!strcmp(e[i].code[0],"int")){
+            MEMORY_NEW_NUM(*m, Int, e[i].code[1], 0);
+        } else if (!strcmp(e[i].code[0],"double")){
+            MEMORY_NEW_NUM(*m, Double, e[i].code[1], 0);
+        } else if (!strcmp(e[i].code[0],"unsigned")){
+            MEMORY_NEW_NUM(*m, Unsigned, e[i].code[1], 0);
+        }
+
+        // result stack with RPN
+        Stack *stack = rpnFunc(outStack, e[i].code, e[i].size);
+        Node *root = nodeInit();
+        opTreeGen(root, stack);
+        opTreeCalc(m, root);
+        // after each calculation
+        MemoryFunctions.overflowCheck(m);
+
+//        printf("\nVariables after interpretation:\n");
+//        MemoryFunctions.printRegister(m, Numerical);
+//        printf("\n");
+    }
+    printf("\n");
+    return e;
 }
 
-int isBlock(Functions *functions, CodeStructs *codeStructs, char *str) {
-    int n = codeStructs->size;
-    for (int i = 0; i < n; ++i) {
-        if (!strcmp(codeStructs->name[i], str)) {
-            return 1;
-        }
+int main(const int argc, const char *argv[]) {
+    if (argc == 1) {
+        printf("No filenames specified.\n");
+        return EXIT_FAILURE;
     }
-    return haveFunction(functions, str);
-}
 
-// TODO: generate tree function based on string array
-//void genCodeTree(Segment *root, ) {
-//
-//}
+    FileData files[10];
+    int filesCount = loadFiles(files, argc, argv);
+//    printAllFiles(files, filesCount); // files source code
 
-int main() {
-    CodeStructs codeStructs = {6, {"if", "do", "for", "while", "else", "switch"}};
+    for (int i = 0; i < filesCount; ++i) {
+        outputFiles(files[i].filename, files[i].code);
+    }
 
-    // dumpFunctions()
+    for (int i = 0; i < filesCount; ++i) {
+        checkNames(files[i].filename, files[i].code);
+    }
 
-    // TODO: "int a;    // hello world!" -> ["int a;", "// hello world!"]
+    for (int i = 0; i < filesCount; ++i) {
+        loadFunctions(&files[i]);
+//        printAllFunctions(&files[0]);
+    }
+
+//    printFunctionsCallTable(files, filesCount); // data about functions and nested cycles
+//    checkIncludeCycles(files, filesCount); // need work
+
+#ifdef WORK_WITH_MEMORY
+    INIT_MEMORY(m);
+
+    MEMORY_NEW_NUM(m, Int, "s", 5);
+    MEMORY_NEW_STR(m, "St", "H3110_WR1D");
+
+    printf("Variables before interpretation:\n");
+    MemoryFunctions.printRegister(&m, Numerical);
+    printf("\n");
+
+    Expression *e = interpretFile(&m, &files[0]);
+
+    printf("Variables after interpretation:\n");
+    MemoryFunctions.printRegister(&m, Numerical);
+    printf("\n");
+#endif
 
     return EXIT_SUCCESS;
 }
