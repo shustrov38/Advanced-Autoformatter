@@ -9,8 +9,8 @@ Node *nodeInit() {
 }
 
 void opTreeGen(Node *node, Stack *stack) {
-    assert(node != NULL && "bad root");
-    assert(stack != NULL && stack->size != 0 && "bad stack");
+//    assert(node != NULL && "bad root");
+//    assert(stack != NULL && stack->size != 0 && "bad stack");
 
     // recursive end condition
     if (stack->size == 0) return;

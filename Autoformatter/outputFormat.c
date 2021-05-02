@@ -8,12 +8,6 @@ void outputFiles(char *fileName, codeLineStruct *code) {
     FILE *file;
     file = fopen(fileName, "w");
 
-    //TODO
-    // "
-    // comments spaces
-    // ++a
-    // "
-
     int insideQuotFlag = 0;
     int noSpaceFlag = 0;
     int nesting = 0;

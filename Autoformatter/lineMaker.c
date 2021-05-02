@@ -45,7 +45,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
         }
     }
 
-    //TODO: struct [ }; ]
+    //TODO: struct [ }; ], [ ") ]
     for (int i = 0; i < len; ++i) {
         if (isSemicolon(originString[i]) && !bracketsFlag) {
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
