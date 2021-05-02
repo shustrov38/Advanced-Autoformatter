@@ -45,6 +45,8 @@ int loadFiles(FileData *files, int argc, const char *argv[]) {
             return EXIT_FAILURE;
         }
 
+        files[i - 1].isHeader = (ext == Header);
+
         strcpy(files[i - 1].filename, argv[i]);
 
         // prepare code array for using
@@ -384,7 +386,7 @@ void printFunctionsCallTable(FileData *files, int size) {
     printf("\n");
 
     printf("Maximum depth of nested cycle:\n");
-    if (findCycle(&names, table, n)) {
+    if (findCycle(&names, table, n, NULL, NULL)) {
         printf("Program has cycle of nested functions (maybe recursive), so the depth may be infinite.\n");
     } else {
         // calc cycle length
@@ -406,5 +408,36 @@ void printFunctionsCallTable(FileData *files, int size) {
 
         printf("Founded nested cycle with depth %d from function %s(). Real depth of cycle may be different.\n",
                maxDepth, name);
+    }
+}
+
+// TODO: ...
+void checkIncludeCycles(FileData *files, int size) {
+    INIT_VECTOR(names);
+    for (int i = 0; i < size; ++i) {
+        if (files[i].isHeader) {
+            Vec.push(&names, files[i].filename);
+        }
+    }
+
+    int n = Vec.size(&names);;
+    int **table = (int **) malloc(n * sizeof(int *));
+    for (int i = 0; i < n; ++i) {
+        table[i] = (int *) malloc(n * sizeof(int));
+    }
+
+    // parse all dependencies for all header files
+
+    for (int i = 0; i < size; ++i) {
+        if (files[i].isHeader) {
+            for (int j = 0; j < files[i].code->linesCnt; ++j) {
+                char **line = files[i].code->codeLines[j];
+                int length = getLineLength(line);
+
+                if (!strcmp(line[0], "#include") && !strcmp(line[1], "\"")) {
+                    printf("%s\n", line[0]);
+                }
+            }
+        }
     }
 }

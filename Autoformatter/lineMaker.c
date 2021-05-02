@@ -349,6 +349,27 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             continue;
         }
 
+//        if (!strcmp(originString[i], "#endif")){
+//            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+//            codeWordsCnt++;
+//            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], "\0");
+//            codeWordsCnt = 0;
+//            codeLineCnt++;
+//            continue;
+//        }
+//
+//        if (!strcmp(originString[i], "#ifdef") || !strcmp(originString[i], "#ifndef")){
+//            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+//            codeWordsCnt++;
+//            i++;
+//            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+//            codeWordsCnt++;
+//            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], "\0");
+//            codeWordsCnt = 0;
+//            codeLineCnt++;
+//            continue;
+//        }
+
         if (!strcmp(originString[i], "#include")) {
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
             codeWordsCnt++;

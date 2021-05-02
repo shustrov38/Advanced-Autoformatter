@@ -111,6 +111,8 @@ double opTreeCalc(Memory *m, Node *root) {
             return l >= r;
         case EQLS:
             return l == r;
+        case CMPNE:
+            return l != r;
         case SIN:
             return sin(r);
         case COS:

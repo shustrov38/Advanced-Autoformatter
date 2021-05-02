@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "popa.h"
 #define max 100 
 void G(){
     for (int i = 0; i < n; ++i) {

@@ -81,6 +81,9 @@ OpID __getOpID(char *op) {
     if (!strcmp(op, "=="))
         return EQLS;
 
+    if (!strcmp(op, "!="))
+        return CMPNE;
+
     // functions
     if (!strcmp(op, "sin"))
         return SIN;
@@ -199,6 +202,7 @@ Priority getOpPriority(OpID id) {
         case CMPLE:
         case CMPG:
         case CMPGE:
+        case CMPNE:
             return COMPARE;
         case POST_INC:
         case POST_DEC:

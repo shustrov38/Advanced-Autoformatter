@@ -33,4 +33,6 @@ void printAllFunctions(FileData *file);
 
 void printFunctionsCallTable(FileData *file, int size);
 
+void checkIncludeCycles(FileData *files, int size);
+
 #endif //ADVANCED_AUTOFORMATTER_FILEUTILS_H

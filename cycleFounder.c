@@ -75,7 +75,7 @@ void gProcess(Graph *g) {
     }
 }
 
-int findCycle(vector *names, int **table, int size) {
+int findCycle(vector *names, int **table, int size, char *msg_good, char *msg_bad) {
     Graph *g = (Graph *) malloc(sizeof(Graph));
     assert(g != NULL && "bad mem allocate");
 
@@ -86,18 +86,22 @@ int findCycle(vector *names, int **table, int size) {
     gProcess(g);
 
     if (g->cycleLength) {
-//        printf("Have recursive cycle in functions: {");
-//        for (int i = 0; i < g->cycleLength; ++i) {
-//            printf("'%s'", (char*) Vec.get(g->names, g->p[i]));
-//            if (i + 1 != g->cycleLength) {
-//                printf(" -> ");
-//            } else {
-//                printf("}");
-//            }
-//        }
+        if (msg_good != NULL) {
+            printf("%s {", msg_good);
+            for (int i = 0; i < g->cycleLength; ++i) {
+                printf("'%s'", (char *) Vec.get(g->names, g->p[i]));
+                if (i + 1 != g->cycleLength) {
+                    printf(" -> ");
+                } else {
+                    printf("}");
+                }
+        }
+        }
         return 1;
     } else {
-//        printf("Have no recursive cycles.");
+        if (msg_bad != NULL) {
+            printf("%s", msg_bad);
+        }
         return 0;
     }
 }

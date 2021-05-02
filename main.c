@@ -10,7 +10,6 @@
 #include "Calculator/tree.h"
 #include "Calculator/parser.h"
 
-
 #include "vector.h"
 #include "memory.h"
 
@@ -70,7 +69,7 @@ int main(const int argc, const char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    FileData files[2];
+    FileData files[10];
     int filesCount = loadFiles(files, argc, argv);
 //    printAllFiles(files, filesCount);
 
@@ -83,33 +82,12 @@ int main(const int argc, const char *argv[]) {
         checkNames(files[i].filename, files[i].code);
     }
 
-
     for (int i = 0; i < filesCount; ++i) {
         loadFunctions(&files[i]);
 //        printAllFunctions(&files[0]);
     }
     printFunctionsCallTable(files, filesCount);
-
-//    // CALCULATOR ALGO
-//
-//    INIT_MEMORY(m);
-//
-//    MEMORY_NEW_NUM(m, Int, "X", 1);
-//    MEMORY_NEW_NUM(m, Double, "Y", 2.7);
-//    MEMORY_NEW_NUM(m, Unsigned, "Z", -3);
-//    MEMORY_NEW_STR(m, "S", "H3110_WR1D");
-//
-//    printf("Variables before interpretation:\n");
-//    MemoryFunctions.printRegister(&m, Numerical);
-//    MemoryFunctions.printRegister(&m, String);
-//    printf("\n");
-//
-//    Expression *e = interpretFile(&m, &files[0]);
-//
-//    printf("Variables after interpretation:\n");
-//    MemoryFunctions.printRegister(&m, Numerical);
-//    MemoryFunctions.printRegister(&m, String);
-//    printf("\n");
+//    checkIncludeCycles(files, filesCount);
 
     return EXIT_SUCCESS;
 }
