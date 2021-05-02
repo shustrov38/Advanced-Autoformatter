@@ -10,6 +10,8 @@ const char *divs[DIVISION_DIVERSITY] = {
         " ", ".", ",", ";", ":", "\n", "\t", "\""
 };
 
+// TODO: add #define, #ifdef, #ifndef, #endif, #undef
+
 int splitSyntax(const char *srcFile, char **dest) {
     FILE *in = fopen(srcFile, "r");
 

@@ -1,6 +1,8 @@
 #include "libraries.h"
 #include "Autoformatter/parser.h"
 #include "Autoformatter/lineMaker.h"
+#include "Autoformatter/outputFormat.h"
+#include "Autoformatter/nameChecking.h"
 
 #include "Calculator/ops.h"
 #include "Calculator/RPN.h"
@@ -12,6 +14,8 @@
 #include "memory.h"
 
 #include "fileUtils.h"
+
+//#define WORK_WITH_MEMORY
 
 Expression *interpretFile(Memory *m, FileData *file) {
     // size of the Expression array
@@ -125,28 +129,32 @@ Expression *interpretFile(Memory *m, FileData *file) {
 }
 
 int main(const int argc, const char *argv[]) {
-    // TODO global:
-    //  1) CLEAN UP USELESS MEMORY - there are a lot of forgotten and floating pointers
-    //  2) finish work with the interpreter
-    //  3) close todos with functions
-
     if (argc == 1) {
         printf("No filenames specified.\n");
         return EXIT_FAILURE;
     }
 
-    FileData files[MAX_FILES];
+    FileData files[10];
     int filesCount = loadFiles(files, argc, argv);
-    printAllFiles(files, filesCount);
-//
-//    for (int i = 0; i < filesCount; ++i) {
-//        loadFunctions(&files[i]);
-//        printAllFunctions(&files[0]);
-//    }
-//    printFunctionsCallTable(files, filesCount);
+//    printAllFiles(files, filesCount); // files source code
 
-//    // CALCULATOR ALGO
-//
+    for (int i = 0; i < filesCount; ++i) {
+        outputFiles(files[i].filename, files[i].code);
+    }
+
+    for (int i = 0; i < filesCount; ++i) {
+        checkNames(files[i].filename, files[i].code);
+    }
+
+    for (int i = 0; i < filesCount; ++i) {
+        loadFunctions(&files[i]);
+//        printAllFunctions(&files[0]);
+    }
+
+//    printFunctionsCallTable(files, filesCount); // data about functions and nested cycles
+//    checkIncludeCycles(files, filesCount); // need work
+
+#ifdef WORK_WITH_MEMORY
     INIT_MEMORY(m);
 
     MEMORY_NEW_NUM(m, Int, "s", 5);
@@ -160,8 +168,8 @@ int main(const int argc, const char *argv[]) {
 
     printf("Variables after interpretation:\n");
     MemoryFunctions.printRegister(&m, Numerical);
-    MemoryFunctions.printRegister(&m, String);
     printf("\n");
+#endif
 
     return EXIT_SUCCESS;
 }

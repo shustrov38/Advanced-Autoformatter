@@ -3,6 +3,7 @@
 
 #include "../libraries.h"
 
+int isTypeData(char *string);
 int isOpenBr(char *string);
 int isCloseBr(char *string);
 int isOpenFigBr(char *string);

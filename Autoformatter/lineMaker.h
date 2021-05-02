@@ -16,3 +16,5 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString);
 
 #endif //ADVANCED_AUTOFORMATTER_LINEMAKER_H
 
+
+
