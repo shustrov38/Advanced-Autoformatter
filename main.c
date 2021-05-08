@@ -54,7 +54,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
         //TODO: CONTINE & BREAK tags logics + real. in parcer.c
 
 
-        if (!strcmp(e[i].code[0], "endof") && !(e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')) { //TODO: make a NORMAL notIF condition + break && continue
+        if (!strcmp(e[i].code[0], "endof") && !strncmp(e[i].code[1],"?if",3)) { //TODO: make a NORMAL notIF condition + break && continue
 //            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0) {
                 int executionLineNum = i;
@@ -67,8 +67,8 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 continue;
             }
 
-        } else if (!strcmp(e[i].code[0], "begin") && !(e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')) {
-//            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+        } else if (!strcmp(e[i].code[0], "begin") && !strncmp(e[i].code[1],"?if",3)) {
+            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             if (MemoryFunctions.getValue(m, e[i].code[1])->d == 0) {
                 int executionLineNum = i;
                 while (!(!strcmp(e[executionLineNum].code[0], "endof") &&
@@ -81,7 +81,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 continue;
             }
 
-        } else if (!strcmp(e[i].code[0],"begin") && (e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')){
+        } else if (!strcmp(e[i].code[0], "begin") && strncmp(e[i].code[1],"?if",3)){
             printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             if(MemoryFunctions.getValue(m, e[i].code[1])->d == 0){
                 int executionLineNum = i;
@@ -95,7 +95,28 @@ Expression *interpretFile(Memory *m, FileData *file) {
             else{
                 continue;
             }
-    }
+    } else if (!strcmp(e[i].code[0], "stop")){
+                int executionLineNum = i;
+                while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
+                    executionLineNum++;
+                }
+                i = executionLineNum-1;
+                continue;
+        } else if (!strcmp(e[i].code[0], "skip") && !strncmp(e[i].code[1],"?for",4)){
+            int executionLineNum = i;
+            while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
+                executionLineNum++;
+            }
+            if(!strncmp(e[i].code[1],"?for",4))     i = executionLineNum-2;
+            continue;
+        } else if (!strcmp(e[i].code[0], "skip") && !strncmp(e[i].code[1],"?while",5)){
+            int executionLineNum = i;
+            while(!(!strcmp(e[executionLineNum].code[0],"begin") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
+                executionLineNum--;
+            }
+            i = executionLineNum-1;
+            continue;
+        }
 
         //INIT logics
         if (!strcmp(e[i].code[0],"int")){
