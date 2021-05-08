@@ -14,6 +14,18 @@ void InitRegister(Register *r) {
 InitRegister(&REG)
 
 #pragma region FunctionPrototypes
+void updBool(vector *v, bool *b){
+    if(b->type == For){
+        b->state =(b->isBreak)||(b->cTrendDir * b->iTrendDir == -1)||(b->fullInit);
+    }
+    int id = v->total;
+    for(int i = 0; i <v->total; i++){
+        if(!strcmp(v->items[i],b->name)) id = i;
+    }
+    Vec.delete(v,id);
+    Vec.push(v,&b);
+}
+
 
 int find(char **arr, int size, char *key) {
     for (int i = 0; i < size; ++i) {
@@ -53,6 +65,7 @@ void newNum(Memory *m, char *name, Variant item) {
 
     strcpy(r->names[i], name);
     r->items[i] = item;
+    r->items[i].isInited = 0;
 }
 
 void newString(Memory *m, char *name, Variant item) {

@@ -19,6 +19,7 @@ typedef struct variant_t Variant;
 struct variant_t {
     // parameters for numerical variable
     int isOverflowed;
+    int isInited;
     NumericType numType;
     double d;
 
@@ -46,6 +47,26 @@ struct memory_t {
     VariableType type[REGISTERS_COUNT];
     int total;
 };
+
+typedef enum {
+    For,
+    If,
+    While
+} boolean_type;
+
+struct boolean_e_c {
+    char            *name;
+    char            *iter;
+    boolean_type    type;
+    int             line;
+    int             isBreak;
+    int             fullInit;
+    int             iTrendDir;
+    int             cTrendDir;
+    int             state;
+};
+
+typedef struct boolean_e_c bool;
 
 // TODO: create functions for erasing variable (with free) and deep copy of memory (may be used in cycles).
 struct memory_functions_t {

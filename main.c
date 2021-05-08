@@ -15,21 +15,18 @@
 
 #include "fileUtils.h"
 
-//#define WORK_WITH_MEMORY
+#define WORK_WITH_MEMORY
 
 Expression *interpretFile(Memory *m, FileData *file) {
     // size of the Expression array
     int size = 0;
-    int reqNum = 0;
     Expression *e = createExpressions();
     Stack *meta = stCreate();
     INIT_VECTOR(exeSt);
     INIT_VECTOR(reqSize);
-
-    // TODO: it might be better to start the interpretation directly from the main function,
-    //  but all global variables must be stored.
-
-    // TODO: got bug, if there is no semicolon at the end of the code line, the expression is not applied.
+    bool *bools = (bool *) malloc(100 * sizeof(bool));
+    int bcnt = 0;
+    // TODO: it might be better to start the interpretation directly from the main function, ?????
 
     // TODO: change cycle, choose only arithmetic lines of code.
     for (int i = 0; i < file->code->linesCnt; ++i) {
@@ -39,16 +36,11 @@ Expression *interpretFile(Memory *m, FileData *file) {
         int codeLineLength = getLineLength(file->code->codeLines[i]);
 
         // add and convert expression from code line to calculus expression
-        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i, &exeSt, &reqSize);
+        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i+1, &exeSt, &reqSize, bools, &bcnt);
+        printf("%d", bcnt);
         size+=q;
     }
     size++;
-//    for(int y = 0; y<20;y++){
-//        printf("\n");
-//        for(int z = 0; z <e[y].size; z++){
-//            printf(" %s",e[y].code[z]);
-//        }
-//    }
 
     // iterate through Expressions and interpret each of them
     for (int i = 0; i < size; ++i) {
@@ -59,6 +51,8 @@ Expression *interpretFile(Memory *m, FileData *file) {
             printf(" %s", e[i].code[z]);
         }
         //GOTO & tags logic
+        //TODO: CONTINE & BREAK tags logics + real. in parcer.c
+
 
         if (!strcmp(e[i].code[0], "endof") && !(e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')) { //TODO: make a NORMAL notIF condition + break && continue
 //            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
@@ -111,6 +105,12 @@ Expression *interpretFile(Memory *m, FileData *file) {
         } else if (!strcmp(e[i].code[0],"unsigned")){
             MEMORY_NEW_NUM(*m, Unsigned, e[i].code[1], 0);
         }
+
+        //FOR validity checker
+        //TODO: (1)-E A 3 cond (2)- E diff i (3)-E break
+        // (1) --> parcer.c;
+
+
 
         // result stack with RPN
         Stack *stack = rpnFunc(outStack, e[i].code, e[i].size);

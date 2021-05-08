@@ -54,6 +54,7 @@ double opTreeCalc(Memory *m, Node *root) {
             var = MemoryFunctions.getValue(m, root->left->value.str);
             if (!var) return 0;
             var->d = r;
+            var->isInited = 1;
             return 0;
         case NUM:
             return atof(root->value.str);

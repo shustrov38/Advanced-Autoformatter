@@ -17,7 +17,8 @@ typedef struct {
 
 Expression *createExpressions();
 
-int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack *metaData, int metaVal,vector *exe, vector *reqSize);
+int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack *metaData, int metaVal,vector *exe,
+                  vector *reqSize, bool *boolStack, int *bcnt);
 void destroyExpressionsArray(Expression *E);
 
 #endif //ADVANCED_CALCULATOR_PARSER_H
