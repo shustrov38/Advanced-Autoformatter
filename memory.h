@@ -56,13 +56,13 @@ typedef enum {
 
 struct boolean_e_c {
     char            *name;
-    char            *iter;
+    char            **expr;
+    double          *iVals;
     boolean_type    type;
     int             line;
     int             isBreak;
     int             fullInit;
-    int             iTrendDir;
-    int             cTrendDir;
+    int             nonConstIter;
     int             state;
 };
 

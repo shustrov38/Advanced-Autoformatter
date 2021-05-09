@@ -43,7 +43,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     size++;
 
     // iterate through Expressions and interpret each of them
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i <= size+1; ++i) {
         rpnProcessor *outStack = rpnProcInit();
 
         printf("\n");
@@ -54,8 +54,19 @@ Expression *interpretFile(Memory *m, FileData *file) {
         //TODO: CONTINE & BREAK tags logics + real. in parcer.c
 
 
-        if (!strcmp(e[i].code[0], "endof") && !strncmp(e[i].code[1],"?if",3)) { //TODO: make a NORMAL notIF condition + break && continue
+        if (!strcmp(e[i].code[0], "endof") && strncmp(e[i].code[1],"?if",3)) { //TODO: make a NORMAL notIF condition + break && continue
 //            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+            int u = 0;
+            for(; u < bcnt; u++){
+                if(!strcmp(bools[u].name,e[i].code[1])) break;
+            }
+            for (int ff = 0; ff < 25; ff++){
+                double tmp;
+                if (MemoryFunctions.getValue(m, bools[u].expr[ff]) == NULL) tmp = 0;
+                else tmp = MemoryFunctions.getValue(m, bools[u].expr[ff])->d;
+                if (bools[u].iVals[i] != tmp){ bools[u].nonConstIter = 1; break;}
+            }
+
             if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0) {
                 int executionLineNum = i;
                 while (strcmp(e[executionLineNum].code[0], e[i].code[1])) {
@@ -67,7 +78,18 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 continue;
             }
 
-        } else if (!strcmp(e[i].code[0], "begin") && !strncmp(e[i].code[1],"?if",3)) {
+        } else if (!strcmp(e[i].code[0], "begin")) {
+            int u = 0;
+            for(; u < bcnt; u++){
+                if(!strcmp(bools[u].name,e[i].code[1])) break;
+            }
+            for (int ff = 0; ff < 25; ff++){
+                double tmp;
+                if (MemoryFunctions.getValue(m, bools[u].expr[ff]) == NULL) tmp = 0;
+                else tmp = MemoryFunctions.getValue(m, bools[u].expr[ff])->d;
+                bools[u].iVals[i] = tmp;
+            }
+
             printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             if (MemoryFunctions.getValue(m, e[i].code[1])->d == 0) {
                 int executionLineNum = i;
@@ -81,27 +103,13 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 continue;
             }
 
-        } else if (!strcmp(e[i].code[0], "begin") && strncmp(e[i].code[1],"?if",3)){
-            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
-            if(MemoryFunctions.getValue(m, e[i].code[1])->d == 0){
-                int executionLineNum = i;
-                while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
-                    executionLineNum++;
-                }
-                i = executionLineNum-1;
-                continue;
+        }  else if (!strcmp(e[i].code[0], "stop")){
+            int executionLineNum = i;
+            while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
+                executionLineNum++;
             }
-
-            else{
-                continue;
-            }
-    } else if (!strcmp(e[i].code[0], "stop")){
-                int executionLineNum = i;
-                while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
-                    executionLineNum++;
-                }
-                i = executionLineNum-1;
-                continue;
+            i = executionLineNum;
+            continue;
         } else if (!strcmp(e[i].code[0], "skip") && !strncmp(e[i].code[1],"?for",4)){
             int executionLineNum = i;
             while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
@@ -145,7 +153,12 @@ Expression *interpretFile(Memory *m, FileData *file) {
 //        MemoryFunctions.printRegister(m, Numerical);
 //        printf("\n");
     }
-    printf("\n");
+    printf("\n\n");
+    for (int y = 0; y < bcnt; y++){
+        printf(" %s\tin line %d may be stopped via break: %d  fully inited: %d has nonconstant iters: %d\n",
+                    bools[y].name, bools[y].line, bools[y].isBreak, bools[y].fullInit, bools[y].nonConstIter);
+    }
+    printf("\n\n");
     return e;
 }
 

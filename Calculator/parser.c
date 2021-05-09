@@ -69,14 +69,18 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].line = metaVal;
         boolStack[*bcnt].fullInit = 1;
         boolStack[*bcnt].isBreak = 0;
-        boolStack[*bcnt].cTrendDir = 0;
-        boolStack[*bcnt].iTrendDir = 0;
+        boolStack[*bcnt].nonConstIter = 0;
         boolStack[*bcnt].state = 0;
 
-        char **ifCond = (char **) malloc(10 * sizeof(char *));
-        for (int y = 0; y < 10; y++) {
+        char **ifCond = (char **) malloc(25 * sizeof(char *));
+        boolStack[*bcnt].expr = (char **) malloc(25 * sizeof(char *));
+        boolStack[*bcnt].iVals = (double *) malloc(25 * sizeof(double));
+        for (int y = 0; y < 25; y++) {
+            boolStack[*bcnt].expr[y] = (char *) malloc(10 * sizeof(char));
             ifCond[y] = (char *) malloc(10 * sizeof(char));
             memset(ifCond[y], 0, 10);
+            memset(boolStack[*bcnt].expr[y], 0, 10);
+            boolStack[*bcnt].iVals[y] = 0;
         }
         int ifCondIdx = 0;
         strcpy(ifCond[ifCondIdx], "?");
@@ -99,6 +103,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         strcpy(ifCond[ifCondIdx++], "=");
         i = 1;
         for (; strcmp(src[i], "{");) {
+            strcpy(boolStack[*bcnt].expr[ifCondIdx-2], src[i]);
             strcpy(ifCond[ifCondIdx++], src[i++]);
         }
         addExpression(expr, exprSize++, ifCond, ifCondIdx, metaData, 0,NULL, reqSize, boolStack, bcnt);
@@ -109,7 +114,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         tmpBegTag[1] = (char *) malloc(10 * sizeof(char));
         strcpy(tmpBegTag[0], "begin");
         strcpy(tmpBegTag[1], stTop(metaData).str);
-
+        boolStack[*bcnt].name = stTop(metaData).str;
         addExpression(expr, exprSize++, tmpBegTag, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
         *(bcnt)+=1;
     } else if (!strcmp(src[0], "for")) {
@@ -119,8 +124,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].line = metaVal;
         boolStack[*bcnt].fullInit = 1;
         boolStack[*bcnt].isBreak = 0;
-        boolStack[*bcnt].cTrendDir = 0;
-        boolStack[*bcnt].iTrendDir = 0;
+        boolStack[*bcnt].nonConstIter = 0;
         boolStack[*bcnt].state = 0;
 
         i = 2;
@@ -139,9 +143,14 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         i++;
 
         char **forCond = (char **) malloc(10 * sizeof(char *));
-        for (int y = 0; y < 10; y++) {
+        boolStack[*bcnt].expr = (char **) malloc(25 * sizeof(char *));
+        boolStack[*bcnt].iVals = (double *) malloc(25 * sizeof(double));
+        for (int y = 0; y < 25; y++) {
+            boolStack[*bcnt].expr[y] = (char *) malloc(10 * sizeof(char));
             forCond[y] = (char *) malloc(10 * sizeof(char));
             memset(forCond[y], 0, 10);
+            memset(boolStack[*bcnt].expr[y], 0, 10);
+            boolStack[*bcnt].iVals[y] = 0;
         }
         int forCondIdx = 0;
         strcpy(forCond[forCondIdx], "?");
@@ -164,9 +173,8 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         strcpy(forCond[forCondIdx++], "=");
         strcpy(forCond[forCondIdx++], "(");
         for (; strcmp(src[i], ";");i++) {
+            strcpy(boolStack[*bcnt].expr[forCondIdx-2], src[i]);
             if(strcmp(src[i], " ") != 0)strcpy(forCond[forCondIdx++], src[i]);
-            if(!strcmp(src[i],">") || !strcmp(src[i],">=")) boolStack[*bcnt].cTrendDir = 1;
-            if(!strcmp(src[i],"<") || !strcmp(src[i],"<=")) boolStack[*bcnt].cTrendDir = -1;
         }
         strcpy(forCond[forCondIdx++], ")");
         addExpression(expr, exprSize++, forCond, forCondIdx, metaData, 0,NULL, reqSize, boolStack, bcnt);
@@ -199,6 +207,12 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
             Vec.delete(exe, exe->total-1);
         }
         if (rs) addExpression(expr, exprSize++, forIt, rs, metaData, 0, NULL, reqSize, boolStack, bcnt);
+        else {
+            forIt[0] = (char *) malloc(10 * sizeof(char));
+            memset(forIt[0], 0, 10);
+            strcpy(forIt[0]," ");
+            addExpression(expr, exprSize++, forIt, 1, metaData, 0, NULL, reqSize, boolStack, bcnt);
+        }
 
         char **tmpEnd = (char **) malloc(2 * sizeof(char *));
         tmpEnd[0] = (char *) malloc(10 * sizeof(char));
@@ -242,7 +256,6 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
                 for(; q < *bcnt; q++){
                     if (!strcmp(boolStack[q].name,metaData->data[p].str)) break;
                 }
-                boolStack[q].isBreak = 1;
                 addExpression(expr, exprSize++, tmpEnd, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
                 break;
             }
