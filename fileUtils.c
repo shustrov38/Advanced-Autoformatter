@@ -409,6 +409,8 @@ void printFunctionsCallTable(FileData *files, int size) {
         printf("Founded nested cycle with depth %d from function %s(). Real depth of cycle may be different.\n",
                maxDepth, name);
     }
+
+    printf("\n");
 }
 
 // TODO: ...

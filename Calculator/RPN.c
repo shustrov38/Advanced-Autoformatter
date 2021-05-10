@@ -22,7 +22,7 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
     int openBracket = 0;
     for (int i = 0; i < size; ++i) {
         if (IS_VAR(info[i].id) || IS_CONST(info[i].id) || info[i].id == NUM) {
-            stData data = {string[i],info[i]};
+            stData data = {string[i], info[i]};
             stPush(stack->finalStack, data);
         }
 
@@ -36,11 +36,11 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                                               IS_OPER(stTop(stack->opStack).info.id) ||
                                               IS_FUNC_1ARG(stTop(stack->opStack).info.id) ||
                                               IS_FUNC_2ARG(stTop(stack->opStack).info.id))) {
-                stData data1 = {string[i],info[i]};
+                stData data1 = {string[i], info[i]};
                 if (IS_PWR(info[i].id)) {
                     stPush(stack->opStack, data1);
                     ++i;
-                    stData data2 = {string[i],info[i]};
+                    stData data2 = {string[i], info[i]};
                     if (IS_VAR(info[i].id) || IS_CONST(info[i].id) || info[i].id == NUM) {
                         stPush(stack->finalStack, data2);
                     } else if (IS_OPER(info[i].id) || IS_FUNC_1ARG(info[i].id) || IS_FUNC_2ARG(info[i].id)) {
@@ -63,11 +63,11 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
                     }
                 }
             } else {
-                stData data1 = {string[i],info[i]};
+                stData data1 = {string[i], info[i]};
                 if (IS_PWR(info[i].id)) {
                     stPush(stack->opStack, data1);
                     ++i;
-                    stData data2 = {string[i],info[i]};
+                    stData data2 = {string[i], info[i]};
                     if (IS_VAR(info[i].id) || IS_CONST(info[i].id) || info[i].id == NUM) {
                         stPush(stack->finalStack, data2);
                     } else if (IS_OPER(info[i].id) || IS_FUNC_1ARG(info[i].id) ||
@@ -82,7 +82,7 @@ Stack *rpnFunc(rpnProcessor *stack, char **string, int size) {
 
         if (strcmp(string[i], "(") == 0) {
             openBracket++;
-            stData data = {string[i],info[i]};
+            stData data = {string[i], info[i]};
             stPush(stack->opStack, data);
         }
 

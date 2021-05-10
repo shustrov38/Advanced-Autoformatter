@@ -15,21 +15,18 @@
 
 #include "fileUtils.h"
 
-//#define WORK_WITH_MEMORY
+#define WORK_WITH_MEMORY
 
 Expression *interpretFile(Memory *m, FileData *file) {
     // size of the Expression array
     int size = 0;
-    int reqNum = 0;
     Expression *e = createExpressions();
     Stack *meta = stCreate();
     INIT_VECTOR(exeSt);
     INIT_VECTOR(reqSize);
-
-    // TODO: it might be better to start the interpretation directly from the main function,
-    //  but all global variables must be stored.
-
-    // TODO: got bug, if there is no semicolon at the end of the code line, the expression is not applied.
+    bool *bools = (bool *) malloc(100 * sizeof(bool));
+    int bcnt = 0;
+    // TODO: it might be better to start the interpretation directly from the main function, ?????
 
     // TODO: change cycle, choose only arithmetic lines of code.
     for (int i = 0; i < file->code->linesCnt; ++i) {
@@ -39,29 +36,58 @@ Expression *interpretFile(Memory *m, FileData *file) {
         int codeLineLength = getLineLength(file->code->codeLines[i]);
 
         // add and convert expression from code line to calculus expression
-        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i, &exeSt, &reqSize);
+        int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i+1, &exeSt, &reqSize, bools, &bcnt);
         size+=q;
     }
     size++;
-//    for(int y = 0; y<20;y++){
-//        printf("\n");
-//        for(int z = 0; z <e[y].size; z++){
-//            printf(" %s",e[y].code[z]);
-//        }
-//    }
+
+    // create filename for listing
+    char listingFileName[100];
+    memset(listingFileName, 0, 50);
+    strcat(listingFileName, "../listings/LST_");
+    strcat(listingFileName, strrchr(file->filename, '/') + 1);
+    strcat(listingFileName, ".txt");
+//    printf("%s\n", listingFileName);
+    FILE *listingFile = fopen(listingFileName, "w");
 
     // iterate through Expressions and interpret each of them
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i <= size+1; ++i) {
         rpnProcessor *outStack = rpnProcInit();
 
-        printf("\n");
+        fprintf(listingFile, "\n");
         for (int z = 0; z < e[i].size; z++) {
-            printf(" %s", e[i].code[z]);
+            fprintf(listingFile, "%s ", e[i].code[z]);
         }
-        //GOTO & tags logic
 
-        if (!strcmp(e[i].code[0], "endof") && !(e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')) { //TODO: make a NORMAL notIF condition + break && continue
+        //GOTO & tags logic
+        if (!strcmp(e[i].code[0], "endof") && strncmp(e[i].code[1],"?if", 3) != 0) {
 //            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+            int u = 0;
+            for(; u < bcnt; u++){
+                if(!strcmp(bools[u].name,e[i].code[1])) break;
+            }
+            for (int ff = 0; ff < 25; ff++){
+                double tmp;
+                if (MemoryFunctions.getValue(m, bools[u].expr[ff]) == NULL) tmp = 0;
+                else tmp = MemoryFunctions.getValue(m, bools[u].expr[ff])->d;
+                if (bools[u].iVals[ff] != tmp){bools[u].nonConstIter = 1; break;}
+            }
+
+            bools[u].state = (bools[u].nonConstIter && bools[u].fullInit || bools[u].isBreak) &&
+                             (bools[u].hasNoUnevenExecutionPath || bools[u].builtInIter);
+            if(!bools[u].state){
+                printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
+#ifdef __INTERPRET_DEBUG__
+                printf("\n\n");
+                for (int y = 0; y < bcnt; y++){
+                    printf(" %s\tin line %d may be stopped via break: %d  fully inited: %d has nonconstant iters: %d\n",
+                           bools[y].name, bools[y].line, bools[y].isBreak, bools[y].fullInit, bools[y].nonConstIter);
+                }
+                printf("\n\n");
+#endif
+                return e;
+            }
+
             if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0) {
                 int executionLineNum = i;
                 while (strcmp(e[executionLineNum].code[0], e[i].code[1])) {
@@ -73,8 +99,19 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 continue;
             }
 
-        } else if (!strcmp(e[i].code[0], "begin") && !(e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')) {
-//            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+        } else if (!strcmp(e[i].code[0], "begin")) {
+            int u = 0;
+            for(; u < bcnt; u++){
+                if(!strcmp(bools[u].name,e[i].code[1])) break;
+            }
+            for (int ff = 0; ff < 25; ff++){
+                double tmp;
+                if (MemoryFunctions.getValue(m, bools[u].expr[ff]) == NULL) tmp = 0;
+                else tmp = MemoryFunctions.getValue(m, bools[u].expr[ff])->d;
+                bools[u].iVals[ff] = tmp;
+            }
+
+            fprintf(listingFile, "== %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             if (MemoryFunctions.getValue(m, e[i].code[1])->d == 0) {
                 int executionLineNum = i;
                 while (!(!strcmp(e[executionLineNum].code[0], "endof") &&
@@ -87,21 +124,28 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 continue;
             }
 
-        } else if (!strcmp(e[i].code[0],"begin") && (e[i].code[1][1] == 'i' && e[i].code[1][2] == 'f')){
-            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
-            if(MemoryFunctions.getValue(m, e[i].code[1])->d == 0){
-                int executionLineNum = i;
-                while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
-                    executionLineNum++;
-                }
-                i = executionLineNum-1;
-                continue;
+        }  else if (!strcmp(e[i].code[0], "stop")){
+            int executionLineNum = i;
+            while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
+                executionLineNum++;
             }
-
-            else{
-                continue;
+            i = executionLineNum;
+            continue;
+        } else if (!strcmp(e[i].code[0], "skip") && !strncmp(e[i].code[1],"?for",4)){
+            int executionLineNum = i;
+            while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
+                executionLineNum++;
             }
-    }
+            if(!strncmp(e[i].code[1],"?for",4))     i = executionLineNum-2;
+            continue;
+        } else if (!strcmp(e[i].code[0], "skip") && !strncmp(e[i].code[1],"?while",5)){
+            int executionLineNum = i;
+            while(!(!strcmp(e[executionLineNum].code[0],"begin") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
+                executionLineNum--;
+            }
+            i = executionLineNum-1;
+            continue;
+        }
 
         //INIT logics
         if (!strcmp(e[i].code[0],"int")){
@@ -111,6 +155,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
         } else if (!strcmp(e[i].code[0],"unsigned")){
             MEMORY_NEW_NUM(*m, Unsigned, e[i].code[1], 0);
         }
+
 
         // result stack with RPN
         Stack *stack = rpnFunc(outStack, e[i].code, e[i].size);
@@ -124,11 +169,27 @@ Expression *interpretFile(Memory *m, FileData *file) {
 //        MemoryFunctions.printRegister(m, Numerical);
 //        printf("\n");
     }
-    printf("\n");
+
+    fclose(listingFile);
+
+#ifdef __INTERPRET_DEBUG__
+    printf("\n\n");
+    for (int y = 0; y < bcnt; y++){
+        printf(" %s\tin line %d may be stopped via break: %d  fully inited: %d has nonconstant iters: %d\n",
+                    bools[y].name, bools[y].line, bools[y].isBreak, bools[y].fullInit, bools[y].nonConstIter);
+    }
+    printf("\n\n");
+#endif
     return e;
 }
 
 int main(const int argc, const char *argv[]) {
+    /*
+     * TODO:
+     *  1) work with constructions: while(){}, do{}while(), for(;;), ...
+     *  2) interpret all files
+     */
+
     if (argc == 1) {
         printf("No filenames specified.\n");
         return EXIT_FAILURE;
@@ -151,24 +212,23 @@ int main(const int argc, const char *argv[]) {
 //        printAllFunctions(&files[0]);
     }
 
-//    printFunctionsCallTable(files, filesCount); // data about functions and nested cycles
+    printFunctionsCallTable(files, filesCount); // data about functions and nested cycles
 //    checkIncludeCycles(files, filesCount); // need work
 
 #ifdef WORK_WITH_MEMORY
     INIT_MEMORY(m);
 
-    MEMORY_NEW_NUM(m, Int, "s", 5);
-    MEMORY_NEW_STR(m, "St", "H3110_WR1D");
+//    printf("Variables before interpretation:\n");
+//    MemoryFunctions.printRegister(&m, Numerical);
+//    printf("\n");
 
-    printf("Variables before interpretation:\n");
-    MemoryFunctions.printRegister(&m, Numerical);
-    printf("\n");
+    for (int i  = 0; i < filesCount; ++i) {
+        Expression *e = interpretFile(&m, &files[i]);
+    }
 
-    Expression *e = interpretFile(&m, &files[0]);
-
-    printf("Variables after interpretation:\n");
-    MemoryFunctions.printRegister(&m, Numerical);
-    printf("\n");
+//    printf("Variables after interpretation:\n");
+//    MemoryFunctions.printRegister(&m, Numerical);
+//    printf("\n");
 #endif
 
     return EXIT_SUCCESS;

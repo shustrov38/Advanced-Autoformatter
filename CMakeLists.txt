@@ -11,6 +11,7 @@ add_subdirectory(Autoformatter)
 
 #add_compile_definitions(__PARSER_OUT_DEBUG__)     # print data collected from parser
 #add_compile_definitions(__CYCLE_DETECTOR_DEBUG__)
+#add_compile_definitions(__INTERPRET_DEBUG__)
 
 file(GLOB SOURCES *.c *.h)
 add_executable(${CMAKE_PROJECT_NAME} main.c ${SOURCES})

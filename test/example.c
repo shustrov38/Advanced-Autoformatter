@@ -1,8 +1,12 @@
-int p; 
-int j; 
-int PPpa; 
-j = 4; 
-int i = 4; 
-do {
-    i++; 
-} while (i < j); 
+for (int i = 0; i < 4; ++i) {
+    for (;; ) {
+        for (;; ) {
+            for (;; ) {
+                for (;; ) {
+                    for (;; ) {
+                    } 
+                } 
+            } 
+        } 
+    } 
+} 
