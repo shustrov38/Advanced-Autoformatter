@@ -10,7 +10,6 @@ add_subdirectory(Calculator)
 add_subdirectory(Autoformatter)
 
 #add_compile_definitions(__PARSER_OUT_DEBUG__)     # print data collected from parser
-#add_compile_definitions(__LINE_MAKER_DEBUG__)     # print all lines after converting
 #add_compile_definitions(__CYCLE_DETECTOR_DEBUG__)
 
 file(GLOB SOURCES *.c *.h)

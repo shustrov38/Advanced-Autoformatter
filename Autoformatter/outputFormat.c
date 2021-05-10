@@ -8,6 +8,12 @@ void outputFiles(char *fileName, codeLineStruct *code) {
     FILE *file;
     file = fopen(fileName, "w");
 
+    //TODO
+    // "
+    // comments spaces
+    // ++a
+    // "
+
     int insideQuotFlag = 0;
     int noSpaceFlag = 0;
     int nesting = 0;
@@ -101,11 +107,12 @@ void outputFiles(char *fileName, codeLineStruct *code) {
                     strcpy(outputString[k], code->codeLines[i][s]);
                     k++;
                 } else if(s<len && (!strcmp(code->codeLines[i][s+1], "\'"))) {
-                    strcpy(outputString[k-1], code->codeLines[i][s]);
+                    strcpy(outputString[k], code->codeLines[i][s]);
                     k++;
                 }
                 else {
-                    strcpy(outputString[k-1], code->codeLines[i][s]);
+                    strcpy(outputString[k], code->codeLines[i][s]);
+                    k++;
                     strcpy(outputString[k], " ");
                     k++;
                 }
@@ -114,23 +121,69 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
 
             if (!strcmp(code->codeLines[i][s], "\"")) {
-                insideQuotFlag = (insideQuotFlag+1)%2;
-                if (comment == 0) {
+
+
+//                if (comment == 0) {
+//                    strcpy(outputString[k], code->codeLines[i][s]);
+//                    k++;
+//                    comment++;
+//                } else if (comment == 1){
+//                    if (!strcmp(outputString[k-1], " ")) {
+//                        strcpy(outputString[k-1], code->codeLines[i][s]);
+//
+//                    } else {
+//                        strcpy(outputString[k], code->codeLines[i][s]);
+//                        k++;
+//                    }
+//                    comment--;
+//                }
+
+                strcpy(outputString[k], code->codeLines[i][s]);
+                k++;
+                s++;
+                while (strcmp(code->codeLines[i][s], "\"")) {
                     strcpy(outputString[k], code->codeLines[i][s]);
                     k++;
-                    comment++;
-                } else if (comment == 1){
-                    if (!strcmp(outputString[k-1], " ")){
-                        strcpy(outputString[k-1], code->codeLines[i][s]);
+                    s++;
+                }
+                strcpy(outputString[k], code->codeLines[i][s]);
+                k++;
+                continue;
+            }
 
-                    } else {
-                        strcpy(outputString[k], code->codeLines[i][s]);
-                        k++;
+
+            if (!strcmp(code->codeLines[i][s], "\'")) {
+                int spaceCnt = 0;
+                int symCnt = 0;
+                strcpy(outputString[k], code->codeLines[i][s]);
+                k++;
+                s++;
+                while (strcmp(code->codeLines[i][s], "\'")) {
+                    if(!strcmp(code->codeLines[i][s], " ")) {
+                        s++;
+                        spaceCnt++;
+                        continue;
                     }
-                    comment--;
+                    strcpy(outputString[k], code->codeLines[i][s]);
+                    k++;
+                    s++;
+                    symCnt = 1;
+                }
+
+                if(symCnt == 0 && spaceCnt != 0) {
+                    strcpy(outputString[k], " ");
+                    k++;
+                }
+
+                strcpy(outputString[k], code->codeLines[i][s]);
+                k++;
+                if(!isCloseBr(code->codeLines[i][s+1])) {
+                    strcpy(outputString[k], " ");
+                    k++;
                 }
                 continue;
             }
+
 
             if (!strcmp(code->codeLines[i][s], ",")){
                 if (!strcmp(outputString[k-1], " ")){
@@ -236,7 +289,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
             //simple Symbol
             strcpy(outputString[k], code->codeLines[i][s]);
             k++;
-            if (includeFlag == 0 && noSpaceFlag == 0 && insideQuotFlag == 0) {  //use spaces if it's not #include
+            if (includeFlag == 0 && noSpaceFlag == 0 && insideQuotFlag == 0 && !isCloseBr(code->codeLines[i][s+1])) {  //use spaces if it's not #include
                 strcpy(outputString[k], " ");
                 k++;
             }
