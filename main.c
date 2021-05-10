@@ -51,10 +51,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
             printf(" %s", e[i].code[z]);
         }
         //GOTO & tags logic
-        //TODO: CONTINE & BREAK tags logics + real. in parcer.c
-
-
-        if (!strcmp(e[i].code[0], "endof") && strncmp(e[i].code[1],"?if",3)) { //TODO: make a NORMAL notIF condition + break && continue
+        if (!strcmp(e[i].code[0], "endof") && strncmp(e[i].code[1],"?if",3)) {
 //            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             int u = 0;
             for(; u < bcnt; u++){
@@ -64,7 +61,19 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 double tmp;
                 if (MemoryFunctions.getValue(m, bools[u].expr[ff]) == NULL) tmp = 0;
                 else tmp = MemoryFunctions.getValue(m, bools[u].expr[ff])->d;
-                if (bools[u].iVals[i] != tmp){ bools[u].nonConstIter = 1; break;}
+                if (bools[u].iVals[ff] != tmp){bools[u].nonConstIter = 1; break;}
+            }
+
+            bools[u].state = bools[u].nonConstIter || bools[u].fullInit || bools[u].isBreak;
+            if(!bools[u].state){
+                printf("\n uneven execution conditions may lead to endless loop at line %d", bools[u].line);
+                printf("\n\n");
+                for (int y = 0; y < bcnt; y++){
+                    printf(" %s\tin line %d may be stopped via break: %d  fully inited: %d has nonconstant iters: %d\n",
+                           bools[y].name, bools[y].line, bools[y].isBreak, bools[y].fullInit, bools[y].nonConstIter);
+                }
+                printf("\n\n");
+                return e;
             }
 
             if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0) {
@@ -87,7 +96,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 double tmp;
                 if (MemoryFunctions.getValue(m, bools[u].expr[ff]) == NULL) tmp = 0;
                 else tmp = MemoryFunctions.getValue(m, bools[u].expr[ff])->d;
-                bools[u].iVals[i] = tmp;
+                bools[u].iVals[ff] = tmp;
             }
 
             printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
@@ -134,11 +143,6 @@ Expression *interpretFile(Memory *m, FileData *file) {
         } else if (!strcmp(e[i].code[0],"unsigned")){
             MEMORY_NEW_NUM(*m, Unsigned, e[i].code[1], 0);
         }
-
-        //FOR validity checker
-        //TODO: (1)-E A 3 cond (2)- E diff i (3)-E break
-        // (1) --> parcer.c;
-
 
 
         // result stack with RPN

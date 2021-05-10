@@ -61,13 +61,94 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
             addBracket = 1;
         }
         i = 2;
-    } else if (!strcmp(src[0], "if") || !strcmp(src[0], "while")) {
+    } else if (!strcmp(src[0], "do")){
+        sizeDelta++;
+
+        boolStack[*bcnt].type = While;
+        boolStack[*bcnt].line = metaVal;
+        boolStack[*bcnt].fullInit = 1;
+        boolStack[*bcnt].isBreak = 0;
+        boolStack[*bcnt].nonConstIter = 0;
+        boolStack[*bcnt].state = 0;
+
+        char **tmpEnd = (char **) malloc(2 * sizeof(char *));
+        tmpEnd[0] = (char *) malloc(10 * sizeof(char));
+        tmpEnd[1] = (char *) malloc(10 * sizeof(char));
+
+        char *metaStr = (char *) malloc(5 * sizeof(char));
+        strcpy(metaStr, "?dwhl");
+        char *fig = malloc(5*sizeof(char));
+        sprintf(fig, "%d", metaVal);
+        strcat(metaStr,fig);
+
+        stData tmp = {.str = metaStr};
+        stPush(metaData, tmp);
+
+        strcpy(tmpEnd[0], "int");
+        strcpy(tmpEnd[1], stTop(metaData).str);
+
+        addExpression(expr, exprSize++, tmpEnd, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
+
+        char **tmpBegTag = (char **) malloc(2 * sizeof(char *));
+        tmpBegTag[0] = (char *) malloc(10 * sizeof(char));
+        tmpBegTag[1] = (char *) malloc(10 * sizeof(char));
+        strcpy(tmpBegTag[0], "begin");
+        strcpy(tmpBegTag[1], stTop(metaData).str);
+
+        boolStack[*bcnt].name = stTop(metaData).str;
+        boolStack[*bcnt].expr = (char **) malloc(25 * sizeof(char *));
+        boolStack[*bcnt].iVals = (double *) malloc(25 * sizeof(double));
+
+        for (int y = 0; y < 25; y++) {
+            boolStack[*bcnt].expr[y] = (char *) malloc(10 * sizeof(char));
+            memset(boolStack[*bcnt].expr[y], 0, 10);
+            boolStack[*bcnt].iVals[y] = 0;
+        }
+        addExpression(expr, exprSize++, tmpBegTag, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
+        *(bcnt)+=1;
+    }   else if (!strcmp(src[0], "}") && !strcmp(src[1], "while") && !strncmp(stTop(metaData).str, "?dwhl",5)) {
+        sizeDelta++;
+
+        int seekId = 0;
+
+        for(;seekId < *bcnt; seekId++){
+            if(!strcmp(boolStack[seekId].name,stTop(metaData).str)) break;
+        }
+
+        char **ifCond = (char **) malloc(25 * sizeof(char *));
+        int ifCondIdx = 0;
+
+        for (int y = 0; y < 25; y++) {
+            ifCond[y] = (char *) malloc(10 * sizeof(char));
+            memset(ifCond[y], 0, 10);
+        }
+
+        strcpy(ifCond[ifCondIdx++], stTop(metaData).str);
+        strcpy(ifCond[ifCondIdx++], "=");
+        i = 2;
+
+        for (; strcmp(src[i], ";");) {
+            strcpy(boolStack[seekId].expr[ifCondIdx-2], src[i]);
+            strcpy(ifCond[ifCondIdx++], src[i++]);
+        }
+        addExpression(expr, exprSize++, ifCond, ifCondIdx, metaData, 0,NULL, reqSize, boolStack, bcnt);
+        Vec.push(reqSize,0);
+
+        char **tmpBegTag = (char **) malloc(2 * sizeof(char *));
+        tmpBegTag[0] = (char *) malloc(10 * sizeof(char));
+        tmpBegTag[1] = (char *) malloc(10 * sizeof(char));
+        strcpy(tmpBegTag[0], "endof");
+        strcpy(tmpBegTag[1], stTop(metaData).str);
+        boolStack[*bcnt].name = stTop(metaData).str;
+        addExpression(expr, exprSize++, tmpBegTag, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
+        stPop(metaData);
+    }   else if (!strcmp(src[0], "if") || (!strcmp(src[0], "while") && strncmp(stTop(metaData).str, "?dwhl",5))) {
         sizeDelta++;
 
         if(!strcmp(src[0], "if")) boolStack[*bcnt].type = If;
         if(!strcmp(src[0], "while")) boolStack[*bcnt].type = While;
         boolStack[*bcnt].line = metaVal;
-        boolStack[*bcnt].fullInit = 1;
+        boolStack[*bcnt].fullInit = 0;
         boolStack[*bcnt].isBreak = 0;
         boolStack[*bcnt].nonConstIter = 0;
         boolStack[*bcnt].state = 0;
@@ -106,6 +187,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
             strcpy(boolStack[*bcnt].expr[ifCondIdx-2], src[i]);
             strcpy(ifCond[ifCondIdx++], src[i++]);
         }
+        boolStack[*bcnt].fullInit = boolStack[*bcnt].fullInit || (ifCondIdx - 4);
         addExpression(expr, exprSize++, ifCond, ifCondIdx, metaData, 0,NULL, reqSize, boolStack, bcnt);
         Vec.push(reqSize,0);
 
@@ -178,7 +260,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
         strcpy(forCond[forCondIdx++], ")");
         addExpression(expr, exprSize++, forCond, forCondIdx, metaData, 0,NULL, reqSize, boolStack, bcnt);
-        boolStack[*bcnt].fullInit = boolStack[*bcnt].fullInit && (4-forCondIdx);
+        boolStack[*bcnt].fullInit = boolStack[*bcnt].fullInit && (forCondIdx - 4);
 
         char **tmpBegTag = (char **) malloc(2 * sizeof(char *));
         tmpBegTag[0] = (char *) malloc(10 * sizeof(char));
