@@ -69,6 +69,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].fullInit = 1;
         boolStack[*bcnt].isBreak = 0;
         boolStack[*bcnt].nonConstIter = 0;
+        boolStack[*bcnt].hasNoUnevenExecutionPath = 1;
         boolStack[*bcnt].state = 0;
 
         char **tmpEnd = (char **) malloc(2 * sizeof(char *));
@@ -152,6 +153,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].isBreak = 0;
         boolStack[*bcnt].nonConstIter = 0;
         boolStack[*bcnt].state = 0;
+        boolStack[*bcnt].hasNoUnevenExecutionPath = 1;
 
         char **ifCond = (char **) malloc(25 * sizeof(char *));
         boolStack[*bcnt].expr = (char **) malloc(25 * sizeof(char *));
@@ -207,7 +209,9 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].fullInit = 1;
         boolStack[*bcnt].isBreak = 0;
         boolStack[*bcnt].nonConstIter = 0;
+        boolStack[*bcnt].hasNoUnevenExecutionPath = 1;
         boolStack[*bcnt].state = 0;
+        boolStack[*bcnt].builtInIter = 0;
 
         i = 2;
         char **forInit = (char **) malloc(10 * sizeof(char *));
@@ -338,6 +342,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
                 for(; q < *bcnt; q++){
                     if (!strcmp(boolStack[q].name,metaData->data[p].str)) break;
                 }
+                boolStack[q].hasNoUnevenExecutionPath = 0;
                 addExpression(expr, exprSize++, tmpEnd, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
                 break;
             }
@@ -362,6 +367,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
         Vec.push(reqSize,y);
         boolStack[*bcnt].fullInit = boolStack[*bcnt].fullInit && y;
+        if(y)boolStack[*bcnt].builtInIter = 1;
         *(bcnt)+=1;
     } else {
         for (; i < srcSize; ++i) {

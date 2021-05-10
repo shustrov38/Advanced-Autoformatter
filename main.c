@@ -37,7 +37,6 @@ Expression *interpretFile(Memory *m, FileData *file) {
 
         // add and convert expression from code line to calculus expression
         int q = addExpression(e, size, file->code->codeLines[i], codeLineLength, meta, i+1, &exeSt, &reqSize, bools, &bcnt);
-        printf("%d", bcnt);
         size+=q;
     }
     size++;
@@ -64,7 +63,8 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 if (bools[u].iVals[ff] != tmp){bools[u].nonConstIter = 1; break;}
             }
 
-            bools[u].state = bools[u].nonConstIter || bools[u].fullInit || bools[u].isBreak;
+            bools[u].state = (bools[u].nonConstIter || bools[u].fullInit  || bools[u].isBreak) &&
+                             (bools[u].hasNoUnevenExecutionPath || bools[u].builtInIter);
             if(!bools[u].state){
                 printf("\n uneven execution conditions may lead to endless loop at line %d", bools[u].line);
                 printf("\n\n");

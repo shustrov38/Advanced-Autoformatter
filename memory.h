@@ -64,6 +64,8 @@ struct boolean_e_c {
     int             fullInit;
     int             nonConstIter;
     int             state;
+    int             hasNoUnevenExecutionPath;
+    int             builtInIter;
 };
 
 typedef struct boolean_e_c bool;
