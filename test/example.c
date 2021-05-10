@@ -1,9 +1,12 @@
-int p = 5; 
-int j = 4; 
-for (int i = 2; i < s;) {
-    if (i == 4) {
-        continue; 
+for (int i = 0; i < 4; ++i) {
+    for (;; ) {
+        for (;; ) {
+            for (;; ) {
+                for (;; ) {
+                    for (;; ) {
+                    } 
+                } 
+            } 
+        } 
     } 
-    p++; 
-    i++; 
 } 

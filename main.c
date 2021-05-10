@@ -41,16 +41,26 @@ Expression *interpretFile(Memory *m, FileData *file) {
     }
     size++;
 
+    // create filename for listing
+    char listingFileName[100];
+    memset(listingFileName, 0, 50);
+    strcat(listingFileName, "../listings/LST_");
+    strcat(listingFileName, strrchr(file->filename, '/') + 1);
+    strcat(listingFileName, ".txt");
+//    printf("%s\n", listingFileName);
+    FILE *listingFile = fopen(listingFileName, "w");
+
     // iterate through Expressions and interpret each of them
     for (int i = 0; i <= size+1; ++i) {
         rpnProcessor *outStack = rpnProcInit();
 
-        printf("\n");
+        fprintf(listingFile, "\n");
         for (int z = 0; z < e[i].size; z++) {
-            printf(" %s", e[i].code[z]);
+            fprintf(listingFile, "%s ", e[i].code[z]);
         }
+
         //GOTO & tags logic
-        if (!strcmp(e[i].code[0], "endof") && strncmp(e[i].code[1],"?if",3)) {
+        if (!strcmp(e[i].code[0], "endof") && strncmp(e[i].code[1],"?if", 3) != 0) {
 //            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             int u = 0;
             for(; u < bcnt; u++){
@@ -63,16 +73,18 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 if (bools[u].iVals[ff] != tmp){bools[u].nonConstIter = 1; break;}
             }
 
-            bools[u].state = (bools[u].nonConstIter || bools[u].fullInit  || bools[u].isBreak) &&
+            bools[u].state = (bools[u].nonConstIter && bools[u].fullInit || bools[u].isBreak) &&
                              (bools[u].hasNoUnevenExecutionPath || bools[u].builtInIter);
             if(!bools[u].state){
-                printf("\n uneven execution conditions may lead to endless loop at line %d", bools[u].line);
+                printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
+#ifdef __INTERPRET_DEBUG__
                 printf("\n\n");
                 for (int y = 0; y < bcnt; y++){
                     printf(" %s\tin line %d may be stopped via break: %d  fully inited: %d has nonconstant iters: %d\n",
                            bools[y].name, bools[y].line, bools[y].isBreak, bools[y].fullInit, bools[y].nonConstIter);
                 }
                 printf("\n\n");
+#endif
                 return e;
             }
 
@@ -99,7 +111,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 bools[u].iVals[ff] = tmp;
             }
 
-            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
+            fprintf(listingFile, "== %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             if (MemoryFunctions.getValue(m, e[i].code[1])->d == 0) {
                 int executionLineNum = i;
                 while (!(!strcmp(e[executionLineNum].code[0], "endof") &&
@@ -157,16 +169,27 @@ Expression *interpretFile(Memory *m, FileData *file) {
 //        MemoryFunctions.printRegister(m, Numerical);
 //        printf("\n");
     }
+
+    fclose(listingFile);
+
+#ifdef __INTERPRET_DEBUG__
     printf("\n\n");
     for (int y = 0; y < bcnt; y++){
         printf(" %s\tin line %d may be stopped via break: %d  fully inited: %d has nonconstant iters: %d\n",
                     bools[y].name, bools[y].line, bools[y].isBreak, bools[y].fullInit, bools[y].nonConstIter);
     }
     printf("\n\n");
+#endif
     return e;
 }
 
 int main(const int argc, const char *argv[]) {
+    /*
+     * TODO:
+     *  1) work with constructions: while(){}, do{}while(), for(;;), ...
+     *  2) interpret all files
+     */
+
     if (argc == 1) {
         printf("No filenames specified.\n");
         return EXIT_FAILURE;
@@ -189,24 +212,23 @@ int main(const int argc, const char *argv[]) {
 //        printAllFunctions(&files[0]);
     }
 
-//    printFunctionsCallTable(files, filesCount); // data about functions and nested cycles
+    printFunctionsCallTable(files, filesCount); // data about functions and nested cycles
 //    checkIncludeCycles(files, filesCount); // need work
 
 #ifdef WORK_WITH_MEMORY
     INIT_MEMORY(m);
 
-    MEMORY_NEW_NUM(m, Int, "s", 5);
-    MEMORY_NEW_STR(m, "St", "H3110_WR1D");
+//    printf("Variables before interpretation:\n");
+//    MemoryFunctions.printRegister(&m, Numerical);
+//    printf("\n");
 
-    printf("Variables before interpretation:\n");
-    MemoryFunctions.printRegister(&m, Numerical);
-    printf("\n");
+    for (int i  = 0; i < filesCount; ++i) {
+        Expression *e = interpretFile(&m, &files[i]);
+    }
 
-    Expression *e = interpretFile(&m, &files[0]);
-
-    printf("Variables after interpretation:\n");
-    MemoryFunctions.printRegister(&m, Numerical);
-    printf("\n");
+//    printf("Variables after interpretation:\n");
+//    MemoryFunctions.printRegister(&m, Numerical);
+//    printf("\n");
 #endif
 
     return EXIT_SUCCESS;
