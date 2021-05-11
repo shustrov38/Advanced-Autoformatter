@@ -142,7 +142,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 executionLineNum++;
             }
             i = executionLineNum;
-//            stPop(meta);
+            if(meta->size>0) stPop(meta);
             continue;
         } else if (!strcmp(e[i].code[0], "skip") && !strncmp(e[i].code[1],"?for",4)){
             while(meta->size>0 && strncmp(stTop(meta).str,"?if",3)==0){
@@ -153,7 +153,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 executionLineNum++;
             }
             if(!strncmp(e[i].code[1],"?for",4))     i = executionLineNum-2;
-            stPop(meta);
+            if(meta->size>0) stPop(meta);
             continue;
         } else if (!strcmp(e[i].code[0], "skip") && (!strncmp(e[i].code[1],"?while",6) || !strncmp(e[i].code[1],"?dwhl",5))){
             while(meta->size>0 && strncmp(stTop(meta).str,"?if",3)==0){
@@ -164,7 +164,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 executionLineNum--;
             }
             i = executionLineNum-1;
-//            stPop(meta);
+            if(meta->size>0) stPop(meta);
             continue;
         }
 
