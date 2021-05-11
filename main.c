@@ -88,16 +88,17 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 return e;
             }
 
-            if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0 && strncmp(e[i].code[1],"?dwhl",5)) {
-                int executionLineNum = i;
+            if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0 && strncmp(e[i].code[1],"?dwhl",5)!=0) {
+                int executionLineNum = i-1;
+
                 while (strcmp(e[executionLineNum].code[0], e[i].code[1])) {
                     executionLineNum--;
                 }
                 i = executionLineNum - 1;
                 continue;
-            } else  if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0 && !strncmp(e[i].code[1],"?dwhl",5)) {
-                int executionLineNum = i;
-                while (strcmp(e[executionLineNum].code[1], e[i].code[1]) && strcmp(e[executionLineNum].code[0], "begin")) {
+            } else  if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0 && strncmp(e[i].code[1],"?dwhl",5)==0) {
+                int executionLineNum = i-1;
+                while (strcmp(e[executionLineNum].code[1], e[i].code[1])!=0 && strcmp(e[executionLineNum].code[0], "begin")!=0) {
                     executionLineNum--;
                 }
                 i = executionLineNum;
@@ -107,6 +108,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
             }
 
         } else if (!strcmp(e[i].code[0], "begin") && strncmp(e[i].code[1],"?dwhl",5)!=0) {
+//            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             int u = 0;
             for(; u < bcnt; u++){
                 if(!strcmp(bools[u].name,e[i].code[1])) break;
@@ -132,25 +134,40 @@ Expression *interpretFile(Memory *m, FileData *file) {
             }
 
         }  else if (!strcmp(e[i].code[0], "stop")){
+            while(strncmp(stTop(meta).str,"?for",4)!=0 && strncmp(stTop(meta).str,"?dwhl",5)!=0
+            && strncmp(stTop(meta).str,"?while",6)!=0){
+                stPop(meta);
+            }
             int executionLineNum = i;
             while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
                 executionLineNum++;
             }
             i = executionLineNum;
+            stPop(meta);
             continue;
         } else if (!strcmp(e[i].code[0], "skip") && !strncmp(e[i].code[1],"?for",4)){
+            while(strncmp(stTop(meta).str,"?for",4)!=0 && strncmp(stTop(meta).str,"?dwhl",5)!=0
+                  && strncmp(stTop(meta).str,"?while",6)!=0){
+                stPop(meta);
+            }
             int executionLineNum = i;
             while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
                 executionLineNum++;
             }
             if(!strncmp(e[i].code[1],"?for",4))     i = executionLineNum-2;
+            stPop(meta);
             continue;
         } else if (!strcmp(e[i].code[0], "skip") && (!strncmp(e[i].code[1],"?while",6) || !strncmp(e[i].code[1],"?dwhl",5))){
+            while(strncmp(stTop(meta).str,"?for",4)!=0 && strncmp(stTop(meta).str,"?dwhl",5)!=0
+                  && strncmp(stTop(meta).str,"?while",6)!=0){
+                stPop(meta);
+            }
             int executionLineNum = i;
             while(!(!strcmp(e[executionLineNum].code[0],"begin") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
                 executionLineNum--;
             }
             i = executionLineNum-1;
+            stPop(meta);
             continue;
         }
 

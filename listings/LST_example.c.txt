@@ -1,5 +1,5 @@
 
-int i = 2 
+int i = 10 
 int ?dwhl2 
 begin ?dwhl2 
 do { 
