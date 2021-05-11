@@ -73,7 +73,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 if (bools[u].iVals[ff] != tmp){bools[u].nonConstIter = 1; break;}
             }
 
-            bools[u].state = (bools[u].nonConstIter && bools[u].fullInit || bools[u].isBreak) &&
+            bools[u].state = (bools[u].nonConstIter || bools[u].fullInit || bools[u].isBreak) &&
                              (bools[u].hasNoUnevenExecutionPath || bools[u].builtInIter);
             if(!bools[u].state){
                 printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
@@ -134,8 +134,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
             }
 
         }  else if (!strcmp(e[i].code[0], "stop")){
-            while(strncmp(stTop(meta).str,"?for",4)!=0 && strncmp(stTop(meta).str,"?dwhl",5)!=0
-            && strncmp(stTop(meta).str,"?while",6)!=0){
+            while(meta->size>0 && strncmp(stTop(meta).str,"?if",3)==0){
                 stPop(meta);
             }
             int executionLineNum = i;
@@ -143,11 +142,10 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 executionLineNum++;
             }
             i = executionLineNum;
-            stPop(meta);
+//            stPop(meta);
             continue;
         } else if (!strcmp(e[i].code[0], "skip") && !strncmp(e[i].code[1],"?for",4)){
-            while(strncmp(stTop(meta).str,"?for",4)!=0 && strncmp(stTop(meta).str,"?dwhl",5)!=0
-                  && strncmp(stTop(meta).str,"?while",6)!=0){
+            while(meta->size>0 && strncmp(stTop(meta).str,"?if",3)==0){
                 stPop(meta);
             }
             int executionLineNum = i;
@@ -158,8 +156,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
             stPop(meta);
             continue;
         } else if (!strcmp(e[i].code[0], "skip") && (!strncmp(e[i].code[1],"?while",6) || !strncmp(e[i].code[1],"?dwhl",5))){
-            while(strncmp(stTop(meta).str,"?for",4)!=0 && strncmp(stTop(meta).str,"?dwhl",5)!=0
-                  && strncmp(stTop(meta).str,"?while",6)!=0){
+            while(meta->size>0 && strncmp(stTop(meta).str,"?if",3)==0){
                 stPop(meta);
             }
             int executionLineNum = i;
@@ -167,7 +164,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 executionLineNum--;
             }
             i = executionLineNum-1;
-            stPop(meta);
+//            stPop(meta);
             continue;
         }
 

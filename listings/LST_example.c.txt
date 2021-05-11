@@ -1,24 +1,49 @@
 
-int i = 10 
-int ?dwhl2 
-begin ?dwhl2 
-do { 
-i ++ 
-i ++ 
-?dwhl2 = ( i < 10 ) 
+int i = 0 
+int ?for1 
+?for1 = ( i < 10 ) 
+begin ?for1 == 1.000000
+int j = 0 
 
-endof ?dwhl2 
-
-
-
-
-
-
-
-
-
-
-
+int ?for3 
+?for3 = ( j < 10 ) 
+begin ?for3 == 1.000000
+int ?if4 
+?if4 = ( j == 4 ) 
+begin ?if4 == 0.000000
+endof ?if4 
+j ++ 
+endof ?for3 
+?for3 = ( j < 10 ) 
+begin ?for3 == 1.000000
+int ?if4 
+?if4 = ( j == 4 ) 
+begin ?if4 == 0.000000
+endof ?if4 
+j ++ 
+endof ?for3 
+?for3 = ( j < 10 ) 
+begin ?for3 == 1.000000
+int ?if4 
+?if4 = ( j == 4 ) 
+begin ?if4 == 0.000000
+endof ?if4 
+j ++ 
+endof ?for3 
+?for3 = ( j < 10 ) 
+begin ?for3 == 1.000000
+int ?if4 
+?if4 = ( j == 4 ) 
+begin ?if4 == 0.000000
+endof ?if4 
+j ++ 
+endof ?for3 
+?for3 = ( j < 10 ) 
+begin ?for3 == 1.000000
+int ?if4 
+?if4 = ( j == 4 ) 
+begin ?if4 == 1.000000
+stop ?for1 
 
 
 
