@@ -51,7 +51,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     FILE *listingFile = fopen(listingFileName, "w");
 
     // iterate through Expressions and interpret each of them
-    for (int i = 0; i <= size+1; ++i) {
+    for (int i = 0; i <100; ++i) {
         rpnProcessor *outStack = rpnProcInit();
 
         fprintf(listingFile, "\n");
@@ -88,18 +88,25 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 return e;
             }
 
-            if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0) {
+            if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0 && strncmp(e[i].code[1],"?dwhl",5)) {
                 int executionLineNum = i;
                 while (strcmp(e[executionLineNum].code[0], e[i].code[1])) {
                     executionLineNum--;
                 }
                 i = executionLineNum - 1;
                 continue;
-            } else {
+            } else  if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0 && !strncmp(e[i].code[1],"?dwhl",5)) {
+                int executionLineNum = i;
+                while (strcmp(e[executionLineNum].code[1], e[i].code[1]) && strcmp(e[executionLineNum].code[0], "begin")) {
+                    executionLineNum--;
+                }
+                i = executionLineNum;
+                continue;
+            }else {
                 continue;
             }
 
-        } else if (!strcmp(e[i].code[0], "begin")) {
+        } else if (!strcmp(e[i].code[0], "begin") && strncmp(e[i].code[1],"?dwhl",5)!=0) {
             int u = 0;
             for(; u < bcnt; u++){
                 if(!strcmp(bools[u].name,e[i].code[1])) break;
@@ -138,7 +145,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
             }
             if(!strncmp(e[i].code[1],"?for",4))     i = executionLineNum-2;
             continue;
-        } else if (!strcmp(e[i].code[0], "skip") && !strncmp(e[i].code[1],"?while",5)){
+        } else if (!strcmp(e[i].code[0], "skip") && (!strncmp(e[i].code[1],"?while",6) || !strncmp(e[i].code[1],"?dwhl",5))){
             int executionLineNum = i;
             while(!(!strcmp(e[executionLineNum].code[0],"begin") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
                 executionLineNum--;
@@ -225,7 +232,7 @@ int main(const int argc, const char *argv[]) {
     for (int i  = 0; i < filesCount; ++i) {
         Expression *e = interpretFile(&m, &files[i]);
     }
-
+//
 //    printf("Variables after interpretation:\n");
 //    MemoryFunctions.printRegister(&m, Numerical);
 //    printf("\n");

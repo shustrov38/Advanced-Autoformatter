@@ -1,10 +1,100 @@
 
-int i = 0 
-int ?for1 
-?for1 = ( i < 4 ) 
-begin ?for1 == 1.000000
+int i = 2 
+int ?dwhl2 
+begin ?dwhl2 
+do { 
+i ++ 
+i ++ 
+?dwhl2 = ( i < 10 ) 
 
-int ?for2 
-?for2 = ( ) 
-begin ?for2 == 0.000000
-endof ?for2 
+endof ?dwhl2 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

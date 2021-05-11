@@ -1,7 +1,7 @@
 #include "parser.h"
 #include "../vector.h"
 
-#define MAX_ARRAY_SIZE 100
+#define MAX_ARRAY_SIZE 1000
 #define MAX_E_SIZE 100
 #define MAX_STR_SIZE 100
 
@@ -10,7 +10,7 @@
 void initExpression(Expression *E) {
     for (int i = 0; i < MAX_ARRAY_SIZE; ++i) {
         E[i].code = (char **) malloc(MAX_E_SIZE * sizeof(char *));
-        for (int j = 0; j < MAX_ARRAY_SIZE; ++j) {
+        for (int j = 0; j < MAX_ARRAY_SIZE/10; ++j) {
             E[i].code[j] = (char *) malloc(MAX_V_NAME_SIZE * sizeof(char));
             memset(E[i].code[j], 0, MAX_V_NAME_SIZE);
         }
@@ -67,7 +67,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
         i = 2;
     } else if (!strcmp(src[0], "do")) {
-        sizeDelta++;
+        sizeDelta+=2;
 
         boolStack[*bcnt].type = While;
         boolStack[*bcnt].line = metaVal;
@@ -112,9 +112,9 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
         addExpression(expr, exprSize++, tmpBegTag, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
         *(bcnt) += 1;
+
     } else if (metaData->size != 0 && !strcmp(src[0], "}") && !strcmp(src[1], "while") &&
                !strncmp(stTop(metaData).str, "?dwhl", 5)) {
-        sizeDelta++;
 
         int seekId = 0;
 
@@ -140,7 +140,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
         addExpression(expr, exprSize++, ifCond, ifCondIdx, metaData, 0, NULL, reqSize, boolStack, bcnt);
         Vec.push(reqSize, 0);
-
+        exprSize++;
         char **tmpBegTag = (char **) malloc(2 * sizeof(char *));
         tmpBegTag[0] = (char *) malloc(10 * sizeof(char));
         tmpBegTag[1] = (char *) malloc(10 * sizeof(char));
