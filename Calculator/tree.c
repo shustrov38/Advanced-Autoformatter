@@ -9,8 +9,8 @@ Node *nodeInit() {
 }
 
 void opTreeGen(Node *node, Stack *stack) {
-    assert(node != NULL && "bad root");
-    assert(stack != NULL && stack->size != 0 && "bad stack");
+//    assert(node != NULL && "bad root");
+//    assert(stack != NULL && stack->size != 0 && "bad stack");
 
     // recursive end condition
     if (stack->size == 0) return;
@@ -54,6 +54,7 @@ double opTreeCalc(Memory *m, Node *root) {
             var = MemoryFunctions.getValue(m, root->left->value.str);
             if (!var) return 0;
             var->d = r;
+            var->isInited = 1;
             return 0;
         case NUM:
             return atof(root->value.str);
@@ -111,6 +112,8 @@ double opTreeCalc(Memory *m, Node *root) {
             return l >= r;
         case EQLS:
             return l == r;
+        case CMPNE:
+            return l != r;
         case SIN:
             return sin(r);
         case COS:

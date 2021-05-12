@@ -15,10 +15,14 @@ InitRegister(&REG)
 
 #pragma region FunctionPrototypes
 
+
 int find(char **arr, int size, char *key) {
-    for (int i = 0; i < size; ++i) {
-        if (!strcmp(arr[i], key)) {
-            return i;
+    if (key != NULL && strlen(key) != 0) {
+//        printf("[%s]\n", key);
+        for (int i = 0; i < size; ++i) {
+            if (!strcmp(arr[i], key)) {
+                return i;
+            }
         }
     }
     return size;
@@ -53,6 +57,7 @@ void newNum(Memory *m, char *name, Variant item) {
 
     strcpy(r->names[i], name);
     r->items[i] = item;
+    r->items[i].isInited = 0;
 }
 
 void newString(Memory *m, char *name, Variant item) {
@@ -95,19 +100,19 @@ void printRegister(Memory *m, VariableType type) {
     for (int i = 0; i < r->total; ++i) {
         switch (r->items[i].varType) {
             case Numerical:
-                switch (r->items[i].numType){
+                switch (r->items[i].numType) {
                     case Int:
-                        printf("[%2d] integer %s = %d\n", i, r->names[i], (int)r->items[i].d);
+                        printf("[%2d] integer %s = %d\n", i, r->names[i], (int) r->items[i].d);
                         break;
                     case Double:
                         printf("[%2d] float %s = %f\n", i, r->names[i], r->items[i].d);
                         break;
                     case Unsigned:
-                        if(r->items[i].d < 0){
+                        if (r->items[i].d < 0) {
                             printf("[%2d] unsigned %s is overflowed\n", i, r->names[i]);
                             break;
                         } else {
-                            printf("[%2d] unsigned %s = %d\n", i, r->names[i], (int)r->items[i].d);
+                            printf("[%2d] unsigned %s = %d\n", i, r->names[i], (int) r->items[i].d);
                             break;
                         }
                 }
@@ -168,6 +173,9 @@ void dec(Memory *m, char *Varname) {
 
 void overflowChecker(Memory *m) {
     Register *tmp = MemoryFunctions.getRegister(m, Numerical);
+    if (tmp == NULL) {
+        return;
+    }
     for (int i = 0; i < tmp->total; ++i) {
         if (tmp->items[i].numType == Unsigned && tmp->items[i].d < 0) {
             tmp->items[i].isOverflowed = 1;

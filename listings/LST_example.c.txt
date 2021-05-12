@@ -1,0 +1,10 @@
+
+int i = 0 
+int ?for1 
+?for1 = ( i < 4 ) 
+begin ?for1 == 1.000000
+
+int ?for2 
+?for2 = ( ) 
+begin ?for2 == 0.000000
+endof ?for2 
