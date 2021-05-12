@@ -56,8 +56,24 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             i++;
 
             if (isCloseFigBr(originString[i])) {
-                strcpy(codeBody->codeLines[codeLineCnt][0], originString[i]);
-                if(isSemicolon(originString[i+1])) {
+                strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+                if (doFlag && !strcmp(originString[i + 1], "while")){
+                    codeWordsCnt++;
+                    i++;
+                    strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+                    while (!isSemicolon(originString[i - 1])){
+                        strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+                        codeWordsCnt++;
+                        i++;
+                    }
+                    codeWordsCnt = 0;
+                    codeLineCnt++;
+                    i--;
+                    doFlag--;
+                    continue;
+                }
+
+                if (isSemicolon(originString[i+1])) {
                     i++;
                     strcpy(codeBody->codeLines[codeLineCnt][1], originString[i]);
                 }
@@ -67,20 +83,20 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                 ++i;
             }
 
-            if (doFlag) {
-                ++codeWordsCnt;
-                --codeLineCnt;
-                while (strcmp(originString[i], ";") != 0) {
-                    strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
-                    ++i;
-                    codeWordsCnt++;
-                }
-                strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
-                ++i;
-                codeLineCnt++;
-                codeWordsCnt = 0;
-                doFlag--;
-            }
+//            if (doFlag) {
+//                ++codeWordsCnt;
+//                --codeLineCnt;
+//                while (strcmp(originString[i], ";") != 0) {
+//                    strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+//                    ++i;
+//                    codeWordsCnt++;
+//                }
+//                strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+//                ++i;
+//                codeLineCnt++;
+//                codeWordsCnt = 0;
+//                doFlag--;
+//            }
 
             while (figBracketCnt > 0) {
                 strcpy(codeBody->codeLines[codeLineCnt][0], "}");
