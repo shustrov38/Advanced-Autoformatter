@@ -28,6 +28,9 @@ Expression *interpretFile(Memory *m, FileData *file) {
     int bcnt = 0;
     Variant nTmp = {.varType = None, .isInited = 0, .d = 0};
     MemoryFunctions.newNum(m, "?nTmp", nTmp);
+    Variant constZero = {.varType = Numerical, .isInited = 1, .d = 0};
+    MemoryFunctions.newNum(m, "0", nTmp);
+    int inMain = 0;
     // TODO: it might be better to start the interpretation directly from the main function, ?????
 
     // TODO: change cycle, choose only arithmetic lines of code.
@@ -55,6 +58,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
 
     // iterate through Expressions and interpret each of them
     for (int i = 0; i < 1000; ++i) {
+        if(!strcmp(e[i].code[0], "int") && !strcmp(e[i].code[1], "main")) inMain = 1;
         rpnProcessor *outStack = rpnProcInit();
 
         fprintf(listingFile, "\n");
@@ -78,7 +82,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                     break;
                 }
             }
-
+            if(strncmp(e[i].code[1],"?while",6)==0 ||strncmp(e[i].code[1],"?for",4)==0){
             bools[u].state = (bools[u].builtInIter || bools[u].nonConstIter) &&
                              (bools[u].hasNoUnevenExecutionPath || bools[u].builtInIter) ||
                              bools[u].fullInit && bools[u].itCnt && bools[u].nonConstIter || bools[u].isBreak;
@@ -99,7 +103,8 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 }
                 i = executionLineNum;
                 continue;
-            }
+            }}
+
 
             if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0 && strncmp(e[i].code[1], "?dwhl", 5) != 0) {
                 int executionLineNum = i - 1;
@@ -133,14 +138,29 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 if ((__getOpID(bools[u].expr[ff]) == VAR) &&
                     (MemoryFunctions.getValue(m, bools[u].expr[ff])->varType == None
                      || MemoryFunctions.getValue(m, bools[u].expr[ff])->isInited == 0)) {
-                    bools[u].state = 0;
+                    if(inMain == 1)bools[u].state = 0;
                     tmp = 0;
                 }
                 if (MemoryFunctions.getValue(m, bools[u].expr[ff]) == NULL) tmp = 0;
                 else tmp = MemoryFunctions.getValue(m, bools[u].expr[ff])->d;
                 bools[u].iVals[ff] = tmp;
             }
-            if (!bools[u].state) {
+            if (strncmp(e[i].code[1], "?if", 3)==0){
+                bools[u].state = bools[u].itCnt;
+                if (!bools[u].state) {
+                    bools[u].state = 1;
+                    printf("Line %d: If expression defined by a const.\n", bools[u].line);
+#ifdef __INTERPRET_DEBUG__
+                    printf("\n\n");
+                for (int y = 0; y < bcnt; y++){
+                    printf(" %s\tin line %d may be stopped via break: %d  fully inited: %d has nonconstant iters: %d\n",
+                           bools[y].name, bools[y].line, bools[y].isBreak, bools[y].fullInit, bools[y].nonConstIter);
+                }
+                printf("\n\n");
+#endif
+                }
+            }
+            else if (!bools[u].state) {
                 printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
 #ifdef __INTERPRET_DEBUG__
                 printf("\n\n");
