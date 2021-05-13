@@ -9,8 +9,9 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--stack,10000000")
 add_subdirectory(Calculator)
 add_subdirectory(Autoformatter)
 
+
 #add_compile_definitions(__PARSER_OUT_DEBUG__)     # print data collected from parser
-#add_compile_definitions(__CYCLE_DETECTOR_DEBUG__)
+#add_compile_definitions(__CYCLE_DETECTOR_DEBUG__) # print all lines after converting
 #add_compile_definitions(__INTERPRET_DEBUG__)
 
 file(GLOB SOURCES *.c *.h)

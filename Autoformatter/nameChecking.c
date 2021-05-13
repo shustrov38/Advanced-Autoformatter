@@ -134,9 +134,11 @@ void checkNames(char *fileName, codeLineStruct *code) {
         }
     }
 
+
     if (total) {
         printf("\n");
     }
+
 
     for (int i = 0; i < namesCnt; ++i){
         if (names[i].usingCnt == 0){
@@ -148,6 +150,7 @@ void checkNames(char *fileName, codeLineStruct *code) {
         }
     }
     printf("\n");
+
 
     if (total == 0) {
         printf("This file has not got any problems with variable/function names.\n");

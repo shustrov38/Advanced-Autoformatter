@@ -1,13 +1,5 @@
 #include "optionFunctions.h"
 
-int isTypeData(char *string){
-    if(!strcmp(string, "void") || !strcmp(string, "int") || !strcmp(string, "char") || !strcmp(string, "double") ||
-    !strcmp(string, "float")){
-        return 1;
-    } else {
-        return 0;
-    }
-}
 
 int isOpenBr(char *string) {
     if (!strcmp(string, "(")) {
