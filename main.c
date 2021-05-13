@@ -26,6 +26,8 @@ Expression *interpretFile(Memory *m, FileData *file) {
     INIT_VECTOR(reqSize);
     bool *bools = (bool *) malloc(100 * sizeof(bool));
     int bcnt = 0;
+    Variant nTmp = {.varType = Numerical,.isInited = 0,.d = 0};
+    MemoryFunctions.newNum(m,"?nTmp",nTmp);
     // TODO: it might be better to start the interpretation directly from the main function, ?????
 
     // TODO: change cycle, choose only arithmetic lines of code.
@@ -113,11 +115,24 @@ Expression *interpretFile(Memory *m, FileData *file) {
             for(; u < bcnt; u++){
                 if(!strcmp(bools[u].name,e[i].code[1])) break;
             }
+            bools[u].state = 1;
             for (int ff = 0; ff < 25; ff++){
                 double tmp;
                 if (MemoryFunctions.getValue(m, bools[u].expr[ff]) == NULL) tmp = 0;
                 else tmp = MemoryFunctions.getValue(m, bools[u].expr[ff])->d;
                 bools[u].iVals[ff] = tmp;
+            }
+            if(!bools[u].state){
+                printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
+#ifdef __INTERPRET_DEBUG__
+                printf("\n\n");
+                for (int y = 0; y < bcnt; y++){
+                    printf(" %s\tin line %d may be stopped via break: %d  fully inited: %d has nonconstant iters: %d\n",
+                           bools[y].name, bools[y].line, bools[y].isBreak, bools[y].fullInit, bools[y].nonConstIter);
+                }
+                printf("\n\n");
+#endif
+                return e;
             }
 
             fprintf(listingFile, "== %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
@@ -134,37 +149,26 @@ Expression *interpretFile(Memory *m, FileData *file) {
             }
 
         }  else if (!strcmp(e[i].code[0], "stop")){
-            while(meta->size>0 && strncmp(stTop(meta).str,"?if",3)==0){
-                stPop(meta);
+            MEMORY_NEW_NUM(*m, Int, e[i].code[1], 0);
+            int executionLineNum = i-1;
+            while(!(strcmp(e[executionLineNum].code[0],"begin")==0 && strcmp(e[executionLineNum].code[1],e[i].code[1])==0)){
+                executionLineNum--;
             }
-            int executionLineNum = i;
-            while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
-                executionLineNum++;
-            }
-            i = executionLineNum;
-            if(meta->size>0) stPop(meta);
+            i = executionLineNum-1;
             continue;
         } else if (!strcmp(e[i].code[0], "skip") && !strncmp(e[i].code[1],"?for",4)){
-            while(meta->size>0 && strncmp(stTop(meta).str,"?if",3)==0){
-                stPop(meta);
-            }
             int executionLineNum = i;
             while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
                 executionLineNum++;
             }
             if(!strncmp(e[i].code[1],"?for",4))     i = executionLineNum-2;
-            if(meta->size>0) stPop(meta);
             continue;
         } else if (!strcmp(e[i].code[0], "skip") && (!strncmp(e[i].code[1],"?while",6) || !strncmp(e[i].code[1],"?dwhl",5))){
-            while(meta->size>0 && strncmp(stTop(meta).str,"?if",3)==0){
-                stPop(meta);
-            }
             int executionLineNum = i;
             while(!(!strcmp(e[executionLineNum].code[0],"begin") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
                 executionLineNum--;
             }
             i = executionLineNum-1;
-            if(meta->size>0) stPop(meta);
             continue;
         }
 

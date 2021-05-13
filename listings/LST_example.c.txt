@@ -1,49 +1,38 @@
 
-int i = 0 
-int ?for1 
-?for1 = ( i < 10 ) 
-begin ?for1 == 1.000000
-int j = 0 
+int main ( ) { 
+int s = 23 
+int j = 11 
+int i = 11 
+int ?for4 
+?for4 = ( j < s ) 
+begin ?for4 == 1.000000
+int ?if5 
+?if5 = ( j == 17 ) 
+begin ?if5 == 0.000000
+endof ?if5 
+j = j + ( 3 ) 
+endof ?for4 
+?for4 = ( j < s ) 
+begin ?for4 == 1.000000
+int ?if5 
+?if5 = ( j == 17 ) 
+begin ?if5 == 0.000000
+endof ?if5 
+j = j + ( 3 ) 
+endof ?for4 
+?for4 = ( j < s ) 
+begin ?for4 == 1.000000
+int ?if5 
+?if5 = ( j == 17 ) 
+begin ?if5 == 1.000000
+stop ?for4 
+begin ?for4 == 0.000000
+endof ?for4 
+return 0 
+} 
 
-int ?for3 
-?for3 = ( j < 10 ) 
-begin ?for3 == 1.000000
-int ?if4 
-?if4 = ( j == 4 ) 
-begin ?if4 == 0.000000
-endof ?if4 
-j ++ 
-endof ?for3 
-?for3 = ( j < 10 ) 
-begin ?for3 == 1.000000
-int ?if4 
-?if4 = ( j == 4 ) 
-begin ?if4 == 0.000000
-endof ?if4 
-j ++ 
-endof ?for3 
-?for3 = ( j < 10 ) 
-begin ?for3 == 1.000000
-int ?if4 
-?if4 = ( j == 4 ) 
-begin ?if4 == 0.000000
-endof ?if4 
-j ++ 
-endof ?for3 
-?for3 = ( j < 10 ) 
-begin ?for3 == 1.000000
-int ?if4 
-?if4 = ( j == 4 ) 
-begin ?if4 == 0.000000
-endof ?if4 
-j ++ 
-endof ?for3 
-?for3 = ( j < 10 ) 
-begin ?for3 == 1.000000
-int ?if4 
-?if4 = ( j == 4 ) 
-begin ?if4 == 1.000000
-stop ?for1 
+
+
 
 
 

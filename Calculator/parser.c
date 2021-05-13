@@ -229,7 +229,14 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
                 strcpy(forInit[y++], src[i]);
             }
         }
-        addExpression(expr, exprSize++, forInit, y, metaData, 0, NULL, reqSize, boolStack, bcnt);
+        if (y) addExpression(expr, exprSize++, forInit, y, metaData, 0, NULL, reqSize, boolStack, bcnt);
+        else{
+            forInit[0] = (char *) malloc(10 * sizeof(char));
+            strcpy(forInit[0],"int");
+            forInit[1] = (char *) malloc(10 * sizeof(char));
+            strcpy(forInit[1],"?noInt");
+            addExpression(expr, exprSize++, forInit, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
+        }
         boolStack[*bcnt].fullInit = boolStack[*bcnt].fullInit && y;
         sizeDelta++;
         i++;
@@ -321,39 +328,33 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         tmpEnd[0] = (char *) malloc(10 * sizeof(char));
         tmpEnd[1] = (char *) malloc(10 * sizeof(char));
         strcpy(tmpEnd[0], "stop");
-
-        for (int p = 0; p < metaData->size; p++) {
-            if (!strncmp(metaData->data[p].str, "?for", 4) || !strncmp(metaData->data[p].str, "?while", 5)) {
-                strcpy(tmpEnd[1], metaData->data[p].str);
+        int z;
+        for(z = metaData->size-1;strncmp(metaData->data[z].str,"?if",3) == 0; z--){
+        }
+        strcpy(tmpEnd[1], metaData->data[z].str);
                 int q = 0;
                 for (; q < *bcnt; q++) {
-                    if (!strcmp(boolStack[q].name, metaData->data[p].str)) break;
+                    if (!strcmp(boolStack[q].name, metaData->data[z].str)) break;
                 }
                 boolStack[q].isBreak = 1;
                 addExpression(expr, exprSize++, tmpEnd, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
-                break;
-            }
-        }
         i = 1;
     } else if (metaData->size != 0 && !strcmp(src[0], "continue")) {
         char **tmpEnd = (char **) malloc(2 * sizeof(char *));
         tmpEnd[0] = (char *) malloc(10 * sizeof(char));
         tmpEnd[1] = (char *) malloc(10 * sizeof(char));
         strcpy(tmpEnd[0], "skip");
-
-        for (int p = 0; p < metaData->size; p++) {
-            if (!strncmp(metaData->data[p].str, "?for", 4) || !strncmp(metaData->data[p].str, "?while", 5)) {
-                strcpy(tmpEnd[1], metaData->data[p].str);
+        int z = metaData->size-1;
+        for(;strncmp(metaData->data[z].str,"?if",3) == 0; z--){
+        }
+                strcpy(tmpEnd[1], metaData->data[z].str);
                 int q = 0;
                 for (; q < *bcnt; q++) {
-                    if (!strcmp(boolStack[q].name, metaData->data[p].str)) break;
+                    if (!strcmp(boolStack[q].name, metaData->data[z].str)) break;
                 }
                 boolStack[q].hasNoUnevenExecutionPath = 0;
                 addExpression(expr, exprSize++, tmpEnd, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
-                break;
-            }
-        }
-        i = 1;
+                i = 1;
     }
 
     if (!strcmp(src[0], "for")) {

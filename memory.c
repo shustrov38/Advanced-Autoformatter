@@ -131,10 +131,12 @@ Variant *getValue(Memory *m, char *name) {
             int i = find(r->names, r->total, name);
             if (i != r->total) {
                 return &r->items[i];
+            } else{
+                break;
             }
         }
     }
-    return NULL;
+    return getValue(m,"?nTmp");
 }
 
 void inc(Memory *m, char *Varname) {
