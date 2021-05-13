@@ -148,6 +148,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
             if (strncmp(e[i].code[1], "?if", 3)==0){
                 bools[u].state = bools[u].itCnt;
                 if (!bools[u].state) {
+                    bools[u].state = 1;
                     printf("Line %d: If expression defined by a const.\n", bools[u].line);
 #ifdef __INTERPRET_DEBUG__
                     printf("\n\n");
