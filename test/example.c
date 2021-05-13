@@ -11,4 +11,9 @@ int main(){
     g(); 
     f(- 5); 
     g(); 
+    int i = 0; 
+    while (i < 5) {
+    } 
+    if (1) {
+    } 
 } 

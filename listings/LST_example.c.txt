@@ -2,7 +2,8 @@
 void f ( int x ) { 
 int ?if2 
 ?if2 = ( x > 15 ) 
-begin ?if2 
+begin ?if2 == 0.000000
+endof ?if2 
 f ( x + 16 ) 
 } 
 void g ( ) { 
@@ -12,18 +13,18 @@ int main ( ) {
 g ( ) 
 f ( - 5 ) 
 g ( ) 
+int i = 0 
+int ?while15 
+?while15 = ( i < 5 ) 
+begin ?while15 == 1.000000
+  
+endof ?while15 
+int ?if17 
+?if17 = ( 1 ) 
+begin ?if17 == 1.000000
+  
+endof ?if17 
 } 
-
-
-
-
-
-
-
-
-
-
-
 
 
 
