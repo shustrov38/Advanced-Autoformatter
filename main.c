@@ -28,6 +28,8 @@ Expression *interpretFile(Memory *m, FileData *file) {
     int bcnt = 0;
     Variant nTmp = {.varType = None, .isInited = 0, .d = 0};
     MemoryFunctions.newNum(m, "?nTmp", nTmp);
+    Variant constZero = {.varType = Numerical, .isInited = 1, .d = 0};
+    MemoryFunctions.newNum(m, "0", nTmp);
     int inMain = 0;
     // TODO: it might be better to start the interpretation directly from the main function, ?????
 
@@ -146,7 +148,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
             if (strncmp(e[i].code[1], "?if", 3)==0){
                 bools[u].state = bools[u].itCnt;
                 if (!bools[u].state) {
-                    printf("Line %d: if defined by a const.\n", bools[u].line);
+                    printf("Line %d: If expression defined by a const.\n", bools[u].line);
 #ifdef __INTERPRET_DEBUG__
                     printf("\n\n");
                 for (int y = 0; y < bcnt; y++){

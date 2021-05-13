@@ -14,6 +14,7 @@ int main(){
     int i = 0; 
     while (i < 5) {
     } 
-    if (1) {
+    if (0) {
+        i++; 
     } 
 } 
