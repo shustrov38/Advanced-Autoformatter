@@ -1,7 +1,7 @@
 #include "parser.h"
 #include "../vector.h"
 
-#define MAX_ARRAY_SIZE 100
+#define MAX_ARRAY_SIZE 1000
 #define MAX_E_SIZE 100
 #define MAX_STR_SIZE 100
 
@@ -10,7 +10,7 @@
 void initExpression(Expression *E) {
     for (int i = 0; i < MAX_ARRAY_SIZE; ++i) {
         E[i].code = (char **) malloc(MAX_E_SIZE * sizeof(char *));
-        for (int j = 0; j < MAX_ARRAY_SIZE; ++j) {
+        for (int j = 0; j < MAX_ARRAY_SIZE/10; ++j) {
             E[i].code[j] = (char *) malloc(MAX_V_NAME_SIZE * sizeof(char));
             memset(E[i].code[j], 0, MAX_V_NAME_SIZE);
         }
@@ -67,7 +67,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
         i = 2;
     } else if (!strcmp(src[0], "do")) {
-        sizeDelta++;
+        sizeDelta+=2;
 
         boolStack[*bcnt].type = While;
         boolStack[*bcnt].line = metaVal;
@@ -76,6 +76,8 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].nonConstIter = 0;
         boolStack[*bcnt].hasNoUnevenExecutionPath = 1;
         boolStack[*bcnt].state = 0;
+        boolStack[*bcnt].itCnt = 0;
+        boolStack[*bcnt].builtInIter = 0;
 
         char **tmpEnd = (char **) malloc(2 * sizeof(char *));
         tmpEnd[0] = (char *) malloc(10 * sizeof(char));
@@ -112,9 +114,9 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
         addExpression(expr, exprSize++, tmpBegTag, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
         *(bcnt) += 1;
+
     } else if (metaData->size != 0 && !strcmp(src[0], "}") && !strcmp(src[1], "while") &&
                !strncmp(stTop(metaData).str, "?dwhl", 5)) {
-        sizeDelta++;
 
         int seekId = 0;
 
@@ -140,7 +142,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         }
         addExpression(expr, exprSize++, ifCond, ifCondIdx, metaData, 0, NULL, reqSize, boolStack, bcnt);
         Vec.push(reqSize, 0);
-
+        exprSize++;
         char **tmpBegTag = (char **) malloc(2 * sizeof(char *));
         tmpBegTag[0] = (char *) malloc(10 * sizeof(char));
         tmpBegTag[1] = (char *) malloc(10 * sizeof(char));
@@ -160,6 +162,8 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].nonConstIter = 0;
         boolStack[*bcnt].state = 0;
         boolStack[*bcnt].hasNoUnevenExecutionPath = 1;
+        boolStack[*bcnt].itCnt = 0;
+        boolStack[*bcnt].builtInIter = 0;
 
         char **ifCond = (char **) malloc(25 * sizeof(char *));
         boolStack[*bcnt].expr = (char **) malloc(25 * sizeof(char *));
@@ -192,7 +196,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         strcpy(ifCond[ifCondIdx++], "=");
         i = 1;
         for (; strcmp(src[i], "{");) {
-            strcpy(boolStack[*bcnt].expr[ifCondIdx - 2], src[i]);
+            if (__getOpID(src[i])==VAR) strcpy(boolStack[*bcnt].expr[boolStack[*bcnt].itCnt++], src[i]);
             strcpy(ifCond[ifCondIdx++], src[i++]);
         }
         boolStack[*bcnt].fullInit = boolStack[*bcnt].fullInit || (ifCondIdx - 4);
@@ -218,6 +222,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].hasNoUnevenExecutionPath = 1;
         boolStack[*bcnt].state = 0;
         boolStack[*bcnt].builtInIter = 0;
+        boolStack[*bcnt].itCnt = 0;
 
         i = 2;
         char **forInit = (char **) malloc(10 * sizeof(char *));
@@ -229,7 +234,14 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
                 strcpy(forInit[y++], src[i]);
             }
         }
-        addExpression(expr, exprSize++, forInit, y, metaData, 0, NULL, reqSize, boolStack, bcnt);
+        if (y) addExpression(expr, exprSize++, forInit, y, metaData, 0, NULL, reqSize, boolStack, bcnt);
+        else{
+            forInit[0] = (char *) malloc(10 * sizeof(char));
+            strcpy(forInit[0],"int");
+            forInit[1] = (char *) malloc(10 * sizeof(char));
+            strcpy(forInit[1],"?noInt");
+            addExpression(expr, exprSize++, forInit, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
+        }
         boolStack[*bcnt].fullInit = boolStack[*bcnt].fullInit && y;
         sizeDelta++;
         i++;
@@ -265,8 +277,8 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         strcpy(forCond[forCondIdx++], "=");
         strcpy(forCond[forCondIdx++], "(");
         for (; strcmp(src[i], ";"); i++) {
-            strcpy(boolStack[*bcnt].expr[forCondIdx - 2], src[i]);
-            if (strcmp(src[i], " ") != 0)strcpy(forCond[forCondIdx++], src[i]);
+            if (__getOpID(src[i])==VAR) strcpy(boolStack[*bcnt].expr[boolStack[*bcnt].itCnt++], src[i]);
+            strcpy(forCond[forCondIdx++], src[i]);
         }
         strcpy(forCond[forCondIdx++], ")");
         addExpression(expr, exprSize++, forCond, forCondIdx, metaData, 0, NULL, reqSize, boolStack, bcnt);
@@ -321,39 +333,33 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         tmpEnd[0] = (char *) malloc(10 * sizeof(char));
         tmpEnd[1] = (char *) malloc(10 * sizeof(char));
         strcpy(tmpEnd[0], "stop");
-
-        for (int p = 0; p < metaData->size; p++) {
-            if (!strncmp(metaData->data[p].str, "?for", 4) || !strncmp(metaData->data[p].str, "?while", 5)) {
-                strcpy(tmpEnd[1], metaData->data[p].str);
+        int z;
+        for(z = metaData->size-1;strncmp(metaData->data[z].str,"?if",3) == 0; z--){
+        }
+        strcpy(tmpEnd[1], metaData->data[z].str);
                 int q = 0;
                 for (; q < *bcnt; q++) {
-                    if (!strcmp(boolStack[q].name, metaData->data[p].str)) break;
+                    if (!strcmp(boolStack[q].name, metaData->data[z].str)) break;
                 }
                 boolStack[q].isBreak = 1;
                 addExpression(expr, exprSize++, tmpEnd, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
-                break;
-            }
-        }
         i = 1;
     } else if (metaData->size != 0 && !strcmp(src[0], "continue")) {
         char **tmpEnd = (char **) malloc(2 * sizeof(char *));
         tmpEnd[0] = (char *) malloc(10 * sizeof(char));
         tmpEnd[1] = (char *) malloc(10 * sizeof(char));
         strcpy(tmpEnd[0], "skip");
-
-        for (int p = 0; p < metaData->size; p++) {
-            if (!strncmp(metaData->data[p].str, "?for", 4) || !strncmp(metaData->data[p].str, "?while", 5)) {
-                strcpy(tmpEnd[1], metaData->data[p].str);
+        int z = metaData->size-1;
+        for(;strncmp(metaData->data[z].str,"?if",3) == 0; z--){
+        }
+                strcpy(tmpEnd[1], metaData->data[z].str);
                 int q = 0;
                 for (; q < *bcnt; q++) {
-                    if (!strcmp(boolStack[q].name, metaData->data[p].str)) break;
+                    if (!strcmp(boolStack[q].name, metaData->data[z].str)) break;
                 }
                 boolStack[q].hasNoUnevenExecutionPath = 0;
                 addExpression(expr, exprSize++, tmpEnd, 2, metaData, 0, NULL, reqSize, boolStack, bcnt);
-                break;
-            }
-        }
-        i = 1;
+                i = 1;
     }
 
     if (!strcmp(src[0], "for")) {

@@ -5,7 +5,8 @@
 
 typedef enum {
     Numerical,
-    String
+    String,
+    None
 } VariableType;
 
 typedef enum {
@@ -58,6 +59,7 @@ struct boolean_e_c {
     char            *name;
     char            **expr;
     double          *iVals;
+    int             itCnt;
     boolean_type    type;
     int             line;
     int             isBreak;
@@ -74,6 +76,9 @@ typedef struct boolean_e_c bool;
 struct memory_functions_t {
     // inits memory
     void (*init)(Memory *);
+
+    // destroy memory
+    void (*destroy)(Memory *);
 
     // returns pointer to register by variable varType
     Register *(*getRegister)(Memory *, VariableType);
@@ -104,6 +109,8 @@ extern struct memory_functions_t MemoryFunctions;
 
 #define INIT_MEMORY(MEM) Memory MEM; \
 MemoryFunctions.init(&MEM)
+
+#define DESTROY_MEMORY(MEM)  MemoryFunctions.destroy(&MEM)
 
 #define MEMORY_NEW_STR(MEMORY, NAME, VALUE) { \
 Variant t = {.d = strlen(VALUE), .s = VALUE,.isOverflowed = 0, .varType = String}; \

@@ -131,10 +131,12 @@ Variant *getValue(Memory *m, char *name) {
             int i = find(r->names, r->total, name);
             if (i != r->total) {
                 return &r->items[i];
+            } else{
+                break;
             }
         }
     }
-    return NULL;
+    return getValue(m,"?nTmp");
 }
 
 void inc(Memory *m, char *Varname) {
@@ -192,8 +194,20 @@ void InitMemory(Memory *m) {
     }
 }
 
+void DestroyMemory(Memory *m) {
+    for (int i = 0; i < REGISTERS_COUNT; ++i) {
+        for (int j = 0; j < ARRAY_LEN; ++j) {
+            free(m->registers[i].names[j]);
+        }
+        free(m->registers[i].items);
+        free(m->registers[i].names);
+    }
+    free(&m);
+}
+
 struct memory_functions_t MemoryFunctions = {
         InitMemory,
+        DestroyMemory,
         getRegister,
         newNum,
         newString,
