@@ -1,25 +1,23 @@
 
-void f ( int x ) { 
-int ?if2 
-?if2 = ( x > 15 ) 
-begin ?if2 
-f ( x + 16 ) 
-} 
-void g ( ) { 
-f ( 5 ) 
-} 
-int main ( ) { 
-g ( ) 
-f ( - 5 ) 
-g ( ) 
-} 
+int ?dwhl1 
+begin ?dwhl1 
+do { 
+int ?dwhl2 
+begin ?dwhl2 
+do { 
+int ?while3 
+?while3 = ( a < 20 ) 
+begin ?while3 
+  
+endof ?dwhl2 
+int ?noInt 
+int ?for7 
+?for7 = ( ) 
+begin ?for7 == 0.000000
+endof ?for7 
+?dwhl1 = ( a < 10 ) 
 
-
-
-
-
-
-
+endof ?dwhl1 
 
 
 

@@ -1,14 +1,10 @@
-void f(int x) {
-    if (x > 15) {
-        return; 
+do {
+    do {
+        while (a < 20) {
+            a++; 
+        } 
     } 
-    f(x + 16); 
-} 
-void g(){
-    f(5); 
-} 
-int main(){
-    g(); 
-    f(- 5); 
-    g(); 
-} 
+    for (;; ) {
+        a++; 
+    } 
+} while (a < 10); 
