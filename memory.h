@@ -5,7 +5,8 @@
 
 typedef enum {
     Numerical,
-    String
+    String,
+    None
 } VariableType;
 
 typedef enum {
@@ -58,6 +59,7 @@ struct boolean_e_c {
     char            *name;
     char            **expr;
     double          *iVals;
+    int             itCnt;
     boolean_type    type;
     int             line;
     int             isBreak;

@@ -26,7 +26,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     INIT_VECTOR(reqSize);
     bool *bools = (bool *) malloc(100 * sizeof(bool));
     int bcnt = 0;
-    Variant nTmp = {.varType = Numerical,.isInited = 0,.d = 0};
+    Variant nTmp = {.varType = None,.isInited = 0,.d = 0};
     MemoryFunctions.newNum(m,"?nTmp",nTmp);
     // TODO: it might be better to start the interpretation directly from the main function, ?????
 
@@ -53,7 +53,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     FILE *listingFile = fopen(listingFileName, "w");
 
     // iterate through Expressions and interpret each of them
-    for (int i = 0; i <100; ++i) {
+    for (int i = 0; i <1000; ++i) {
         rpnProcessor *outStack = rpnProcInit();
 
         fprintf(listingFile, "\n");
@@ -68,7 +68,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
             for(; u < bcnt; u++){
                 if(!strcmp(bools[u].name,e[i].code[1])) break;
             }
-            for (int ff = 0; ff < 25; ff++){
+            for (int ff = 0; ff < bools[u].itCnt; ff++){
                 double tmp;
                 if (MemoryFunctions.getValue(m, bools[u].expr[ff]) == NULL) tmp = 0;
                 else tmp = MemoryFunctions.getValue(m, bools[u].expr[ff])->d;
@@ -122,11 +122,10 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 if(!strcmp(bools[u].name,e[i].code[1])) break;
             }
             bools[u].state = 1;
-            for (int ff = 0; ff < 25; ff++){
+            for (int ff = 0; ff < bools[u].itCnt; ff++){
                 double tmp;
-                if(MemoryFunctions.getValue(m, bools[u].expr[ff])!= NULL
-                && MemoryFunctions.getValue(m, bools[u].expr[ff])->varType == Numerical
-                && MemoryFunctions.getValue(m, bools[u].expr[ff])->isInited == 0){
+                if((__getOpID(bools[u].expr[ff]) == VAR)&&(MemoryFunctions.getValue(m, bools[u].expr[ff])->varType == None
+                || MemoryFunctions.getValue(m, bools[u].expr[ff])->isInited == 0)){
                     bools[u].state = 0;
                     tmp = 0;
                 }

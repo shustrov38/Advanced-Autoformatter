@@ -76,6 +76,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].nonConstIter = 0;
         boolStack[*bcnt].hasNoUnevenExecutionPath = 1;
         boolStack[*bcnt].state = 0;
+        boolStack[*bcnt].itCnt = 0;
 
         char **tmpEnd = (char **) malloc(2 * sizeof(char *));
         tmpEnd[0] = (char *) malloc(10 * sizeof(char));
@@ -160,6 +161,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].nonConstIter = 0;
         boolStack[*bcnt].state = 0;
         boolStack[*bcnt].hasNoUnevenExecutionPath = 1;
+        boolStack[*bcnt].itCnt = 0;
 
         char **ifCond = (char **) malloc(25 * sizeof(char *));
         boolStack[*bcnt].expr = (char **) malloc(25 * sizeof(char *));
@@ -192,7 +194,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         strcpy(ifCond[ifCondIdx++], "=");
         i = 1;
         for (; strcmp(src[i], "{");) {
-            strcpy(boolStack[*bcnt].expr[ifCondIdx - 2], src[i]);
+            if (__getOpID(src[i])==VAR) strcpy(boolStack[*bcnt].expr[boolStack[*bcnt].itCnt++], src[i]);
             strcpy(ifCond[ifCondIdx++], src[i++]);
         }
         boolStack[*bcnt].fullInit = boolStack[*bcnt].fullInit || (ifCondIdx - 4);
@@ -218,6 +220,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].hasNoUnevenExecutionPath = 1;
         boolStack[*bcnt].state = 0;
         boolStack[*bcnt].builtInIter = 0;
+        boolStack[*bcnt].itCnt = 0;
 
         i = 2;
         char **forInit = (char **) malloc(10 * sizeof(char *));
@@ -272,8 +275,8 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         strcpy(forCond[forCondIdx++], "=");
         strcpy(forCond[forCondIdx++], "(");
         for (; strcmp(src[i], ";"); i++) {
-            strcpy(boolStack[*bcnt].expr[forCondIdx - 2], src[i]);
-            if (strcmp(src[i], " ") != 0)strcpy(forCond[forCondIdx++], src[i]);
+            if (__getOpID(src[i])==VAR) strcpy(boolStack[*bcnt].expr[boolStack[*bcnt].itCnt++], src[i]);
+            strcpy(forCond[forCondIdx++], src[i]);
         }
         strcpy(forCond[forCondIdx++], ")");
         addExpression(expr, exprSize++, forCond, forCondIdx, metaData, 0, NULL, reqSize, boolStack, bcnt);
