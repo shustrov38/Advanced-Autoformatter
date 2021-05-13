@@ -77,7 +77,6 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                     strcpy(codeBody->codeLines[codeLineCnt][1], originString[i]);
                 }
                 codeLineCnt++;
-                --figBracketCnt;
                 codeWordsCnt = 0;//HERE!!!
                 ++i;
             }

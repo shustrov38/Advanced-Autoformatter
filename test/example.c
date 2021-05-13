@@ -1,14 +1,19 @@
-int main(){
-    int i = 0; 
-    while (i < 10) {
-        int j = 0; 
-        while (j < 5) {
-            j++; 
-            if (0) {
-                i++; 
-            } 
-            continue; 
-        } 
-        break; 
+do {
+    while (1) {
+        b--; 
     } 
+    a--; 
+    for (;; ) {
+        a++; 
+    } 
+    for (int a = 0; a < 10; a++ ) {
+        b++; 
+        c--; 
+        while (1) {
+            a += 3; 
+        } 
+    } 
+} while (a > 10); 
+while (1) {
+    b--; 
 } 
