@@ -87,7 +87,13 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 }
                 printf("\n\n");
 #endif
-                return e;
+                int executionLineNum = i;
+                while (!(!strcmp(e[executionLineNum].code[0], "endof") &&
+                         !strcmp(e[executionLineNum].code[1], e[i].code[1]))) {
+                    executionLineNum++;
+                }
+                i = executionLineNum;
+                continue;
             }
 
             if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0 && strncmp(e[i].code[1],"?dwhl",5)!=0) {
@@ -118,6 +124,12 @@ Expression *interpretFile(Memory *m, FileData *file) {
             bools[u].state = 1;
             for (int ff = 0; ff < 25; ff++){
                 double tmp;
+                if(MemoryFunctions.getValue(m, bools[u].expr[ff])!= NULL
+                && MemoryFunctions.getValue(m, bools[u].expr[ff])->varType == Numerical
+                && MemoryFunctions.getValue(m, bools[u].expr[ff])->isInited == 0){
+                    bools[u].state = 0;
+                    tmp = 0;
+                }
                 if (MemoryFunctions.getValue(m, bools[u].expr[ff]) == NULL) tmp = 0;
                 else tmp = MemoryFunctions.getValue(m, bools[u].expr[ff])->d;
                 bools[u].iVals[ff] = tmp;
@@ -132,7 +144,13 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 }
                 printf("\n\n");
 #endif
-                return e;
+                int executionLineNum = i;
+                while (!(!strcmp(e[executionLineNum].code[0], "endof") &&
+                         !strcmp(e[executionLineNum].code[1], e[i].code[1]))) {
+                    executionLineNum++;
+                }
+                i = executionLineNum;
+                continue;
             }
 
             fprintf(listingFile, "== %f", MemoryFunctions.getValue(m, e[i].code[1])->d);

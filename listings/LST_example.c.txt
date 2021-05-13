@@ -1,47 +1,17 @@
 
 int main ( ) { 
 int s = 23 
-int j = 11 
-int i = 11 
+int j 
+int ?noInt 
 int ?for4 
 ?for4 = ( j < s ) 
-begin ?for4 == 1.000000
-int ?if5 
-?if5 = ( j == 17 ) 
-begin ?if5 == 0.000000
-endof ?if5 
-j = j + ( 3 ) 
-endof ?for4 
-?for4 = ( j < s ) 
-begin ?for4 == 1.000000
-int ?if5 
-?if5 = ( j == 17 ) 
-begin ?if5 == 0.000000
-endof ?if5 
-j = j + ( 3 ) 
-endof ?for4 
-?for4 = ( j < s ) 
-begin ?for4 == 1.000000
-int ?if5 
-?if5 = ( j == 17 ) 
-begin ?if5 == 1.000000
-stop ?for4 
-begin ?for4 == 0.000000
-endof ?for4 
+begin ?for4 
+int ?noInt 
+int ?for9 
+?for9 = ( j < s ) 
+begin ?for9 
 return 0 
 } 
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
