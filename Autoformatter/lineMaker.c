@@ -517,9 +517,9 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
 
     codeBody->linesCnt = codeLineCnt;
 
-//#ifdef __LINE_MAKER_DEBUG__
+#ifdef __LINE_MAKER_DEBUG__
     printCode(codeBody);
-//#endif
+#endif
 }
 
 

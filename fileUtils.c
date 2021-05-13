@@ -406,14 +406,13 @@ void printFunctionsCallTable(FileData *files, int size) {
             }
         }
 
-        printf("Founded nested cycle with depth %d from function %s(). Real depth of cycle may be different.\n",
+        printf("Found nested cycle with depth %d from function %s(). Real depth of cycle may be different.\n",
                maxDepth, name);
     }
 
     printf("\n");
 }
 
-// TODO: ...
 void checkIncludeCycles(FileData *files, int size) {
     INIT_VECTOR(names);
     for (int i = 0; i < size; ++i) {
@@ -426,20 +425,36 @@ void checkIncludeCycles(FileData *files, int size) {
     int **table = (int **) malloc(n * sizeof(int *));
     for (int i = 0; i < n; ++i) {
         table[i] = (int *) malloc(n * sizeof(int));
+        memset(table[i], 0, n * sizeof(int));
     }
 
     // parse all dependencies for all header files
 
     for (int i = 0; i < size; ++i) {
+        int index = findFunctionInVectorOfNames(&names, files[i].filename);
         if (files[i].isHeader) {
             for (int j = 0; j < files[i].code->linesCnt; ++j) {
                 char **line = files[i].code->codeLines[j];
                 int length = getLineLength(line);
 
                 if (!strcmp(line[0], "#include") && !strcmp(line[1], "\"")) {
-                    printf("%s\n", line[0]);
+                    char name[50];
+                    memset(name, 0, 50);
+
+                    int k = 2;
+                    while (k < length && strcmp(line[k], "\"") != 0) {
+                        strcat(name, line[k++]);
+                    }
+
+                    int ind = findFunctionInVectorOfNames(&names, name);
+
+                    if (ind != -1) {
+                        table[index][ind] = 1;
+                    }
                 }
             }
         }
     }
+
+    findCycle(&names, table, n, "Found a loop in including files.\n", "Have no loop the including files.\n");
 }

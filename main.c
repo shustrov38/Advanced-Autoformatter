@@ -15,7 +15,7 @@
 
 #include "fileUtils.h"
 
-#define WORK_WITH_MEMORY
+//#define WORK_WITH_MEMORY
 
 Expression *interpretFile(Memory *m, FileData *file) {
     // size of the Expression array
@@ -213,7 +213,7 @@ int main(const int argc, const char *argv[]) {
     }
 
     printFunctionsCallTable(files, filesCount); // data about functions and nested cycles
-//    checkIncludeCycles(files, filesCount); // need work
+    checkIncludeCycles(files, filesCount);
 
 #ifdef WORK_WITH_MEMORY
     INIT_MEMORY(m);
