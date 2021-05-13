@@ -75,8 +75,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 if (bools[u].iVals[ff] != tmp){bools[u].nonConstIter = 1; break;}
             }
 
-            bools[u].state = (bools[u].nonConstIter || bools[u].fullInit || bools[u].isBreak) &&
-                             (bools[u].hasNoUnevenExecutionPath || bools[u].builtInIter);
+            bools[u].state = (bools[u].builtInIter || bools[u].nonConstIter) && (bools[u].hasNoUnevenExecutionPath || bools[u].builtInIter) || bools[u].fullInit && bools[u].itCnt && bools[u].nonConstIter || bools[u].isBreak;
             if(!bools[u].state){
                 printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
 #ifdef __INTERPRET_DEBUG__
@@ -182,8 +181,8 @@ Expression *interpretFile(Memory *m, FileData *file) {
             continue;
         } else if (!strcmp(e[i].code[0], "skip") && (!strncmp(e[i].code[1],"?while",6) || !strncmp(e[i].code[1],"?dwhl",5))){
             int executionLineNum = i;
-            while(!(!strcmp(e[executionLineNum].code[0],"begin") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
-                executionLineNum--;
+            while(!(!strcmp(e[executionLineNum].code[0],"endof") && !strcmp(e[executionLineNum].code[1],e[i].code[1]))){
+                executionLineNum++;
             }
             i = executionLineNum-1;
             continue;
@@ -258,13 +257,14 @@ int main(const int argc, const char *argv[]) {
 //    checkIncludeCycles(files, filesCount); // need work
 
 #ifdef WORK_WITH_MEMORY
-    INIT_MEMORY(m);
+
 
 //    printf("Variables before interpretation:\n");
 //    MemoryFunctions.printRegister(&m, Numerical);
 //    printf("\n");
 
     for (int i  = 0; i < filesCount; ++i) {
+        INIT_MEMORY(m);
         Expression *e = interpretFile(&m, &files[i]);
     }
 //

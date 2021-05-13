@@ -1,12 +1,19 @@
 
 int main ( ) { 
 int s = 23 
-int j 
-int ?for3 
-?for3 = ( j < s ) 
-begin ?for3 
+int j = 0 
+int ?while4 
+?while4 = ( j < 23 ) 
+begin ?while4 == 1.000000
+skip ?while4 
+endof ?while4 
 return 0 
 } 
+
+
+
+
+
 
 
 
