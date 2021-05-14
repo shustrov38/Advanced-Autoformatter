@@ -95,3 +95,7 @@
 ![ПРОГРАММА](images/uneven_example.PNG)
 ![ВЕРДИКТ](images/broken_report.PNG)
 ![НИЗКОЕ ЗНАЧЕНИЕ ГИБКОСТИ](images/exe_def.PNG)
+
+## Работа
+
+![](images/videoso.mkv)

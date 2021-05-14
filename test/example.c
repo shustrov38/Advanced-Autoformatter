@@ -24,6 +24,7 @@ void c(){
     b(); 
 } 
 void uselessFunc(){
+    int x = 15; // aboba x = 15; 
     return; 
 } 
 int main(){

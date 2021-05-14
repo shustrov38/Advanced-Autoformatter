@@ -69,7 +69,10 @@ Expression *interpretFile(Memory *m, FileData *file) {
 
         for (int stC = 0; stC < e[i].size; stC++) {
             if (strcmp(e[i].code[stC], "[") == 0 ||
-                strcmp(e[i].code[stC], "]") == 0) {
+                strcmp(e[i].code[stC], "]") == 0 ||
+                strcmp(e[i].code[stC], "->") == 0 ||
+                strcmp(e[i].code[stC], ".") == 0||
+                strcmp(e[i].code[stC], ",") == 0 ) {
                 continue;
             }
         }
@@ -308,20 +311,6 @@ void findEndlessLoops(FileData *files, int size) {
 
 #endif
 }
-
-//do {
-//while (1) {
-//b--;
-//}
-//a--;
-//for (int a = 0; a < 10; a++ ) {
-//b++;
-//c--;
-//while (1) {
-//a += 3;
-//}
-//}
-//} while (a > 10);
 
 int main(const int argc, const char *argv[]) {
     if (argc == 1) {
