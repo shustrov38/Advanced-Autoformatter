@@ -58,7 +58,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     for (int i = 0; i < 1000; ++i) {
         if (executionPathCorruption == CRITICAL_EXE_ST){
             printf("Interpretation of %s was stopped to avoid memory corruptions and overflowes:"
-                   "\nto many uneven execution paths were found",file->filename);
+                   "\nto many uneven execution paths [%d] were found",file->filename,CRITICAL_EXE_ST);
             return e;
         }
         if(!strcmp(e[i].code[0], "int") && !strcmp(e[i].code[1], "main")) inMain = 1;
