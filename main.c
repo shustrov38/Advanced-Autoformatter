@@ -58,7 +58,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     for (int i = 0; i < 1000; ++i) {
         for(int stC = 0; stC < e[i].size; stC++){
             if(strcmp(e[i].code[stC],"[")==0 ||
-            strcmp(e[i].code[stC],"]")==0){
+               strcmp(e[i].code[stC],"]")==0){
                 continue;
             }
         }
