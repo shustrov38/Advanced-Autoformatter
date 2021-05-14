@@ -14,7 +14,7 @@
 #include "memory.h"
 
 #include "fileUtils.h"
-#define CRITICAL_EXE_ST 12
+#define CRITICAL_EXE_ST 2
 #define WORK_WITH_MEMORY
 
 Expression *interpretFile(Memory *m, FileData *file) {
