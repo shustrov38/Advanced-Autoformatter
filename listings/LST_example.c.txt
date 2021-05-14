@@ -1060,6 +1060,7 @@ b ( )
 } 
 void uselessFunc ( ) { 
 int x = 15 
+//   aboba   x   =   15 
 return 
 } 
 int main ( ) { 
@@ -1067,51 +1068,50 @@ int BadVar = 6
 int unusedVar = 6 
 int NotInitedVar 
 int i = 0 
-int ?for34 
-?for34 = ( i < BadVar ) 
-begin ?for34 == 1.000000
+int ?for35 
+?for35 = ( i < BadVar ) 
+begin ?for35 == 1.000000
 GoodFuncName ( ) 
 ++ i 
-endof ?for34 
-?for34 = ( i < BadVar ) 
-begin ?for34 == 1.000000
+endof ?for35 
+?for35 = ( i < BadVar ) 
+begin ?for35 == 1.000000
 GoodFuncName ( ) 
 ++ i 
-endof ?for34 
-?for34 = ( i < BadVar ) 
-begin ?for34 == 1.000000
+endof ?for35 
+?for35 = ( i < BadVar ) 
+begin ?for35 == 1.000000
 GoodFuncName ( ) 
 ++ i 
-endof ?for34 
-?for34 = ( i < BadVar ) 
-begin ?for34 == 1.000000
+endof ?for35 
+?for35 = ( i < BadVar ) 
+begin ?for35 == 1.000000
 GoodFuncName ( ) 
 ++ i 
-endof ?for34 
-?for34 = ( i < BadVar ) 
-begin ?for34 == 1.000000
+endof ?for35 
+?for35 = ( i < BadVar ) 
+begin ?for35 == 1.000000
 GoodFuncName ( ) 
 ++ i 
-endof ?for34 
-?for34 = ( i < BadVar ) 
-begin ?for34 == 1.000000
+endof ?for35 
+?for35 = ( i < BadVar ) 
+begin ?for35 == 1.000000
 GoodFuncName ( ) 
 ++ i 
-endof ?for34 
-?for34 = ( i < BadVar ) 
-begin ?for34 == 0.000000
-endof ?for34 
+endof ?for35 
+?for35 = ( i < BadVar ) 
+begin ?for35 == 0.000000
+endof ?for35 
 NotInitedVar ++ 
 a ( ) 
-int ?while39 
-?while39 = ( sqrt ( 4 ) == 2 ) 
-begin ?while39 == 1.000000
+int ?while40 
+?while40 = ( sqrt ( 4 ) == 2 ) 
+begin ?while40 == 1.000000
 int z = 0 
 z = z + ( 50 ) 
 //   break 
   
-endof ?while39 
-
+endof ?while40 
 
 
 

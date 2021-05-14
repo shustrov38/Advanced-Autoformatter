@@ -35,7 +35,7 @@ void outputFiles(char *fileName, codeLineStruct *code) {
 
         if (isCloseFigBr(code->codeLines[i][0])) {
             if (switchFlag) {
-                nesting -= 2;
+                nesting -= 1;
                 switchFlag = 0;
             }
             else {
