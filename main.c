@@ -14,10 +14,15 @@
 #include "memory.h"
 
 #include "fileUtils.h"
+
 #define CRITICAL_EXE_ST 12
+#define MAX_INTERPRET_ITER 1000
+
 #define WORK_WITH_MEMORY
 
 Expression *interpretFile(Memory *m, FileData *file) {
+    static int cur_iter = 0;
+
     // size of the Expression array
     int size = 0;
     Expression *e = createExpressions();
@@ -56,18 +61,24 @@ Expression *interpretFile(Memory *m, FileData *file) {
 
     // iterate through Expressions and interpret each of them
     for (int i = 0; i < 1000; ++i) {
-        for(int stC = 0; stC < e[i].size; stC++){
-            if(strcmp(e[i].code[stC],"[")==0 ||
-               strcmp(e[i].code[stC],"]")==0){
+        if (cur_iter > MAX_INTERPRET_ITER) {
+            printf("Interpretation of \"%s\" was stopped to avoid memory corruptions and overflows: "
+                   "\nto many iterations...", file->filename);
+            return e;
+        }
+
+        for (int stC = 0; stC < e[i].size; stC++) {
+            if (strcmp(e[i].code[stC], "[") == 0 ||
+                strcmp(e[i].code[stC], "]") == 0) {
                 continue;
             }
         }
-        if (executionPathCorruption == CRITICAL_EXE_ST){
-            printf("Interpretation of %s was stopped to avoid memory corruptions and overflowes:"
-                   "\nto many uneven execution paths [%d] were found",file->filename,CRITICAL_EXE_ST);
+        if (executionPathCorruption == CRITICAL_EXE_ST) {
+            printf("\nInterpretation of \"%s\" was stopped to avoid memory corruptions and overflows: "
+                   "\nto many uneven execution paths [%d] were found", file->filename, CRITICAL_EXE_ST);
             return e;
         }
-        if(!strcmp(e[i].code[0], "int") && !strcmp(e[i].code[1], "main")) inMain = 1;
+        if (!strcmp(e[i].code[0], "int") && !strcmp(e[i].code[1], "main")) inMain = 1;
         rpnProcessor *outStack = rpnProcInit();
 
         fprintf(listingFile, "\n");
@@ -77,6 +88,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
 
         //GOTO & tags logic
         if (!strcmp(e[i].code[0], "endof") && strncmp(e[i].code[1], "?if", 3) != 0) {
+            ++cur_iter;
 //            printf(" == %f", MemoryFunctions.getValue(m, e[i].code[1])->d);
             int u = 0;
             for (; u < bcnt; u++) {
@@ -91,31 +103,33 @@ Expression *interpretFile(Memory *m, FileData *file) {
                     break;
                 }
             }
-            if(strncmp(e[i].code[1],"?while",6)==0 ||strncmp(e[i].code[1],"?for",4)==0){
-            bools[u].state = (bools[u].builtInIter || bools[u].nonConstIter) &&
-                             (bools[u].hasNoUnevenExecutionPath || bools[u].builtInIter) ||
-                             bools[u].fullInit && bools[u].itCnt && bools[u].nonConstIter || bools[u].isBreak;
-            if (!bools[u].state) {
-                if (bools[u].isBroken == 0)printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
+            if (strncmp(e[i].code[1], "?while", 6) == 0 || strncmp(e[i].code[1], "?for", 4) == 0) {
+                bools[u].state = (bools[u].builtInIter || bools[u].nonConstIter) &&
+                                 (bools[u].hasNoUnevenExecutionPath || bools[u].builtInIter) ||
+                                 bools[u].fullInit && bools[u].itCnt && bools[u].nonConstIter || bools[u].isBreak;
+                if (!bools[u].state) {
+                    if (bools[u].isBroken == 0)
+                        printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
 #ifdef __INTERPRET_DEBUG__
-                printf("\n\n");
-                for (int y = 0; y < bcnt; y++){
-                    printf(" %s\tin line %d may be stopped via break: %d  fully inited: %d has nonconstant iters: %d\n",
-                           bools[y].name, bools[y].line, bools[y].isBreak, bools[y].fullInit, bools[y].nonConstIter);
-                }
-                printf("\n\n");
+                    printf("\n\n");
+                    for (int y = 0; y < bcnt; y++){
+                        printf(" %s\tin line %d may be stopped via break: %d  fully inited: %d has nonconstant iters: %d\n",
+                               bools[y].name, bools[y].line, bools[y].isBreak, bools[y].fullInit, bools[y].nonConstIter);
+                    }
+                    printf("\n\n");
 #endif
-                int executionLineNum = i;
-                while (!(!strcmp(e[executionLineNum].code[0], "endof") &&
-                         !strcmp(e[executionLineNum].code[1], e[i].code[1]))) {
-                    executionLineNum++;
+                    int executionLineNum = i;
+                    while (!(!strcmp(e[executionLineNum].code[0], "endof") &&
+                             !strcmp(e[executionLineNum].code[1], e[i].code[1]))) {
+                        executionLineNum++;
+                    }
+                    MEMORY_NEW_NUM(*m, Int, e[i].code[1], 0);
+                    i = executionLineNum + 1;
+                    executionPathCorruption++;
+                    bools[u].isBroken = 1;
+                    continue;
                 }
-                MEMORY_NEW_NUM(*m, Int, e[i].code[1], 0);
-                i = executionLineNum+1;
-                executionPathCorruption++;
-                bools[u].isBroken = 1;
-                continue;
-            }}
+            }
 
 
             if (MemoryFunctions.getValue(m, e[i].code[1])->d > 0 && strncmp(e[i].code[1], "?dwhl", 5) != 0) {
@@ -150,14 +164,14 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 if ((__getOpID(bools[u].expr[ff]) == VAR) &&
                     (MemoryFunctions.getValue(m, bools[u].expr[ff])->varType == None
                      || MemoryFunctions.getValue(m, bools[u].expr[ff])->isInited == 0)) {
-                    if(inMain == 1)bools[u].state = 0;
+                    if (inMain == 1)bools[u].state = 0;
                     tmp = 0;
                 }
                 if (MemoryFunctions.getValue(m, bools[u].expr[ff]) == NULL) tmp = 0;
                 else tmp = MemoryFunctions.getValue(m, bools[u].expr[ff])->d;
                 bools[u].iVals[ff] = tmp;
             }
-            if (strncmp(e[i].code[1], "?if", 3)==0){
+            if (strncmp(e[i].code[1], "?if", 3) == 0) {
                 bools[u].state = bools[u].itCnt;
                 if (!bools[u].state) {
                     bools[u].state = 1;
@@ -171,9 +185,9 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 printf("\n\n");
 #endif
                 }
-            }
-            else if (!bools[u].state) {
-                if(bools[u].isBroken == 0)printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
+            } else if (!bools[u].state) {
+                if (bools[u].isBroken == 0)
+                    printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
 #ifdef __INTERPRET_DEBUG__
                 printf("\n\n");
                 for (int y = 0; y < bcnt; y++){
@@ -190,7 +204,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 MEMORY_NEW_NUM(*m, Int, e[i].code[1], 0);
                 executionPathCorruption++;
                 bools[u].isBroken = 1;
-                i = executionLineNum+1;
+                i = executionLineNum + 1;
                 continue;
             }
 
@@ -217,6 +231,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
             i = executionLineNum - 1;
             continue;
         } else if (!strcmp(e[i].code[0], "skip") && !strncmp(e[i].code[1], "?for", 4)) {
+            ++cur_iter;
             int executionLineNum = i;
             while (!(!strcmp(e[executionLineNum].code[0], "endof") &&
                      !strcmp(e[executionLineNum].code[1], e[i].code[1]))) {
@@ -226,6 +241,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
             continue;
         } else if (!strcmp(e[i].code[0], "skip") &&
                    (!strncmp(e[i].code[1], "?while", 6) || !strncmp(e[i].code[1], "?dwhl", 5))) {
+            ++cur_iter;
             int executionLineNum = i;
             while (!(!strcmp(e[executionLineNum].code[0], "endof") &&
                      !strcmp(e[executionLineNum].code[1], e[i].code[1]))) {
@@ -272,6 +288,41 @@ Expression *interpretFile(Memory *m, FileData *file) {
     return e;
 }
 
+void findEndlessLoops(FileData *files, int size) {
+#ifdef WORK_WITH_MEMORY
+
+//    printf("Variables before interpretation:\n");
+//    MemoryFunctions.printRegister(&m, Numerical);
+//    printf("\n");
+
+    for (int i = 0; i < size; ++i) {
+        INIT_MEMORY(m);
+        Expression *e = interpretFile(&m, &files[i]);
+    }
+
+    printf("\n");
+//
+//    printf("Variables after interpretation:\n");
+//    MemoryFunctions.printRegister(&m, Numerical);
+//    printf("\n");
+
+#endif
+}
+
+//do {
+//while (1) {
+//b--;
+//}
+//a--;
+//for (int a = 0; a < 10; a++ ) {
+//b++;
+//c--;
+//while (1) {
+//a += 3;
+//}
+//}
+//} while (a > 10);
+
 int main(const int argc, const char *argv[]) {
     if (argc == 1) {
         printf("No filenames specified.\n");
@@ -298,22 +349,7 @@ int main(const int argc, const char *argv[]) {
     printFunctionsCallTable(files, filesCount); // data about functions and nested cycles
     checkIncludeCycles(files, filesCount);
 
-#ifdef WORK_WITH_MEMORY
-
-
-//    printf("Variables before interpretation:\n");
-//    MemoryFunctions.printRegister(&m, Numerical);
-//    printf("\n");
-
-    for (int i = 0; i < filesCount; ++i) {
-        INIT_MEMORY(m);
-        Expression *e = interpretFile(&m, &files[i]);
-    }
-//
-//    printf("Variables after interpretation:\n");
-//    MemoryFunctions.printRegister(&m, Numerical);
-//    printf("\n");
-#endif
+    findEndlessLoops(files, filesCount);
 
     return EXIT_SUCCESS;
 }

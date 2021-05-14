@@ -457,4 +457,6 @@ void checkIncludeCycles(FileData *files, int size) {
     }
 
     findCycle(&names, table, n, "Found a loop in including files.\n", "Have no loop the including files.\n");
+
+    printf("\n");
 }

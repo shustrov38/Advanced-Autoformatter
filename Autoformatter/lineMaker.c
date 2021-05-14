@@ -55,22 +55,36 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             codeWordsCnt = 0;
             i++;
 
+            while (figBracketCnt > 0) {
+                strcpy(codeBody->codeLines[codeLineCnt][0], "}");
+                codeLineCnt++;
+                --figBracketCnt;
+            }
+
             if (isCloseFigBr(originString[i])) {
                 strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
                 if (doFlag && !strcmp(originString[i + 1], "while")){
-                    codeWordsCnt++;
-                    i++;
-                    strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
-                    while (!isSemicolon(originString[i - 1])){
-                        strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+
+                    int m = i+1;
+                    while (!isCloseBr(originString[m])) {
+                        m++;
+                    }
+                    if(isSemicolon(originString[m+1])) {
                         codeWordsCnt++;
                         i++;
+                        strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+                        while (!isSemicolon(originString[i - 1])){
+                            strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+                            codeWordsCnt++;
+                            i++;
+                        }
+                        codeWordsCnt = 0;
+                        codeLineCnt++;
+                        i--;
+                        doFlag--;
+                        continue;
                     }
-                    codeWordsCnt = 0;
-                    codeLineCnt++;
-                    i--;
-                    doFlag--;
-                    continue;
+
                 }
                 if(isSemicolon(originString[i+1])) {
                     i++;
@@ -79,14 +93,6 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
                 codeLineCnt++;
                 codeWordsCnt = 0;//HERE!!!
                 ++i;
-            }
-
-
-
-            while (figBracketCnt > 0) {
-                strcpy(codeBody->codeLines[codeLineCnt][0], "}");
-                codeLineCnt++;
-                --figBracketCnt;
             }
         }
 
@@ -117,27 +123,24 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
             codeWordsCnt++;
 
             if (doFlag && !strcmp(originString[i + 1], "while")){
-//                int itsEndOfDoWhile = 0;
-                i++;
-//                int m = i;
-//                while (!isSemicolon(originString[i])){
-//                    m++;
-//                }
-//                if(isCloseBr(originString[i-1])) {
-//                    itsEndOfDoWhile = 1;
-//                }
-//
-//                if(itsEndOfDoWhile)
-                while (!isSemicolon(originString[i])){
-                    strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
-                    codeWordsCnt++;
-                    i++;
+
+                int m = i+1;
+                while (!isCloseBr(originString[m])) {
+                    m++;
                 }
-                strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
-                codeWordsCnt = 0;
-                codeLineCnt++;
-                doFlag--;
-                continue;
+                if(isSemicolon(originString[m+1])) {
+                    i++;
+                    while (!isSemicolon(originString[i])){
+                        strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+                        codeWordsCnt++;
+                        i++;
+                    }
+                    strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
+                    codeWordsCnt = 0;
+                    codeLineCnt++;
+                    doFlag--;
+                    continue;
+                }
             }
 
             if (isSemicolon(originString[i + 1])) {
@@ -168,7 +171,7 @@ void splitLines(codeLineStruct *codeBody, int len, char **originString) {
 
         if (isBlock(originString[i])) {
             if (isDo(originString[i])) {
-                doFlag = 1;
+                doFlag++;
             }
             strcpy(codeBody->codeLines[codeLineCnt][codeWordsCnt], originString[i]);
             codeWordsCnt++;

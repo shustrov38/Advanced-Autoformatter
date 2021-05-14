@@ -1,107 +1,2051 @@
 
-int ?dwhl1 
-begin ?dwhl1 
-do { 
-int ?while2 
-?while2 = ( 1 ) 
-begin ?while2 == 1.000000
-b -- 
+int badFuncName ( int z ) { 
+int ?if2 
+?if2 = ( z > 50 ) 
+begin ?if2 == 0.000000
+endof ?if2 
+return 2 
+//   return   badFuncName ( z   +   10 ) 
+} 
+void GoodFuncName ( ) { 
+int x = 0 
+int i = 0 
+int ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
   
-endof ?while2 
-int a = 0 
-int ?for6 
-?for6 = ( a < 10 ) 
-begin ?for6 == 1.000000
-b ++ 
-c -- 
-int ?while9 
-?while9 = ( 1 ) 
-begin ?while9 == 1.000000
-a = a + ( 3 ) 
+endof ?if12 
   
-endof ?while9 
-endof ?for6 
-?for6 = ( a < 10 ) 
-begin ?for6 == 1.000000
-b ++ 
-c -- 
-int ?while9 
-?while9 = ( 1 ) 
-begin ?while9 == 1.000000
-a = a + ( 3 ) 
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
   
-endof ?while9 
-endof ?for6 
-?for6 = ( a < 10 ) 
-begin ?for6 == 1.000000
-b ++ 
-c -- 
-int ?while9 
-?while9 = ( 1 ) 
-begin ?while9 == 1.000000
-a = a + ( 3 ) 
+endof ?if12 
   
-endof ?while9 
-endof ?for6 
-?for6 = ( a < 10 ) 
-begin ?for6 == 1.000000
-b ++ 
-c -- 
-int ?while9 
-?while9 = ( 1 ) 
-begin ?while9 == 1.000000
-a = a + ( 3 ) 
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
   
-endof ?while9 
-endof ?for6 
-?for6 = ( a < 10 ) 
-begin ?for6 == 0.000000
-endof ?for6 
-?dwhl1 = ( a > 10 ) 
-int ?while14 
-endof ?dwhl1 
-a = a + ( 3 ) 
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
   
-endof ?while9 
-endof ?for6 
-?dwhl1 = ( a > 10 ) 
-int ?while14 
-endof ?dwhl1 
-a = a + ( 3 ) 
+endof ?if12 
   
-endof ?while9 
-endof ?for6 
-?dwhl1 = ( a > 10 ) 
-int ?while14 
-endof ?dwhl1 
-a = a + ( 3 ) 
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
   
-endof ?while9 
-endof ?for6 
-?dwhl1 = ( a > 10 ) 
-int ?while14 
-endof ?dwhl1 
-a = a + ( 3 ) 
+endof ?if12 
   
-endof ?while9 
-endof ?for6 
-?dwhl1 = ( a > 10 ) 
-int ?while14 
-endof ?dwhl1 
-a = a + ( 3 ) 
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
   
-endof ?while9 
-endof ?for6 
-?dwhl1 = ( a > 10 ) 
-int ?while14 
-endof ?dwhl1 
-a = a + ( 3 ) 
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
   
-endof ?while9 
-endof ?for6 
-?dwhl1 = ( a > 10 ) 
-int ?while14 
-endof ?dwhl1 
-a = a + ( 3 ) 
+endof ?if12 
   
-endof ?while9 
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 2.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 0.000000
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 1.000000
+++ i 
+int ?if12 
+?if12 = ( i % 3 ) 
+begin ?if12 == 1.000000
+x = badFuncName ( i ) 
+  
+endof ?if12 
+  
+endof ?for10 
+?for10 = ( i < 100 ) 
+begin ?for10 == 0.000000
+endof ?for10 
+} 
+void a ( ) { 
+c ( ) 
+} 
+void b ( ) { 
+a ( ) 
+} 
+void c ( ) { 
+b ( ) 
+} 
+void uselessFunc ( ) { 
+return 
+} 
+int main ( ) { 
+int BadVar = 6 
+int unusedVar = 6 
+int NotInitedVar 
+int i = 0 
+int ?for33 
+?for33 = ( i < BadVar ) 
+begin ?for33 == 1.000000
+GoodFuncName ( ) 
+++ i 
+endof ?for33 
+?for33 = ( i < BadVar ) 
+begin ?for33 == 1.000000
+GoodFuncName ( ) 
+++ i 
+endof ?for33 
+?for33 = ( i < BadVar ) 
+begin ?for33 == 1.000000
+GoodFuncName ( ) 
+++ i 
+endof ?for33 
+?for33 = ( i < BadVar ) 
+begin ?for33 == 1.000000
+GoodFuncName ( ) 
+++ i 
+endof ?for33 
+?for33 = ( i < BadVar ) 
+begin ?for33 == 1.000000
+GoodFuncName ( ) 
+++ i 
+endof ?for33 
+?for33 = ( i < BadVar ) 
+begin ?for33 == 1.000000
+GoodFuncName ( ) 
+++ i 
+endof ?for33 
+?for33 = ( i < BadVar ) 
+begin ?for33 == 0.000000
+endof ?for33 
+NotInitedVar ++ 
+a ( ) 
+int ?while38 
+?while38 = ( sqrt ( 4 ) == 2 ) 
+begin ?while38 == 1.000000
+int z = 0 
+z = z + ( 50 ) 
+//   break 
+  
+endof ?while38 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
