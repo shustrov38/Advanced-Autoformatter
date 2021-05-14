@@ -98,4 +98,4 @@
 
 ## Работа
 
-[comment]: <> (![]&#40;images/videoso.mkv&#41;)
+![](images/videoso.gif)
