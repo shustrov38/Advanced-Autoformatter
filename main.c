@@ -29,7 +29,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     Variant nTmp = {.varType = None, .isInited = 0, .d = 0};
     MemoryFunctions.newNum(m, "?nTmp", nTmp);
     Variant constZero = {.varType = Numerical, .isInited = 1, .d = 0};
-    MemoryFunctions.newNum(m, "0", nTmp);
+    MemoryFunctions.newNum(m, "0", constZero);
     int inMain = 0;
     int executionPathCorruption = 0;
     for (int i = 0; i < file->code->linesCnt; ++i) {
@@ -56,6 +56,12 @@ Expression *interpretFile(Memory *m, FileData *file) {
 
     // iterate through Expressions and interpret each of them
     for (int i = 0; i < 1000; ++i) {
+        for(int stC = 0; stC < e[i].size; stC++){
+            if(strcmp(e[i].code[stC],"[")==0 ||
+            strcmp(e[i].code[stC],"]")==0){
+                continue;
+            }
+        }
         if (executionPathCorruption == CRITICAL_EXE_ST){
             printf("Interpretation of %s was stopped to avoid memory corruptions and overflowes:"
                    "\nto many uneven execution paths [%d] were found",file->filename,CRITICAL_EXE_ST);
