@@ -14,7 +14,7 @@
 #include "memory.h"
 
 #include "fileUtils.h"
-#define CRITICAL_EXE_ST 2
+#define CRITICAL_EXE_ST 12
 #define WORK_WITH_MEMORY
 
 Expression *interpretFile(Memory *m, FileData *file) {
@@ -90,7 +90,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                              (bools[u].hasNoUnevenExecutionPath || bools[u].builtInIter) ||
                              bools[u].fullInit && bools[u].itCnt && bools[u].nonConstIter || bools[u].isBreak;
             if (!bools[u].state) {
-                printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
+                if (bools[u].isBroken == 0)printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
 #ifdef __INTERPRET_DEBUG__
                 printf("\n\n");
                 for (int y = 0; y < bcnt; y++){
@@ -107,6 +107,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 MEMORY_NEW_NUM(*m, Int, e[i].code[1], 0);
                 i = executionLineNum+1;
                 executionPathCorruption++;
+                bools[u].isBroken = 1;
                 continue;
             }}
 
@@ -166,7 +167,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 }
             }
             else if (!bools[u].state) {
-                printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
+                if(bools[u].isBroken == 0)printf("Line %d: Uneven execution conditions may lead to endless loop.\n", bools[u].line);
 #ifdef __INTERPRET_DEBUG__
                 printf("\n\n");
                 for (int y = 0; y < bcnt; y++){
@@ -182,6 +183,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
                 }
                 MEMORY_NEW_NUM(*m, Int, e[i].code[1], 0);
                 executionPathCorruption++;
+                bools[u].isBroken = 1;
                 i = executionLineNum+1;
                 continue;
             }

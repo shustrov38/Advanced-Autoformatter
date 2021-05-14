@@ -78,6 +78,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].state = 0;
         boolStack[*bcnt].itCnt = 0;
         boolStack[*bcnt].builtInIter = 0;
+        boolStack[*bcnt].isBroken = 0;
 
         char **tmpEnd = (char **) malloc(2 * sizeof(char *));
         tmpEnd[0] = (char *) malloc(10 * sizeof(char));
@@ -164,6 +165,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].hasNoUnevenExecutionPath = 1;
         boolStack[*bcnt].itCnt = 0;
         boolStack[*bcnt].builtInIter = 0;
+        boolStack[*bcnt].isBroken = 0;
 
         char **ifCond = (char **) malloc(25 * sizeof(char *));
         boolStack[*bcnt].expr = (char **) malloc(25 * sizeof(char *));
@@ -223,6 +225,7 @@ int addExpression(Expression *expr, int exprSize, char **src, int srcSize, Stack
         boolStack[*bcnt].state = 0;
         boolStack[*bcnt].builtInIter = 0;
         boolStack[*bcnt].itCnt = 0;
+        boolStack[*bcnt].isBroken = 0;
 
         i = 2;
         char **forInit = (char **) malloc(10 * sizeof(char *));

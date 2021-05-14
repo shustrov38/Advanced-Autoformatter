@@ -68,6 +68,7 @@ struct boolean_e_c {
     int             state;
     int             hasNoUnevenExecutionPath;
     int             builtInIter;
+    int             isBroken;
 };
 
 typedef struct boolean_e_c bool;
