@@ -1,0 +1,107 @@
+
+int ?dwhl1 
+begin ?dwhl1 
+do { 
+int ?while2 
+?while2 = ( 1 ) 
+begin ?while2 == 1.000000
+b -- 
+  
+endof ?while2 
+int a = 0 
+int ?for6 
+?for6 = ( a < 10 ) 
+begin ?for6 == 1.000000
+b ++ 
+c -- 
+int ?while9 
+?while9 = ( 1 ) 
+begin ?while9 == 1.000000
+a = a + ( 3 ) 
+  
+endof ?while9 
+endof ?for6 
+?for6 = ( a < 10 ) 
+begin ?for6 == 1.000000
+b ++ 
+c -- 
+int ?while9 
+?while9 = ( 1 ) 
+begin ?while9 == 1.000000
+a = a + ( 3 ) 
+  
+endof ?while9 
+endof ?for6 
+?for6 = ( a < 10 ) 
+begin ?for6 == 1.000000
+b ++ 
+c -- 
+int ?while9 
+?while9 = ( 1 ) 
+begin ?while9 == 1.000000
+a = a + ( 3 ) 
+  
+endof ?while9 
+endof ?for6 
+?for6 = ( a < 10 ) 
+begin ?for6 == 1.000000
+b ++ 
+c -- 
+int ?while9 
+?while9 = ( 1 ) 
+begin ?while9 == 1.000000
+a = a + ( 3 ) 
+  
+endof ?while9 
+endof ?for6 
+?for6 = ( a < 10 ) 
+begin ?for6 == 0.000000
+endof ?for6 
+?dwhl1 = ( a > 10 ) 
+int ?while14 
+endof ?dwhl1 
+a = a + ( 3 ) 
+  
+endof ?while9 
+endof ?for6 
+?dwhl1 = ( a > 10 ) 
+int ?while14 
+endof ?dwhl1 
+a = a + ( 3 ) 
+  
+endof ?while9 
+endof ?for6 
+?dwhl1 = ( a > 10 ) 
+int ?while14 
+endof ?dwhl1 
+a = a + ( 3 ) 
+  
+endof ?while9 
+endof ?for6 
+?dwhl1 = ( a > 10 ) 
+int ?while14 
+endof ?dwhl1 
+a = a + ( 3 ) 
+  
+endof ?while9 
+endof ?for6 
+?dwhl1 = ( a > 10 ) 
+int ?while14 
+endof ?dwhl1 
+a = a + ( 3 ) 
+  
+endof ?while9 
+endof ?for6 
+?dwhl1 = ( a > 10 ) 
+int ?while14 
+endof ?dwhl1 
+a = a + ( 3 ) 
+  
+endof ?while9 
+endof ?for6 
+?dwhl1 = ( a > 10 ) 
+int ?while14 
+endof ?dwhl1 
+a = a + ( 3 ) 
+  
+endof ?while9 

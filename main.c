@@ -14,7 +14,7 @@
 #include "memory.h"
 
 #include "fileUtils.h"
-
+#define CRITICAL_EXE_ST 12
 #define WORK_WITH_MEMORY
 
 Expression *interpretFile(Memory *m, FileData *file) {
@@ -31,9 +31,7 @@ Expression *interpretFile(Memory *m, FileData *file) {
     Variant constZero = {.varType = Numerical, .isInited = 1, .d = 0};
     MemoryFunctions.newNum(m, "0", nTmp);
     int inMain = 0;
-    // TODO: it might be better to start the interpretation directly from the main function, ?????
-
-    // TODO: change cycle, choose only arithmetic lines of code.
+    int executionPathCorruption = 0;
     for (int i = 0; i < file->code->linesCnt; ++i) {
 //        if (!isArithmeticCodeLine()) continue;
 
@@ -58,6 +56,11 @@ Expression *interpretFile(Memory *m, FileData *file) {
 
     // iterate through Expressions and interpret each of them
     for (int i = 0; i < 1000; ++i) {
+        if (executionPathCorruption == CRITICAL_EXE_ST){
+            printf("Interpretation of %s was stopped to avoid memory corruptions and overflowes:"
+                   "\nto many uneven execution paths were found",file->filename);
+            return e;
+        }
         if(!strcmp(e[i].code[0], "int") && !strcmp(e[i].code[1], "main")) inMain = 1;
         rpnProcessor *outStack = rpnProcInit();
 
@@ -101,7 +104,9 @@ Expression *interpretFile(Memory *m, FileData *file) {
                          !strcmp(e[executionLineNum].code[1], e[i].code[1]))) {
                     executionLineNum++;
                 }
-                i = executionLineNum;
+                MEMORY_NEW_NUM(*m, Int, e[i].code[1], 0);
+                i = executionLineNum+1;
+                executionPathCorruption++;
                 continue;
             }}
 
@@ -175,7 +180,9 @@ Expression *interpretFile(Memory *m, FileData *file) {
                          !strcmp(e[executionLineNum].code[1], e[i].code[1]))) {
                     executionLineNum++;
                 }
-                i = executionLineNum;
+                MEMORY_NEW_NUM(*m, Int, e[i].code[1], 0);
+                executionPathCorruption++;
+                i = executionLineNum+1;
                 continue;
             }
 
